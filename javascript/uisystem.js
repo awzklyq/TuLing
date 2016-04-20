@@ -4,9 +4,11 @@ function UISystem( )
 
 UISystem( );
 
-UISystem.buttons = new Array( );
+UISystem.buttons = new ArrayEx( );
 
-UISystem.textinputs = new Array( );
+UISystem.textinputs = new ArrayEx( );
+
+UISystem.fouseuis = new ArrayEx( );
 
 UISystem.render = function( e )
 {
@@ -26,6 +28,7 @@ UISystem.render = function( e )
 var mousedowncallback = window.onMouseDown;
 mousedowncallback[mousedowncallback.length] = function( b, x, y )
 {
+	UISystem.fouseuis.clear( );
 	var buttons = UISystem.buttons;
 	for ( var i = 0; i < buttons.length; i ++ )
 	{
@@ -42,10 +45,26 @@ mousedowncallback[mousedowncallback.length] = function( b, x, y )
 	var textinputs = UISystem.textinputs;
 	for ( var i = 0; i < textinputs.length; i ++ )
 	{
+		textinputs[i].fouse = false;
 		if ( textinputs[i].insert( x, y ) )
 		{
 			textinputs[i].fouse = true;
 			textinputs[i].setCursorPostion( x, y );
+			UISystem.fouseuis.push( textinputs[i] );
+			break;
+		}
+	}
+}
+
+window.onKeyDown[window.onKeyDown.length] = function( keyCode )
+{
+	var fouseuis = UISystem.fouseuis;
+	for ( var i = 0; i < fouseuis.length; i ++ )
+	{
+		if ( TextInput.isObject( fouseuis[i] ) )
+		{
+			log( fouseuis[i].text, StringEx.getUnicode( keyCode ) );
+			fouseuis[i].text = StringEx.insert( fouseuis[i].text, fouseuis[i].curindex, StringEx.getUnicode( keyCode ) )
 		}
 	}
 }

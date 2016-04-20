@@ -39,7 +39,7 @@ canvas.addEventListener( "mouseup", function( event ) { // mouseevent.
 
 //??????
 window.onKeyDown = new Array( );
-var keydowncallback = window.onKeyDown
+var keydowncallback = window.onKeyDown;
 document.addEventListener("keydown", function( event ){
 	for ( var i = 0; i < keydowncallback.length; i ++ )
 	{

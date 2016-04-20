@@ -58,6 +58,26 @@ Global.bindMatrixToContext = function( context, matrix )
 	}
 }
 
+Global.isString = function( param )
+{
+	return typeof( param ) == "string";
+}
+
+Global.isNumber = function( param )
+{
+	return typeof( param ) == "number";
+}
+
+Global.isBool = function( param )
+{
+	return typeof( param ) == "boolean";
+}
+
+Global.isFunction = function( param )
+{
+	return typeof( param ) == "function";
+}
+
 Global.FONT = "60px Georgia";
 Global.FILLSTYLE = 0x00000000;
 Global.STROKESTYLE = 0x00000001;

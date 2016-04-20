@@ -25,7 +25,7 @@ window.onMouseUp[0] = function( b, x, y )
 	// log("event mouseup", b, x, y);
 }
 
-window.onKeyDown[0] = function( key )
+window.onKeyDown[window.onKeyDown.length] = function( key )
 {
 	// log("key down event", key);
 }

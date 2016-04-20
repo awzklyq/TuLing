@@ -41,7 +41,8 @@ function TextInput( x, y, w, h, text )
 	this.showCursorInterval = 500;
 	this.showCursor = true;
 	this.fouse = false;
-	this.cursorX = this.x + TextInput.getTextWidth( this.text );
+	this.cursorX = this.x + StringEx.getStringPixelSize( this.text );
+	this.curindex = this.text.length - 1;
 	this.draw = function( e )
 	{
 		var context = window.context;
@@ -83,30 +84,22 @@ function TextInput( x, y, w, h, text )
 
 	this.insert = function( x, y )
 	{
-		return ( x > this.x ) && ( x < this.x + this.w ) && ( y > this.y ) && ( y < this.y + this.h );
+		return ( x > this.x ) && ( x < this.x + this.w + this.borderWidth ) && ( y > this.y - this.borderWidth ) && ( y < this.y + this.h + this.borderWidth );
 	}
 
 	this.setCursorPostion = function( x, y )
 	{
 		var xx = x - this.x;
-		var textwidth = TextInput.getTextWidth( this.text );
+		var textwidth = StringEx.getStringPixelSize( this.text );
 		if ( xx > textwidth )
 		{
+			this.curindex = this.text.length - 1;
 			this.cursorX = this.x + textwidth;
 		}
 		else
 		{
-			var temp = "";
-			for ( var i = 0; i < this.text.length; i ++ )
-			{
-				textwidth = TextInput.getTextWidth( temp + this.text[i] );
-				if ( xx <= textwidth )
-				{
-					this.cursorX = this.x + TextInput.getTextWidth( temp );
-					break;
-				}
-				temp += this.text[i];
-			}
+			this.curindex = TextInput.setCursorPostionEx( xx, 0, this.text.length, this.text );
+			this.cursorX = this.x + StringEx.getStringPixelSize( StringEx.getSubString( this.text, 0, this.curindex ) );
 		}
 	}
 
@@ -125,7 +118,27 @@ function TextInput( x, y, w, h, text )
 	UISystem.textinputs.push( this );
 }
 
-TextInput.getTextWidth = function( text )
+TextInput.setCursorPostionEx = function( dis, start, end, text )
 {
-	return window.context.measureText( text || "" ).width;
+	var temp = Math.floor( 0.5 * ( start + end ) );
+	if ( temp == start || temp + 1 == end )
+		return temp;
+
+	var size1 = StringEx.getStringPixelSize( StringEx.getSubString( text, 0, temp ) );
+	var size2 = StringEx.getStringPixelSize( StringEx.getSubString( text, 0, temp + 1 ) );
+	if ( size1 <= dis && size2 >= dis )
+	{
+		return temp;
+	}
+	else if ( size1 > dis )
+	{
+		return TextInput.setCursorPostionEx( dis, start, temp, text );
+	}
+	// if ( size2 < dis ).
+	return TextInput.setCursorPostionEx( dis, temp + 1, end, text );
+}
+
+TextInput.isObject = function( obj )
+{
+	return obj instanceof TextInput;
 }
