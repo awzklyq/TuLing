@@ -1,26 +1,26 @@
 function Text( text, x, y, w, h )
 {
-	this.x = 0;
-	this.y = 0;
+	this._x = 0;
+	this._y = 0;
 
 	if ( x != null )
 	{
-		this.x = x;
+		this._x = x;
 	}
 
 	if ( y != null )
 	{
-		this.y = y;
+		this._y = y;
 	}
 
 	if ( w != null )
 	{
-		this.w = w;
+		this._w = w;
 	}
 
 	if ( h != null )
 	{
-		this.h = h;
+		this._h = h;
 	}
 
 	if ( text != null )
@@ -74,58 +74,65 @@ function Text( text, x, y, w, h )
 
 		if ( this.style == Global.FILLSTYLE )
 		{
-			context.fillText( this.text, this.x, this.y, this.w );
+			context.fillText( this.text, this._x, this._y, this._w );
 		}
 		else if ( this.style == Global.STROKESTYLE )
 		{
-			context.strokeText( this.text, this.x, this.y, this.w )
+			context.strokeText( this.text, this._x, this._y, this._w )
 		}
 		else
 		{
-			context.fillText( this.text, this.x, this.y, this.w );
-			context.strokeText( this.text, this.x, this.y, this.w );
+			context.fillText( this.text, this._x, this._y, this._w );
+			context.strokeText( this.text, this._x, this._y, this._w );
 		}
 
 		context.restore( );
 	}
 }
 
+Text.prototype = Global.UI;
+
+Text.isObject = function( obj )
+{
+	return obj instanceof Text;
+}
+
 function TextArea( text, x, y, w, h )
 {
 	if ( x != null )
 	{
-		this.x = x;
+		this._x = x;
 	}
 	else
 	{
-		this.x = 0;
+		this._x = 0;
 	}
 	
 	if ( y != null )
 	{
-		this.y = y;
+		this._y = y;
 	}
 	else
 	{
-		this.y = 0;
+		this._y = 0;
 	}
 
 	if ( w != null )
 	{
-		this.w = w;
+		this._w = w;
 	}
 	else
 	{
-		this.w = 0;
+		this._w = 0;
 	}
 	
 	if ( h != null )
 	{
-		this.h = h;
+		this._h = h;
 	}
 	else
 	{
-		this.h = 0;
+		this._h = 0;
 	}
 
 	this.textList = new Array( );
@@ -147,12 +154,12 @@ function TextArea( text, x, y, w, h )
 		var context = window.context;
 		var width = context.measureText( text ).width;
 		
-		if ( this.w != null  && width - this.w > 0 )
+		if ( this._w != null  && width - this._w > 0 )
 		{
 		
 			this.size = width * 2 / context.measureText( this.text.charAt( 0 ) ).width;
 		
-			var num = Math.ceil( width / this.w );
+			var num = Math.ceil( width / this._w );
 			var temp = Math.ceil( this.text.length / num );
 			for ( var i = 0; i < num; i ++ )
 			{
@@ -219,12 +226,12 @@ function TextArea( text, x, y, w, h )
 			{
 				for ( var i = 0; i < this.textList.length; i ++ )
 				{
-					context.fillText( this.textList[i], this.x, this.y + i * this.size, this.w );
+					context.fillText( this.textList[i], this._x, this._y + i * this.size, this._w );
 				}
 			}
 			else
 			{
-				context.fillText( this.text, this.x, this.y, this.w );
+				context.fillText( this.text, this._x, this._y, this._w );
 			}
 		}
 		else if ( this.style == Global.STROKESTYLE )
@@ -233,12 +240,12 @@ function TextArea( text, x, y, w, h )
 			{
 				for ( var i = 0; i < this.textList.length; i ++ )
 				{
-					context.strokeText( this.textList[i], this.x, this.y + i * this.size, this.w );
+					context.strokeText( this.textList[i], this._x, this._y + i * this.size, this._w );
 				}
 			}
 			else
 			{
-				context.strokeText( this.text, this.x, this.y, this.w );
+				context.strokeText( this.text, this._x, this._y, this._w );
 			}
 		}
 		else
@@ -247,18 +254,24 @@ function TextArea( text, x, y, w, h )
 			{
 				for ( var i = 0; i < this.textList.length; i ++ )
 				{
-					context.fillText( this.textList[i], this.x, this.y + i * this.size, this.w );
-					context.strokeText( this.textList[i], this.x, this.y + i * this.size, this.w );
+					context.fillText( this.textList[i], this._x, this._y + i * this.size, this._w );
+					context.strokeText( this.textList[i], this._x, this._y + i * this.size, this._w );
 				}
 			}
 			else
 			{
-				context.fillText( this.text, this.x, this.y, this.w );
-				context.strokeText( this.text, this.x, this.y, this.w );
+				context.fillText( this.text, this._x, this._y, this._w );
+				context.strokeText( this.text, this._x, this._y, this._w );
 			}
 		}
 
 		context.restore( );
 	}
-	
+}
+
+TextArea.prototype = Global.UI;
+
+TextArea.isObject = function( obj )
+{
+	return obj instanceof TextArea;
 }

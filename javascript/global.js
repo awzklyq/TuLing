@@ -78,6 +78,11 @@ Global.isFunction = function( param )
 	return typeof( param ) == "function";
 }
 
+Global.isArray = function( param )
+{
+	return ( param instanceof Array ) || ( param instanceof ArrayEx );
+}
+
 Global.FONT = "60px Georgia";
 Global.FILLSTYLE = 0x00000000;
 Global.STROKESTYLE = 0x00000001;
@@ -85,3 +90,5 @@ Global.STROKESTYLE = 0x00000001;
 Global.ALLSTYLE = 0x00000002;
 
 // Global.LImage.typeid = 0x00000001;
+
+Global.bgColor = Math.getRGBA( 0xff000000 );

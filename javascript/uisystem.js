@@ -13,6 +13,7 @@ UISystem.fouseuis = new ArrayEx( );
 UISystem.render = function( e )
 {
 	var buttons = UISystem.buttons;
+
 	for ( var i = 0; i < buttons.length; i ++ )
 	{
 		buttons[i].draw( );
@@ -58,13 +59,78 @@ mousedowncallback[mousedowncallback.length] = function( b, x, y )
 
 window.onKeyDown[window.onKeyDown.length] = function( keyCode )
 {
+	var def = false;
 	var fouseuis = UISystem.fouseuis;
 	for ( var i = 0; i < fouseuis.length; i ++ )
 	{
 		if ( TextInput.isObject( fouseuis[i] ) )
 		{
-			log( fouseuis[i].text, StringEx.getUnicode( keyCode ) );
-			fouseuis[i].text = StringEx.insert( fouseuis[i].text, fouseuis[i].curindex, StringEx.getUnicode( keyCode ) )
+			TextInput.doActionForKeyDown( keyCode, fouseuis[i] );
+			def = true;
+			break;
 		}
 	}
+
+	return def;
 }
+
+Global.UI = Object.create( Object.prototype, {
+	x:{
+	get:function( )
+	{
+		if ( this._parent != null )
+			return this._x - this._parent._x;
+
+		return this._x;
+	},
+	set:function( xx )
+	{
+		if ( Global.isNumber( xx ) == false )
+			return;
+
+		var oldx = this._x;
+		if ( this._parent != null )
+			this._x = this._parent._x + xx;
+		else
+			this._x = xx;
+
+		if ( this.elements != null && Global.isArray( this.elements ) )
+		{
+			var temp = this.elements;
+			for ( var i = 0; i < temp.length; i ++ )
+				temp[i]._x += this._x - oldx;
+		}
+	}
+	},// End x.
+	y:{
+	get:function( )
+	{
+		if ( this._parent != null )
+			return this._y - this._parent._y;
+
+		return this._y;
+	},
+	set:function( yy )
+	{
+		if ( Global.isNumber( yy ) == false )
+			return;
+
+		var oldy = this._y;
+		if ( this._parent != null )
+			this._y = this._parent._y + yy;
+		else
+			this._y = yy;
+
+		if ( this.elements != null && Global.isArray( this.elements ) )
+		{
+			var temp = this.elements;
+			for ( var i = 0; i < temp.length; i ++ )
+				temp[i]._y += this._y - oldy;
+		}
+	}
+	},// End y.
+	_x:{writable:true},
+	_y:{writable:true},
+})
+	
+	//this.elements = new ArrayEx( );

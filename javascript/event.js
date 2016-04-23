@@ -37,14 +37,20 @@ canvas.addEventListener( "mouseup", function( event ) { // mouseevent.
 	}
 }, false );
 
+
 //??????
 window.onKeyDown = new Array( );
 var keydowncallback = window.onKeyDown;
 document.addEventListener("keydown", function( event ){
+	var def = false;
 	for ( var i = 0; i < keydowncallback.length; i ++ )
 	{
-		keydowncallback[i]( event.keyCode );
+		if ( keydowncallback[i]( event.keyCode ) )
+			def = true;
 	}
+
+	if ( def )
+		event.preventDefault( );
 }, false);
 
 window.onKeyUp = new Array( );

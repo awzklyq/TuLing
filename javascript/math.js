@@ -13,5 +13,11 @@ Math.DecompressionRGBA = function( argb )
 	return{r:rr, g:gg, b:bb, a:aa}
 }
 
+Math.getRGBA = function( color )
+{
+	var temp = Math.DecompressionRGBA( color );
+	return "rgba(" + temp.r + "," + temp.g + "," + temp.b + "," + temp.a + ")";
+}
+
 Math.MinNumber = 0.000000001;
 Math.MaxNumber = 99999999.0;

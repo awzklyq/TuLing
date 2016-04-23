@@ -69,12 +69,25 @@ StringEx.getUnicode = function( param )
 	return String.fromCharCode( param );
 }
 
-StringEx.insert = function( str, i, element )
+StringEx.getInsertResult = function( str, i, element )
 {
 	if ( Global.isString( str ) == false || Global.isNumber( i ) == false || Global.isString( element ) == false )
-		return;
+		return "";
 
 	return str.substring( 0, i ) + element + str.substring( i, str.length );
+}
+
+StringEx.getRemoveAtResult = function( str, i )
+{
+	if ( Global.isString( str ) == false )
+		return "";
+
+	if ( Global.isNumber( i ) == false || i < 0 )
+		return str;
+
+	i = Math.max( i, 0 );
+	
+	return str.substring( 0, i - 1 ) + str.substring( i, str.length );
 }
 
 StringEx( );

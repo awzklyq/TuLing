@@ -2,32 +2,32 @@
 // UI Button.
 function Button( x, y, w, h, text )
 {
-	this.x = 0;
-	this.y = 0;
-	this.w = 0;
-	this.h = 0;
-	
+	this._x = 0;
+	this._y = 0;
+	this._w = 0;
+	this._h = 0;
+
 	// 1.normal, 2.down.
 	this.state = 1;
 
 	if ( x != null )
 	{
-		this.x = x;
+		this._x = x;
 	}
 
 	if ( y != null )
 	{
-		this.y = y;
+		this._y = y;
 	}
 
 	if ( w != null )
 	{
-		this.w = w;
+		this._w = w;
 	}
 
 	if ( h != null )
 	{
-		this.h = h;
+		this._h = h;
 	}
 
 	this.setColor = function( color1, color2 )
@@ -104,7 +104,7 @@ function Button( x, y, w, h, text )
 			delete this.polygon;
 		}
 		
-		this.polygon = new Polygon( {x:this.x, y:this.y}, {x:this.x + this.w, y:this.y}, {x:this.x + this.w, y:this.y + this.h}, {x:this.x, y:this.y + this.h});
+		this.polygon = new Polygon( {x:this._x, y:this._y}, {x:this._x + this._w, y:this._y}, {x:this._x + this._w, y:this._y + this._h}, {x:this._x, y:this._y + this._h});
 
 	}
 
@@ -112,12 +112,11 @@ function Button( x, y, w, h, text )
 	this.draw = function( )
 	{
 		Polygon.draw( this.polygon );
-
 		if ( this.state == 1 )
 		{
 			if ( this.image1 != null )
 			{
-				this.image1.drawImage( this.x, this.y, this.w, this.h );
+				this.image1.drawImage( this._x, this._y, this._w, this._h );
 			}
 			else
 			{
@@ -129,7 +128,7 @@ function Button( x, y, w, h, text )
 		{
 			if ( this.image2 != null )
 			{
-				this.image2.drawImage( this.x, this.y, this.w, this.h );
+				this.image2.drawImage( this._x, this._y, this._w, this._h );
 			}
 			else
 			{
@@ -147,5 +146,13 @@ function Button( x, y, w, h, text )
 	}
 
 	this.reset( );
-	UISystem.buttons[UISystem.buttons.length] = this;
+	this.type = "Button";
+	UISystem.buttons.push( this );
+}
+
+Button.prototype = Global.UI;
+
+Button.isObject = function( obj )
+{
+	return obj instanceof Button;
 }

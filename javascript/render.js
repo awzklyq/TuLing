@@ -115,7 +115,6 @@ window.log = function()
 }
 
 context.font = "16px Arial";
-context.fillStyle = "#FFFFFF00"
 
 var tick = new Date( )
 function render()
@@ -131,6 +130,7 @@ function render()
 	if ( window.rendercallbackfunc != null )
 	{
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.fillStyle = Math.getRGBA( 0xffffff00 );
 		context.fillText("FPS: " + fps, 20, 20);
 		window.rendercallbackfunc(newtick - tick);
 	}

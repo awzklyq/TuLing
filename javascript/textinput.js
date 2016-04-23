@@ -1,9 +1,10 @@
 function TextInput( x, y, w, h, text )
 {
-	this.x = x || 0;
-	this.y = y || 0;
-	this.w = w || 0;
-	this.h = h || 0;
+	this._x = x || 0;
+	this.textx = this._x;
+	this._y = y || 0;
+	this._w = w || 0;
+	this._h = h || 0;
 	this.text = text || "";
 
 	this.borderWidth = 2;
@@ -41,24 +42,25 @@ function TextInput( x, y, w, h, text )
 	this.showCursorInterval = 500;
 	this.showCursor = true;
 	this.fouse = false;
-	this.cursorX = this.x + StringEx.getStringPixelSize( this.text );
+	this.cursorX = this.textx + StringEx.getStringPixelSize( this.text );
 	this.curindex = this.text.length - 1;
 	this.draw = function( e )
 	{
 		var context = window.context;
 		context.save( );
 		context.beginPath( );
-
+		context.rect( this._x, this._y, this._w, this._h );
+		context.clip( );
 		context.lineWidth = this.borderWidth;
 		context.strokeStyle = this.borderColor;
 		
-		context.strokeRect( this.x, this.y, this.w, this.h );
+		context.strokeRect( this._x, this._y, this._w, this._h );
 
 		context.fillStyle = this.bgColor;
-		context.fillRect( this.x, this.y, this.w, this.h );
+		context.fillRect( this._x + 100, this._y, this._w, this._h );
 
-		context.fillStyle = this.textColor;
-		context.fillText( this.text, this.x, this.y + this.h - this.borderWidth, this.w );
+		context.fillStyle =  this.textColor;
+		context.fillText( this.text, this.textx, this._y + this._h - this.borderWidth );
 
 		this.tick += e;
 
@@ -72,35 +74,40 @@ function TextInput( x, y, w, h, text )
 		{
 			context.lineWidth = this.cursorWidth;
 			context.fillStyle = this.textColor;
-			context.moveTo( this.cursorX, this.y );
-			context.lineTo( this.cursorX, this.y + this.h );
+			context.moveTo( this.cursorX, this._y );
+			context.lineTo( this.cursorX, this._y + this._h );
 		}
-	
-		context.closePath( );
+
 		context.stroke( );
-		context.fill( );
+
+		context.closePath( );
 		context.restore( );
 	}
 
 	this.insert = function( x, y )
 	{
-		return ( x > this.x ) && ( x < this.x + this.w + this.borderWidth ) && ( y > this.y - this.borderWidth ) && ( y < this.y + this.h + this.borderWidth );
+		return ( x > this._x ) && ( x < this._x + this._w + this.borderWidth ) && ( y > this._y - this.borderWidth ) && ( y < this._y + this._h + this.borderWidth );
 	}
 
 	this.setCursorPostion = function( x, y )
 	{
-		var xx = x - this.x;
+		var xx = x - this._x;
 		var textwidth = StringEx.getStringPixelSize( this.text );
 		if ( xx > textwidth )
 		{
 			this.curindex = this.text.length - 1;
-			this.cursorX = this.x + textwidth;
+			this.cursorX = this._x + textwidth;
 		}
 		else
 		{
 			this.curindex = TextInput.setCursorPostionEx( xx, 0, this.text.length, this.text );
-			this.cursorX = this.x + StringEx.getStringPixelSize( StringEx.getSubString( this.text, 0, this.curindex ) );
+			this.cursorX = this.textx + StringEx.getStringPixelSize( StringEx.getSubString( this.text, 0, this.curindex ) );
 		}
+	}
+
+	this.resetCursorPostion = function( )
+	{
+		this.cursorX = this.textx + StringEx.getStringPixelSize( StringEx.getSubString( this.text, 0, this.curindex ) );
 	}
 
 	this.release = function( )
@@ -116,6 +123,8 @@ function TextInput( x, y, w, h, text )
 	}
 
 	UISystem.textinputs.push( this );
+
+	this.type = "TextInput";
 }
 
 TextInput.setCursorPostionEx = function( dis, start, end, text )
@@ -127,18 +136,65 @@ TextInput.setCursorPostionEx = function( dis, start, end, text )
 	var size1 = StringEx.getStringPixelSize( StringEx.getSubString( text, 0, temp ) );
 	var size2 = StringEx.getStringPixelSize( StringEx.getSubString( text, 0, temp + 1 ) );
 	if ( size1 <= dis && size2 >= dis )
-	{
 		return temp;
-	}
 	else if ( size1 > dis )
-	{
 		return TextInput.setCursorPostionEx( dis, start, temp, text );
-	}
+
 	// if ( size2 < dis ).
 	return TextInput.setCursorPostionEx( dis, temp + 1, end, text );
 }
 
+TextInput.prototype = Global.UI;
+
 TextInput.isObject = function( obj )
 {
 	return obj instanceof TextInput;
+}
+
+// Windows...
+TextInput.doActionForKeyDown = function( keyCode, textinput)
+{
+	if ( System.KeyBack == keyCode && textinput.curindex != 0 )
+	{
+		textinput.text = StringEx.getRemoveAtResult( textinput.text, textinput.curindex );
+		textinput.curindex --;
+		textinput.curindex = Math.max( 0, textinput.curindex );
+		textinput.resetCursorPostion( );
+	}
+	else if ( System.KeyDel == keyCode && textinput.curindex < textinput.text.length )
+	{
+		textinput.text = StringEx.getRemoveAtResult( textinput.text, textinput.curindex + 1 );
+		textinput.resetCursorPostion( );
+	}
+	else if ( System.KeyLeft == keyCode && textinput.curindex != 0 )
+	{
+		textinput.curindex --;
+		textinput.curindex = Math.max( 0, textinput.curindex );
+		textinput.resetCursorPostion( );
+	}
+	else if ( System.KeyRight == keyCode && textinput.curindex < textinput.text.length )
+	{
+		textinput.curindex ++;
+		textinput.resetCursorPostion( );
+	}
+	else if ( keyCode >= System.KeyA && keyCode <= System.KeyZ )
+	{
+		textinput.text = StringEx.getInsertResult( textinput.text, textinput.curindex, StringEx.getUnicode( keyCode ) );
+		textinput.curindex ++;
+		textinput.resetCursorPostion( );
+	}
+
+	if ( textinput.cursorX > textinput.x + textinput.w )
+	{
+		textinput.cursorX = textinput.x + textinput.w - 4;
+		textinput.textx = textinput.cursorX - StringEx.getStringPixelSize( textinput.text );
+	}
+	else if ( textinput.cursorX < textinput.x + textinput.borderWidth )
+	{
+		var temp = textinput.x + textinput.borderWidth;
+		if ( textinput.textx < temp )
+			textinput.textx += temp - textinput.cursorX + 4;
+
+		textinput.cursorX = temp;
+	}
 }
