@@ -117,14 +117,16 @@ window.log = function()
 context.font = "16px Arial";
 
 var tick = new Date( )
-function render()
+function render( )
 {
-	var newtick = new Date( )
-	var fps = Math.ceil(1000 / ( newtick - tick ));
+	var newtick = new Date( );
+	var elapse = newtick - tick;
+	Global.elapse = elapse;
+	var fps = Math.ceil(1000 / ( elapse ));
 
 	if ( window.updatecallbackfunc != null )
 	{
-		window.updatecallbackfunc(newtick - tick)
+		window.updatecallbackfunc(elapse)
 	}
 	
 	if ( window.rendercallbackfunc != null )
@@ -132,7 +134,7 @@ function render()
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		context.fillStyle = Math.getRGBA( 0xffffff00 );
 		context.fillText("FPS: " + fps, 20, 20);
-		window.rendercallbackfunc(newtick - tick);
+		window.rendercallbackfunc(elapse);
 	}
 
 	tick = newtick

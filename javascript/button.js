@@ -1,4 +1,3 @@
-
 // UI Button.
 function Button( x, y, w, h, text )
 {
@@ -103,8 +102,9 @@ function Button( x, y, w, h, text )
 		{
 			delete this.polygon;
 		}
-		
-		this.polygon = new Polygon( {x:this._x, y:this._y}, {x:this._x + this._w, y:this._y}, {x:this._x + this._w, y:this._y + this._h}, {x:this._x, y:this._y + this._h});
+
+		this.polygon = new Polygon( {x:0, y:0}, {x:this._w, y:0}, {x:this._w, y:this._h}, {x:0, y:this._h});
+		this.polygon.moveTo( this._x, this._y );
 
 	}
 
@@ -145,6 +145,24 @@ function Button( x, y, w, h, text )
 		}
 	}
 
+	// Called from parent.
+	this.triggerResizeXY = function( intervalx, intervaly )
+	{
+		this.polygon.moveTo( this._x, this._y );
+	}
+
+	this.triggerMouseDown = function( b, x, y )
+	{
+		if ( this.insert( x, y ) == false )
+			return false;
+
+		this.state = 2;
+		if ( this.click != null )
+			this.click( );
+
+		return true;
+	}
+
 	this.reset( );
 	this.type = "Button";
 	UISystem.buttons.push( this );
@@ -152,7 +170,7 @@ function Button( x, y, w, h, text )
 
 Button.prototype = Global.UI;
 
-Button.isObject = function( obj )
+UISystem.isButton = function( obj )
 {
-	return obj instanceof Button;
+	return obj.type == "Button";
 }

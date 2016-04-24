@@ -44,7 +44,7 @@ function TextInput( x, y, w, h, text )
 	this.fouse = false;
 	this.cursorX = this.textx + StringEx.getStringPixelSize( this.text );
 	this.curindex = this.text.length - 1;
-	this.draw = function( e )
+	this.draw = function( )
 	{
 		var context = window.context;
 		context.save( );
@@ -62,7 +62,7 @@ function TextInput( x, y, w, h, text )
 		context.fillStyle =  this.textColor;
 		context.fillText( this.text, this.textx, this._y + this._h - this.borderWidth );
 
-		this.tick += e;
+		this.tick += Global.elapse;
 
 		if ( this.tick >= this.showCursorInterval )
 		{
@@ -110,6 +110,24 @@ function TextInput( x, y, w, h, text )
 		this.cursorX = this.textx + StringEx.getStringPixelSize( StringEx.getSubString( this.text, 0, this.curindex ) );
 	}
 
+	// Called from parent.
+	this.triggerResizeXY = function( intervalx, intervaly )
+	{
+		this.textx += intervalx;
+	}
+
+	this.triggerMouseDown = function( b, x, y )
+	{
+		this.fouse = false;
+		if ( this.insert( x, y ) == false )
+			return false;
+	
+		this.fouse = true;
+		this.setCursorPostion( x, y );
+		UISystem.fouseuis.push( this );
+		return true;
+	}
+
 	this.release = function( )
 	{
 		for ( var i = 0; i < UISystem.textinput.length; i ++ )
@@ -146,9 +164,9 @@ TextInput.setCursorPostionEx = function( dis, start, end, text )
 
 TextInput.prototype = Global.UI;
 
-TextInput.isObject = function( obj )
+UISystem.isTextInput = function( obj )
 {
-	return obj instanceof TextInput;
+	return obj.type == "TextInput";
 }
 
 // Windows...

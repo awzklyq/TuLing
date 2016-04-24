@@ -8,22 +8,51 @@ UISystem.buttons = new ArrayEx( );
 
 UISystem.textinputs = new ArrayEx( );
 
+UISystem.texts = new ArrayEx( );
+
+UISystem.textareas = new ArrayEx( );
+
+UISystem.uiviews = new ArrayEx( );
+
 UISystem.fouseuis = new ArrayEx( );
+
+// TODO.
+UISystem.removeUI = function( ui )
+{
+	if ( UISystem.isButton( ui )	)
+		UISystem.buttons.remove( ui );
+	else if ( UISystem.isText( ui ) )
+		UISystem.texts.remove( ui );
+	else if ( UISystem.isTextArea( ui ) )
+		UISystem.textareas.remove( ui );
+	else if ( UISystem.isTextInput( ui ) )
+		UISystem.textinputs.remove( ui );
+	else if ( UISystem.isUIView( ui ) )
+		UISystem.uiviews.remove( ui );
+} 
 
 UISystem.render = function( e )
 {
 	var buttons = UISystem.buttons;
 
 	for ( var i = 0; i < buttons.length; i ++ )
-	{
 		buttons[i].draw( );
-	}
+
+	var texts = UISystem.texts;
+	for ( var i = 0; i < texts.length; i ++ )
+		texts[i].draw( );
+
+	var textareas = UISystem.textareas;
+	for ( var i = 0; i < textareas.length; i ++ )
+		textareas[i].draw( );
 
 	var textinputs = UISystem.textinputs;
 	for ( var i = 0; i < textinputs.length; i ++ )
-	{
-		textinputs[i].draw( e );
-	}
+		textinputs[i].draw( );
+
+	var uiviews = UISystem.uiviews;
+	for ( var i = 0; i < uiviews.length; i ++ )
+		uiviews[i].draw( );
 }
 
 var mousedowncallback = window.onMouseDown;
@@ -33,45 +62,40 @@ mousedowncallback[mousedowncallback.length] = function( b, x, y )
 	var buttons = UISystem.buttons;
 	for ( var i = 0; i < buttons.length; i ++ )
 	{
-		if ( buttons[i].insert( x, y ) )
-		{
-			buttons[i].state = 2;
-			if ( buttons[i].click != null )
-			{
-				buttons[i].click( );
-			}
-		}
+		if ( buttons[i].triggerMouseDown( b, x, y ) )
+			return true;
 	}
 
 	var textinputs = UISystem.textinputs;
 	for ( var i = 0; i < textinputs.length; i ++ )
 	{
-		textinputs[i].fouse = false;
-		if ( textinputs[i].insert( x, y ) )
-		{
-			textinputs[i].fouse = true;
-			textinputs[i].setCursorPostion( x, y );
-			UISystem.fouseuis.push( textinputs[i] );
-			break;
-		}
+		if ( textinputs[i].triggerMouseDown( b, x, y ) )
+			return true;
 	}
+
+	var uiviews = UISystem.uiviews;
+	for ( var i = 0; i < uiviews.length; i ++ )
+	{
+		if ( uiviews[i].triggerMouseDown( b, x, y ) )
+			return true;
+	}
+
+	return false;
 }
 
 window.onKeyDown[window.onKeyDown.length] = function( keyCode )
 {
-	var def = false;
 	var fouseuis = UISystem.fouseuis;
 	for ( var i = 0; i < fouseuis.length; i ++ )
 	{
-		if ( TextInput.isObject( fouseuis[i] ) )
+		if ( UISystem.isTextInput( fouseuis[i] ) )
 		{
 			TextInput.doActionForKeyDown( keyCode, fouseuis[i] );
-			def = true;
-			break;
+			return true;
 		}
 	}
 
-	return def;
+	return false;
 }
 
 Global.UI = Object.create( Object.prototype, {
@@ -97,9 +121,16 @@ Global.UI = Object.create( Object.prototype, {
 		if ( this.elements != null && Global.isArray( this.elements ) )
 		{
 			var temp = this.elements;
+			var intervalx = this._x - oldx;
 			for ( var i = 0; i < temp.length; i ++ )
-				temp[i]._x += this._x - oldx;
+			{
+				temp[i]._x += intervalx;
+
+				if ( temp[i].triggerResizeXY != null && Global.isFunction( temp[i].triggerResizeXY ) )
+					temp[i].triggerResizeXY( intervalx, 0 );
+			}
 		}
+
 	}
 	},// End x.
 	y:{
@@ -124,8 +155,14 @@ Global.UI = Object.create( Object.prototype, {
 		if ( this.elements != null && Global.isArray( this.elements ) )
 		{
 			var temp = this.elements;
+			var intervaly = this._y - oldy;
 			for ( var i = 0; i < temp.length; i ++ )
-				temp[i]._y += this._y - oldy;
+			{
+				temp[i]._y += intervaly;
+
+				if ( temp[i].triggerResizeXY != null && Global.isFunction( temp[i].triggerResizeXY ) )
+					temp[i].triggerResizeXY( 0, intervaly );
+			}
 		}
 	}
 	},// End y.

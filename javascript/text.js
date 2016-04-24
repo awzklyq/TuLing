@@ -88,13 +88,16 @@ function Text( text, x, y, w, h )
 
 		context.restore( );
 	}
+
+	this.type = "Text"
+	UISystem.texts.push( this );
 }
 
 Text.prototype = Global.UI;
 
-Text.isObject = function( obj )
+UISystem.isText = function( obj )
 {
-	return obj instanceof Text;
+	return obj.type == "Text";
 }
 
 function TextArea( text, x, y, w, h )
@@ -267,11 +270,14 @@ function TextArea( text, x, y, w, h )
 
 		context.restore( );
 	}
+
+	this.type = "TextArea";
+	UISystem.textareas.push( this );
 }
 
 TextArea.prototype = Global.UI;
 
-TextArea.isObject = function( obj )
+UISystem.isTextArea = function( obj )
 {
-	return obj instanceof TextArea;
+	return obj.type == "TextArea";
 }
