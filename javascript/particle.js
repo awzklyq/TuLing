@@ -7,12 +7,12 @@ function Particle( )
 	this.direction = new Vector( );
 	this.scale = new Vector( );
 	this.scalepower = 1;
-	this.rotationpower = 1;
+	this.rotationpower = 0;
 	this.tick = 0;
 	this.duration = 0;
 	this.speed = 0;
 
-	this.numbers = 0;
+	this.number = 0;
 	this.size = 0;
 	
 	this.sportType = 0; // Rotation, scale, move.
@@ -27,12 +27,16 @@ function Particle( )
 
 	this.createResources = function( )
 	{
-		if ( this.pfxType == Particle.PolygonType1 )
+		if ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 )
 		{
-			if ( this.numbers <= 0 || this.size <= 0 )
+			if ( this.number <= 0 || this.size <= 0 )
 				return;
 
-			this.polygon = Polygon.CreateRulePolygon( this.numbers, this.size );
+			if ( this.pfxType == Particle.PolygonType1 )
+				this.polygon = Polygon.CreateRulePolygon( this.number, this.size );
+			else
+				this.polygon = Polygon.CreateRulestar( this.number, this.size, Math.randomAToB( this.size * 0.2, this.size * 0.8  ) );
+
 			this.polygon.setColorStyle( this.color );
 		}
 
@@ -42,7 +46,12 @@ function Particle( )
 			Vector.mul( this.scale, this.scalepower, this.scale );
 		}
 
-		if ( ( this.sportType & Particle.Translation ) != 0 )
+		if ( ( this.sportType & Particle.Target ) != 0 )
+		{
+			this.direction.x -= this.matrix.mat[6];
+			this.direction.y -= this.matrix.mat[7];
+		}
+		else if ( ( this.sportType & Particle.Translation ) != 0 )
 		{
 			this.direction.normalsize( );
 			Vector.mul( this.direction, this.speed, this.direction );
@@ -74,7 +83,7 @@ function Particle( )
 	this.render = function( e )
 	{
 		polygon = this.polygon;
-		if ( this.pfxType == Particle.PolygonType1 && polygon != null )
+		if ( ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 )&& polygon != null )
 		{
 			// Global.bindMatrixToContext( context, this.mat );
 			Polygon.draw( polygon );
@@ -88,22 +97,28 @@ function Particle( )
 		if ( this.tick >= this.duration && this.duration != -1 )
 			return true;
 
-		if ( this.pfxType == Particle.PolygonType1 && this.polygon != null )
+		if ( ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 ) && this.polygon != null )
 		{
 			var isneedupdate = false;
 			if ( ( this.sportType & Particle.Scale ) != 0 )
 			{
 				isneedupdate = true;
-				this.matrix.mulScalingLeft( this.scale );
+				this.matrix.mulScalingLeft( this.scale.x, this.scale.y );
 			}
 
 			if ( ( this.sportType & Particle.Rotation ) != 0 )
 			{
 				isneedupdate = true;
-				this.matrix.mulRotationLeft( this.scale );
+				this.matrix.mulRotationLeft( this.rotationpower );
 			}
 
-			if ( ( this.sportType & Particle.Translation ) != 0 )
+			if ( ( this.sportType & Particle.Target ) != 0 )
+			{
+				isneedupdate = true;
+				var temp = e / this.duration;
+				this.matrix.mulTranslationRight( this.direction.x * temp, this.direction.y * temp );
+			}
+			else if ( ( this.sportType & Particle.Translation ) != 0 )
 			{
 				isneedupdate = true;
 				this.matrix.mulTranslationRight( this.direction.x, this.direction.y );
@@ -111,6 +126,8 @@ function Particle( )
 
 			if ( isneedupdate )
 				Polygon.mul( this.polygon, this.matrix );
+
+			this.polygon.setColorStyle( this.color );
 		}
 
 		return false;
@@ -127,3 +144,5 @@ Particle.PolygonAnimaType2 = 6;
 Particle.Scale = 0x00000001;
 Particle.Rotation = 0x00000002;
 Particle.Translation = 0x00000004;
+Particle.Target = 0x00000008;
+Particle.BindTarget = 0x00000010;

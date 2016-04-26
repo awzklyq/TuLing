@@ -1,4 +1,5 @@
 // Temp variables. TODO...
+//var tag = { time:0, name:"" };
 
 function ParticleEmitter( )
 {
@@ -36,12 +37,50 @@ function ParticleEmitter( )
 	this.color1 = 0xffffffff;
 	this.color2 = 0xffffffff;
 
-	this.play = function( tick )
-	{
-		// if ( Global.isNumber( tick ) )
-			// this.tick = tick;
+	this.pfxNumbers1 = 0;
+	this.pfxNumbers2 = 0;
 
+	this.pfxSize1 = 0;
+	this.pfxSize2 = 0;
+	
+	this.bindMatrix = new Matrix( );
+
+	this.tags = new ArrayEx( );
+	this.release = function( )
+	{
+		delete this.scale1;
+		delete this.scale2;
+
+		delete this.translation1;
+		delete this.translation2;
+
+		this.pfxs.clear( );
+		delete this.pfxs;
+
+		delete this.bindMatrix;
+	}
+
+	this.play = function( )
+	{
+		this.tick = 0;
 		this.state = 1;
+		this.pfxs.clear( );
+	}
+
+	this.addTargetEvent = function( func )
+	{
+		if ( this.targetEvent != null )
+			delete this.targetEvent;
+
+		if ( Global.isFunction( func ) )
+			this.targetEvent = func;	
+	}
+
+	this.addTargeName = function( t, n )
+	{
+		this.tags.push( { time: t, name: n } );
+		log(this.tags.length);
+		// this.tags.sort( ParticleEmitter.sortTags );
 	}
 
 	this.createParticle = function( )
@@ -63,11 +102,12 @@ function ParticleEmitter( )
 
 		pfx.rotationpower = Math.randomAToB( this.rotationpower1, this.rotationpower2 );
 
-		// Test.
-		pfx.numbers = 3;
-		pfx.size = 10;
+		pfx.number = Math.randomAToB( this.pfxNumber1, this.pfxNumber2 );
+		pfx.size = Math.randomAToB( this.pfxSize1, this.pfxSize2 );
 
 		pfx.createResources( );
+
+		pfx.matrix.mulRight( this.bindMatrix );
 
 		// Add pfx.
 		this.pfxs.push( pfx );
@@ -84,7 +124,7 @@ function ParticleEmitter( )
 
 		// if ( this.tick < this.delay )
 			// return;
-
+		
 		var pfxs = this.pfxs;
 		if ( this.tick >= this.interival && isdead == false )
 		{
@@ -104,7 +144,30 @@ function ParticleEmitter( )
 
 		for ( var i = 0; i < pfxs.length; i ++ )
 		{
-			if ( pfxs[i].update( e ) )
+			var isdead = pfxs[i].update( e );
+
+			if ( this.targetEvent == null )
+			{
+				if ( isdead )
+				{
+					pfxs.remove( pfxs[i] );
+					-- i;
+				}
+				continue;
+			}
+
+			// Do action form tags.
+			for ( var j = 0; j < this.tags.length; j ++ )
+			{
+				// log(this.tags[j].time >= ( pfxs[i].tick - e ) / pfxs[i].duration, this.tags[j].time < pfxs[i].tick / pfxs[i].duration);
+				if ( this.tags[j].time >= ( pfxs[i].tick - e ) / pfxs[i].duration && this.tags[j].time < pfxs[i].tick / pfxs[i].duration )
+				{
+					// log('1111111111', pfxs[i].tags[i].name);
+					this.targetEvent( this.tags[j].name );
+				}
+			}
+
+			if ( isdead )
 			{
 				pfxs.remove( pfxs[i] );
 				-- i;
@@ -124,6 +187,11 @@ function ParticleEmitter( )
 		for ( var i = 0; i < pfxs.length; i ++ )
 			pfxs[i].render( e );
 	}
+}
+
+ParticleEmitter.sortTags = function( a, b )
+{
+	return a.time > b.time;
 }
 
 ParticleEmitter.AllDirection = 1;

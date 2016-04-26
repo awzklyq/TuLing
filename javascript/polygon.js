@@ -134,8 +134,7 @@ function Polygon( )
 		}
 		else
 		{
-			var temp = Math.DecompressionRGBA( color );
-			this.colorStyle = "rgba(" + temp.r + "," + temp.g + "," + temp.b + "," + temp.a + ")";
+			this.colorStyle = Math.getRGBA( color );
 		}
 	}
 
@@ -203,9 +202,7 @@ Polygon.draw = function(polygon)
 	context.beginPath( );
 
 	if ( polygon.colorStyle != null )
-	{
 		context.fillStyle = polygon.colorStyle;
-	}
 
 	context.moveTo(points[0].x, points[0].y);
 	for(var i = 0; i < end; i ++)
@@ -213,12 +210,10 @@ Polygon.draw = function(polygon)
 		context.lineTo(points[(i + 1) % end].x, points[(i + 1) % end].y);
 	}
 
-	context.closePath( );
-
 	if ( polygon.colorStyle != null )
-	{
 		context.fill( );
-	}
+
+	context.closePath( );
 
 	context.stroke( );
 	context.restore( );

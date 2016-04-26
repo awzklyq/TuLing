@@ -6,6 +6,7 @@ System.os =  "win32"; // Androind, IOS.
 
 if ( System.os == "win32" )
 {
+	System.KeySpace		= 32;
 	System.KeyDel 		= 46;
 	System.KeyBack		= 8;
 	System.KeyLeft 		= 37;

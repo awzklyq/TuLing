@@ -34,7 +34,18 @@ Math.DecompressionRGBA = function( argb )
 
 Math.CompressionRGBA = function( a, r, g, b )
 {
-	return a * 0x01000000 + r * 0x00010000 + g * 0x00000100 + b;
+	var temp = a * 0x01000000 + r * 0x00010000 + g * 0x00000100 + b;
+	return parseInt( temp.toString(16), 16);
+}
+
+Math.NumberConvertStringColor = function( color )
+{
+	return parseInt( StringEx.getRemoveAtResult( color, 0 ), 16 );
+}
+
+Math.StringConvertNumberColor = function( color )
+{
+	return "#"+color.toString(16)
 }
 
 Math.randomColor = function( color1, color2 )
@@ -47,7 +58,7 @@ Math.randomColor = function( color1, color2 )
 	var g = Math.randomAToB( c1.g, c2.g );
 	var b = Math.randomAToB( c1.b, c2.b );
 
-	return Math.CompressionRGBA( a, r, g, b );
+	return Math.CompressionRGBA( a * 255, r, g, b );
 }
 
 Math.getRGBA = function( color )
