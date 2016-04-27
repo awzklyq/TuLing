@@ -23,6 +23,8 @@ function Particle( )
 
 	this.color = 0xffffffff;
 
+	this.image = new LImage( );
+
 	this.matrix = new Matrix( );
 
 	this.createResources = function( )
@@ -38,6 +40,11 @@ function Particle( )
 				this.polygon = Polygon.CreateRulestar( this.number, this.size, Math.randomAToB( this.size * 0.2, this.size * 0.8  ) );
 
 			this.polygon.setColorStyle( this.color );
+		}
+		else if ( this.pfxType == Particle.ImageType )
+		{
+			this.image.w = this.number;
+			this.image.h = this.size;
 		}
 
 		if ( ( this.sportType & Particle.Scale ) != 0 )
@@ -68,6 +75,7 @@ function Particle( )
 		delete this.matrix;
 		delete this.scale;
 
+		delete this.image;
 	}
 
 	this.changeMartix = function( )
@@ -88,6 +96,12 @@ function Particle( )
 			// Global.bindMatrixToContext( context, this.mat );
 			Polygon.draw( polygon );
 		}
+		else if ( this.pfxType == Particle.ImageType )
+		{
+			Global.pushMatrix( this.matrix );
+			this.image.drawImage( );
+			Global.popMatrix( );
+		}
 	}
 
 	this.update = function( e )
@@ -97,38 +111,33 @@ function Particle( )
 		if ( this.tick >= this.duration && this.duration != -1 )
 			return true;
 
-		if ( ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 ) && this.polygon != null )
+		var isneedupdate = false;
+		if ( ( this.sportType & Particle.Scale ) != 0 )
 		{
-			var isneedupdate = false;
-			if ( ( this.sportType & Particle.Scale ) != 0 )
-			{
-				isneedupdate = true;
-				this.matrix.mulScalingLeft( this.scale.x, this.scale.y );
-			}
-
-			if ( ( this.sportType & Particle.Rotation ) != 0 )
-			{
-				isneedupdate = true;
-				this.matrix.mulRotationLeft( this.rotationpower );
-			}
-
-			if ( ( this.sportType & Particle.Target ) != 0 )
-			{
-				isneedupdate = true;
-				var temp = e / this.duration;
-				this.matrix.mulTranslationRight( this.direction.x * temp, this.direction.y * temp );
-			}
-			else if ( ( this.sportType & Particle.Translation ) != 0 )
-			{
-				isneedupdate = true;
-				this.matrix.mulTranslationRight( this.direction.x, this.direction.y );
-			}
-
-			if ( isneedupdate )
-				Polygon.mul( this.polygon, this.matrix );
-
-			this.polygon.setColorStyle( this.color );
+			isneedupdate = true;
+			this.matrix.mulScalingLeft( this.scale.x, this.scale.y );
 		}
+
+		if ( ( this.sportType & Particle.Rotation ) != 0 )
+		{
+			isneedupdate = true;
+			this.matrix.mulRotationLeft( this.rotationpower );
+		}
+
+		if ( ( this.sportType & Particle.Target ) != 0 )
+		{
+			isneedupdate = true;
+			var temp = e / this.duration;
+			this.matrix.mulTranslationRight( this.direction.x * temp, this.direction.y * temp );
+		}
+		else if ( ( this.sportType & Particle.Translation ) != 0 )
+		{
+			isneedupdate = true;
+			this.matrix.mulTranslationRight( this.direction.x, this.direction.y );
+		}
+
+		if ( isneedupdate && ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 ) && this.polygon != null )
+				Polygon.mul( this.polygon, this.matrix );
 
 		return false;
 	}

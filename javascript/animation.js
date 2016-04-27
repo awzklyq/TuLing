@@ -21,12 +21,24 @@ function ImageAnimation( data )
 				}
 				var w = self.image.w / self.data.cutx;
 				var h = self.image.h / self.data.cuty;
+				// TODO.. create.
+				if ( self.data.frames == null )
+				{
+					self.data.frames = new ArrayEx( self.data.cutx * self.data.cuty );
+				}
+
 				var frames = self.data.frames;
 				var index = 0;
 				for ( var i = 0; i < self.data.cutx; i++ )
 				{
 					for ( var j = 0; j < self.data.cuty; j++ )
 					{
+						if ( Global.isUndefined( frames[index]  ) )
+						{
+							frames[index] = { time:0, tick:0, src:null };
+							frames[index].time = self.data.framestime;
+						}
+
 						self.duration += frames[index].time;
 						frames[index].tick = self.duration;
 						frames[index].src =  new LImage( );
@@ -48,12 +60,12 @@ function ImageAnimation( data )
 	this.play = function( )
 	{
 		this.state = 1;
+		this.current = 0;
+		this.curindex = 0;
 	}
 
 	this.stop = function( )
 	{
-		this.current = 0;
-		this.curindex = 0;
 		anima.state = 0;
 	}
 }

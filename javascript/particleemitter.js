@@ -45,6 +45,7 @@ function ParticleEmitter( )
 	
 	this.bindMatrix = new Matrix( );
 
+	this.image = new LImage( );
 	this.tags = new ArrayEx( );
 	this.release = function( )
 	{
@@ -58,6 +59,8 @@ function ParticleEmitter( )
 		delete this.pfxs;
 
 		delete this.bindMatrix;
+
+		delete this.image;
 	}
 
 	this.play = function( )
@@ -79,7 +82,7 @@ function ParticleEmitter( )
 	this.addTargeName = function( t, n )
 	{
 		this.tags.push( { time: t, name: n } );
-		log(this.tags.length);
+
 		// this.tags.sort( ParticleEmitter.sortTags );
 	}
 
@@ -109,6 +112,9 @@ function ParticleEmitter( )
 
 		pfx.matrix.mulRight( this.bindMatrix );
 
+		if ( pfx.pfxType == Particle.ImageType )
+			pfx.image.addResource( this.image );
+
 		// Add pfx.
 		this.pfxs.push( pfx );
 	}
@@ -125,11 +131,16 @@ function ParticleEmitter( )
 		// if ( this.tick < this.delay )
 			// return;
 		
+		var isneedcreate = false;
+		
+		if ( this.interival == 0 )
+			isneedcreate = true;
+		else
+			isneedcreate = Math.floor( this.tick / this.interival ) > Math.floor( ( this.tick - e ) / this.interival );
+
 		var pfxs = this.pfxs;
-		if ( this.tick >= this.interival && isdead == false )
+		if ( isneedcreate && isdead == false )
 		{
-			this.duration -= this.interival;
-			this.tick -= this.interival;
 			if ( pfxs.length < this.limit )
 			{
 				for ( var i = 0; i < this.numbers; i ++ )
@@ -159,7 +170,6 @@ function ParticleEmitter( )
 			// Do action form tags.
 			for ( var j = 0; j < this.tags.length; j ++ )
 			{
-				// log(this.tags[j].time >= ( pfxs[i].tick - e ) / pfxs[i].duration, this.tags[j].time < pfxs[i].tick / pfxs[i].duration);
 				if ( this.tags[j].time >= ( pfxs[i].tick - e ) / pfxs[i].duration && this.tags[j].time < pfxs[i].tick / pfxs[i].duration )
 				{
 					// log('1111111111', pfxs[i].tags[i].name);

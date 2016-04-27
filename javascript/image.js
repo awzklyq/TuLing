@@ -5,19 +5,25 @@ function LImage( )
 	this.y = 0;
 	this.w = 0;
 	this.h = 0;
+
 	if ( arguments.length > 0 )
 	{
 		this.image = new Image( );
 		this.image.src = arguments[0];
 		var self = this;
+		var issetwh = arguments.length < 4;
 		this.image.onload = function( )
 		{
 			// This is LImage.image.
 			this.isLoad = true;
 
 			self.isLoad = true;
-			self.w = this.width;
-			self.h = this.height;
+			if ( issetwh )
+			{
+				self.w = this.width;
+				self.h = this.height;
+			}
+
 			if ( self.loadcallback != null )
 			{
 				self.loadcallback( );
@@ -62,7 +68,7 @@ function LImage( )
 	{
 		if ( arguments.length == 1 )
 		{
-			this.resource = image.image;
+			this.resource = image.image || image.resource;
 			this.rx = 0;
 			this.ry = 0;
 			this.rw = image.w;

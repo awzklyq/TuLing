@@ -89,6 +89,8 @@ window.requestNextAnimationFrame = (function () {
 var canvas = document.getElementById('canvas');
 window.context = canvas.getContext('2d');
 var context = window.context;
+// context.globalAlpha = 0.5;
+// context.globalCompositeOperation = "source-out";
 
 var debug = top.parent.frames["help"]
 window.log = function()

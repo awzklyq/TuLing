@@ -32,12 +32,14 @@ emit.pfxSize2 = 15;
 emit.color1 = 0xffffff00;
 emit.color2 = 0xffff00ff;
 
-emit.pfxType = Particle.PolygonType2;
-emit.sportType = Particle.Translation | Particle.Rotation | Particle.Target;
-// log(emit.sportType, ( emit.sportType & Particle.Translation ) != 0,  ( emit.sportType & Particle.Rotation ) != 0, ( emit.sportType & Particle.Scale ) != 0);
+emit.pfxType = Particle.ImageType;//Particle.PolygonType2;
+emit.sportType = Particle.Translation | Particle.Target;
+emit.image = new LImage( "jinbi.png" );
+
 // emit.pfxType = Particle.PolygonType1;
 emit.emitterType = ParticleEmitter.AllDirection;
 
+emit.bindMatrix.mulScalingLeft( 0.5, 0.5 );
 emit.bindMatrix.mulTranslationRight( 100, 100 );
 
 // emit.addTargetEvent( 0.99, "test" );
@@ -51,7 +53,9 @@ emit1.interival = 0;
 emit1.pfxLife1 = 500;
 emit1.pfxLife2 = 500;
 emit1.bindMatrix.mulTranslationRight( 400, 400 );
-emit1.pfxType = Particle.PolygonType1;
+emit1.pfxType = Particle.ImageType;
+var image = new LImage( "qq.png" );
+emit1.image.addResource( image, 0, 0, 42, 42 ) 
 emit1.pfxNumber1 = 4;
 emit1.pfxNumber2 = 4;
 
@@ -74,6 +78,8 @@ emit.addTargetEvent( function( e ){
 
 emit.play( );
 
+var anima = new ImageAnimation( window.ImageAnimationData[1] );
+anima.play( );
 window.rendercallbackfunc = function(e)
 {
 	emit.update( e );
@@ -81,6 +87,11 @@ window.rendercallbackfunc = function(e)
 
 	emit1.update( e );
 	emit1.render( e );
+	
+
+	ImageAnimation.Update( anima, e );
+	
+	ImageAnimation.Render( anima, e );
 }
 
 window.onMouseDown[window.onMouseDown.length] = function( b, x, y )
@@ -105,6 +116,7 @@ window.onKeyDown[window.onKeyDown.length] = function( key )
 	if ( key == System.KeySpace )
 	{
 		emit.play( );
+		anima.play( );
 		log("play emitters !");
 	}
 
@@ -118,3 +130,14 @@ window.onKeyUp[0] = function( key )
 
 // var net = require("net")
 // log("bbbbbbbbbbbbbbbb")
+
+var ii = new Image( );
+ii.src = "asd.png"
+log("11111111111111");
+ii.onload = function( )
+{
+	var context = window.context;
+	var data = context.getImageData( 0, 0, ii.width, ii.height );
+	log("222222222222222222");
+	log( "333333333333333333", data.data[0], data.data[1], data.data[2], data.data[3] )
+}		

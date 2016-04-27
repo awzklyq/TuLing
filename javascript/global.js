@@ -73,6 +73,11 @@ Global.isBool = function( param )
 	return typeof( param ) == "boolean";
 }
 
+Global.isUndefined = function( param )
+{
+	return typeof( param ) == "undefined";
+}
+
 Global.isFunction = function( param )
 {
 	return typeof( param ) == "function";
