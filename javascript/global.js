@@ -58,6 +58,28 @@ Global.bindMatrixToContext = function( context, matrix )
 	}
 }
 
+Global.loadJSFile = function( url, async, func )
+{
+	var script = document.createElement("script");
+
+	// TODO.
+	script.async = async;
+	// script.defer = false; 
+
+	script.src = url;
+	var parent = document.getElementsByTagName("script")[0].parentNode;
+	parent.appendChild( script );
+
+	// TODO.
+	script.onload = function( )
+	{
+		if ( Global.isFunction(func ) )
+			func( );
+
+		script.onload = null;	
+	}
+}
+
 Global.isString = function( param )
 {
 	return typeof( param ) == "string";
