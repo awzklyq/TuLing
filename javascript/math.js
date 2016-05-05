@@ -8,6 +8,11 @@ Math.randomAToB = function( a, b )
 	return a + ( b - a ) * Math.random( );
 }
 
+Math.Linear = function( a, b, p )
+{
+	return a + ( b - a ) * p;
+}
+
 Math.randomVector = function( v1, v2, v3 )
 {
 	var x = Math.randomAToB( v1.x, v2.x );
@@ -69,3 +74,4 @@ Math.getRGBA = function( color )
 
 Math.MinNumber = 0.000000001;
 Math.MaxNumber = 99999999.0;
+Math.ARC = Math.PI * 2;

@@ -115,7 +115,7 @@ function Particle( )
 		if ( ( this.sportType & Particle.Scale ) != 0 )
 		{
 			isneedupdate = true;
-			this.matrix.mulScalingLeft( this.scale.x, this.scale.y );
+			// this.matrix.mulScalingLeft( this.scale.x, this.scale.y );
 		}
 
 		if ( ( this.sportType & Particle.Rotation ) != 0 )

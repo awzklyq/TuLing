@@ -210,10 +210,10 @@ Polygon.draw = function(polygon)
 		context.lineTo(points[(i + 1) % end].x, points[(i + 1) % end].y);
 	}
 
+	context.closePath( );
+
 	if ( polygon.colorStyle != null )
 		context.fill( );
-
-	context.closePath( );
 
 	context.stroke( );
 	context.restore( );
