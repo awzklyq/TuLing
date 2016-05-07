@@ -110,6 +110,34 @@ Global.isArray = function( param )
 	return ( param instanceof Array ) || ( param instanceof ArrayEx );
 }
 
+Global.combineRender = false;
+
+Global.renderPolygonCount = 0;
+Global.clipPolygonCount = 0;
+
+Global.beginCombineRender = function( )
+{
+	Global.combineRender = true;
+	context.save( );
+	window.context.beginPath( );	
+}
+
+Global.endCombineRender = function( mode )
+{
+	Global.combineRender = false;
+	window.context.closePath( );
+	if ( ( mode & Global.CombineRenderFill ) != 0 )
+		window.context.fill( );
+
+	if ( ( mode & Global.CombineRenderStroke ) != 0 )
+		window.context.stroke( );
+	
+	context.restore( );
+}
+
+Global.CombineRenderFill = 0x00000001;
+Global.CombineRenderStroke = 0x00000002;
+
 Global.FONT = "60px Georgia";
 Global.FILLSTYLE = 0x00000000;
 Global.STROKESTYLE = 0x00000001;

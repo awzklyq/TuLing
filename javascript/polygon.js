@@ -93,12 +93,11 @@ function Polygon( )
 		{
 			var dis = Math.sqrt(Math.pow(this.resource[i].x, 2) +  Math.pow(this.resource[i].y, 2));
 			if (dis > this.range)
-			{
 				this.range = dis;
-			}
 		}
 	}
 
+	this.buildBox( );
 	this.releasBox = function( )
 	{
 		delete this.range;
@@ -194,29 +193,48 @@ Polygon.mul = function(polygon, matrix)
 Polygon.draw = function(polygon)
 {
 	var points = polygon.points;
-	var end = points.length;
-	if ( end < 2 ){ return }
+	var length = points.length;
+	if ( length < 2 )
+		return;
+
+	// TODO.
+	var x = polygon.matrix.mat[6];
+	var y = polygon.matrix.mat[7];
+	if ( System.checkInClipArea( x + polygon.range, y + polygon.range, x - polygon.range, y - polygon.range ) == false )
+	{
+		Global.clipPolygonCount ++;
+		return;
+	}
+
+	Global.renderPolygonCount ++;
 	var context = window.context;
-	context.save( );
+	if ( Global.combineRender == false )
+	{
+		context.save( );
+		context.beginPath( );
+	}
+
 	context.lineWidth = polygon.lineWidth
-	context.beginPath( );
 
 	if ( polygon.colorStyle != null )
 		context.fillStyle = polygon.colorStyle;
 
 	context.moveTo(points[0].x, points[0].y);
-	for(var i = 0; i < end; i ++)
+	for(var i = 1; i < length; i ++)
+		context.lineTo(points[i].x, points[i].y);
+
+	context.lineTo(points[0].x, points[0].y);
+
+	if ( Global.combineRender == false )
 	{
-		context.lineTo(points[(i + 1) % end].x, points[(i + 1) % end].y);
+		context.closePath( );
+
+		if ( polygon.colorStyle != null )
+			context.fill( );
+
+		context.stroke( );
+		context.restore( );
 	}
-
-	context.closePath( );
-
-	if ( polygon.colorStyle != null )
-		context.fill( );
-
-	context.stroke( );
-	context.restore( );
 }
 
 // pn: 边数. d: 长度.

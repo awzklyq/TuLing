@@ -1,20 +1,25 @@
 window.logEnable = true;
 
-Global.loadJSFile( "javascript/test.js", false, function( ){ log(console.trace()) } );
-// log( "afret call loadJSFile! ");
-// log(console.takeSnapshot, performance.timing   );
-// log(performance.memory.usedJSHeapSize);
-// if (performance && performance.mark) {
-    // performance.mark("data generated");
-// }
+var grids6 = new Grids6( 0, 0, 20, 1000, 800 );
+
+// var test = Polygon.CreateRulePolygon( 6, 20 );
+// test.moveTo( 100, 100 );
+var grid = null;
+
 window.rendercallbackfunc = function(e)
 {
-
+	grids6.draw( );
+	// Polygon.draw( test );
 }
 
 window.onMouseDown[window.onMouseDown.length] = function( b, x, y )
 {
 	// log("event mousedown", b, x, y);
+	if ( grid != null )
+		grid.setColorStyle(0x00);
+
+	grid = grids6.getSelectGrid( x, y );
+	grid.setColorStyle(0xff0000ff);
 }
 
 window.onMouseMove[0] = function( x, y )
@@ -29,8 +34,8 @@ window.onMouseUp[0] = function( b, x, y )
 
 window.onKeyDown[window.onKeyDown.length] = function( key )
 {
-	if ( key == System.KeySpace )
-		circle.move( 150, 150, 2000 );
+	// if ( key == System.KeyDown )
+		// test.move( 0, 10 );
 
 	return true;
 }

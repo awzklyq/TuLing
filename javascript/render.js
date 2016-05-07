@@ -134,9 +134,11 @@ function render( )
 	if ( window.rendercallbackfunc != null )
 	{
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.fillStyle = Math.getRGBA( 0xffffff00 );
-		context.fillText("FPS: " + fps, 20, 20);
+		Global.renderPolygonCount = 0;
+		Global.clipPolygonCount = 0;
 		window.rendercallbackfunc(elapse);
+		context.fillStyle = Math.getRGBA( 0xffffff00 );
+		context.fillText("FPS: " + fps + " X: " + System.getClipX( ) + " Y: " + System.getClipY( ) +" CW: " + System.getClipW( ) + " CH: " + System.getClipH( ) + " PC: " + Global.renderPolygonCount + " CPC: " + Global.clipPolygonCount, System.getClipX( ) + 20, System.getClipY( ) + 20);
 	}
 
 	tick = newtick
