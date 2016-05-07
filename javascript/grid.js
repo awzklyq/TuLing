@@ -26,7 +26,7 @@ function Grids6( x, y, side, w, h )
 	{
 		var jj = Math.MaxNumber;
 		var jjj = -1;
-		log(this.grids.length)
+		// log(this.grids.length)
 		for ( var j = 0; j < this.grids.length; j ++ )
 		{
 			var grid = this.grids[j];

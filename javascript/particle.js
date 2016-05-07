@@ -84,7 +84,10 @@ function Particle( )
 		{
 			polygon = this.polygon;
 			if ( polygon != null )
-				Polygon.mul( polygon, this.matrix )
+			{
+				polygon.matrix.set( this.matrix );
+				Polygon.mul( polygon, polygon.matrix )
+			}
 		}
 	}
 
@@ -137,7 +140,10 @@ function Particle( )
 		}
 
 		if ( isneedupdate && ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 ) && this.polygon != null )
-				Polygon.mul( this.polygon, this.matrix );
+		{
+			this.polygon.matrix.set( this.matrix.mat );
+			Polygon.mul( this.polygon, this.matrix );
+		}
 
 		return false;
 	}

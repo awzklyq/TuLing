@@ -1,5 +1,5 @@
 window.logEnable = true;
-
+System.isClip = true;
 var emit = new ParticleEmitter( );
 emit.duration = 10000;
 emit.limit = 60;
@@ -35,7 +35,7 @@ emit.pfxType = Particle.PolygonType2;
 emit.sportType = Particle.Translation | Particle.Rotation | Particle.Scale;
 emit.emitterType = ParticleEmitter.AllDirection;
 
-emit.bindMatrix.mulTranslationRight( 500, 300 );
+emit.bindMatrix.mulTranslationRight( 50, 30 );
 
 emit.play( );
 

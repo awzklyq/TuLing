@@ -200,7 +200,7 @@ Polygon.draw = function(polygon)
 	// TODO.
 	var x = polygon.matrix.mat[6];
 	var y = polygon.matrix.mat[7];
-	if ( System.checkInClipArea( x + polygon.range, y + polygon.range, x - polygon.range, y - polygon.range ) == false )
+	if ( System.isClip && System.checkInClipArea( x + polygon.range, y + polygon.range, x - polygon.range, y - polygon.range ) == false )
 	{
 		Global.clipPolygonCount ++;
 		return;

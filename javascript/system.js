@@ -2,7 +2,9 @@ function System( )
 {
 }
 
-System.OS =  "win32"; // Androind, IOS.
+System.isClip = false;
+
+System.OS =  "IOS"; // Androind, IOS.
 
 if ( System.OS == "win32" )
 {

@@ -55,8 +55,7 @@ UISystem.render = function( e )
 		uiviews[i].draw( );
 }
 
-var mousedowncallback = window.onMouseDown;
-mousedowncallback[mousedowncallback.length] = function( b, x, y )
+function mouseDown( b, x, y )
 {
 	UISystem.fouseuis.clear( );
 	var buttons = UISystem.buttons;
@@ -83,7 +82,9 @@ mousedowncallback[mousedowncallback.length] = function( b, x, y )
 	return false;
 }
 
-window.onKeyDown[window.onKeyDown.length] = function( keyCode )
+window.onMouseDown.push( mouseDown );
+
+function keyDown( keyCode )
 {
 	var fouseuis = UISystem.fouseuis;
 	for ( var i = 0; i < fouseuis.length; i ++ )
@@ -97,6 +98,7 @@ window.onKeyDown[window.onKeyDown.length] = function( keyCode )
 
 	return false;
 }
+window.onKeyDown.push( keyDown );
 
 Global.UI = Object.create( Object.prototype, {
 	x:{
