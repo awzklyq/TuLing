@@ -13,28 +13,25 @@ else
 window.onMouseDown = new Array( );
 var mousedowncallback = window.onMouseDown
 canvas.addEventListener( "mousedown", function( event ) { // mouseevent.
+	var temp = Global.windowToCanvas( window.canvas, event.x, event.y ) 
 	for ( var i = 0; i < mousedowncallback.length; i ++ )
-	{
-		mousedowncallback[i]( event.button, event.x, event.y );
-	}
+		mousedowncallback[i]( event.button, temp.x, temp.y );
 }, false );
 
 window.onMouseMove = new Array( );
 var mousemovecallback = window.onMouseMove
 canvas.addEventListener( "mousemove", function( event ) { // mouseevent.
+	var temp = Global.windowToCanvas( window.canvas, event.x, event.y ) 
 	for ( var i = 0; i < mousemovecallback.length; i ++ )
-	{
-		mousemovecallback[i]( event.x, event.y );
-	}
+		mousemovecallback[i]( temp.x, temp.y );
 }, false );
 
 window.onMouseUp = new Array( );
 var mouseupcallback = window.onMouseUp
 canvas.addEventListener( "mouseup", function( event ) { // mouseevent.
+	var temp = Global.windowToCanvas( window.canvas, event.x, event.y ) 
 	for ( var i = 0; i < mouseupcallback.length; i ++ )
-	{
-		mouseupcallback[i]( event.button, event.x, event.y );
-	}
+		mouseupcallback[i]( event.button, temp.x, temp.y );
 }, false );
 
 

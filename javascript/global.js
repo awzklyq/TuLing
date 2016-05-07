@@ -138,6 +138,13 @@ Global.endCombineRender = function( mode )
 Global.CombineRenderFill = 0x00000001;
 Global.CombineRenderStroke = 0x00000002;
 
+Global.windowToCanvas = function( canvas, x, y )
+{
+	var bbox = canvas.getBoundingClientRect( );
+	return { x: ( x - bbox.left ) * ( canvas.width / bbox.width ),
+		y : ( y - bbox.top ) * ( canvas.height / bbox.height ) };
+}
+
 Global.FONT = "60px Georgia";
 Global.FILLSTYLE = 0x00000000;
 Global.STROKESTYLE = 0x00000001;

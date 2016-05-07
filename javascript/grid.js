@@ -30,7 +30,7 @@ function Grids6( x, y, side, w, h )
 		for ( var j = 0; j < this.grids.length; j ++ )
 		{
 			var grid = this.grids[j];
-			var temp = Math.abs( y - grid[0].matrix.mat[7] );
+			var temp = Math.min( Math.abs( y - grid[0].matrix.mat[7] ), Math.abs( y - grid[1].matrix.mat[7] ) );
 			if ( temp < jj )
 			{
 				jjj = j;
