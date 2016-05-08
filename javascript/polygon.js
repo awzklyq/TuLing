@@ -1,4 +1,10 @@
 // Point: x, y
+
+function PolygonType( )
+{
+	this.typeid = Polygon.typeid;
+}
+
 function Polygon( )
 {
 	this.points = new Array( );
@@ -55,15 +61,15 @@ function Polygon( )
 	{
 		if (isroot == true)
 		{
-			this.resource[this.resource.length] = {x:x, y:y};
+			this.resource.push( {x:x, y:y} );
 		}
 		else
 		{
 			var trans = this.matrix.getTranslation( );
-			this.resource[this.resource.length] = {x:x - trans.x, y:y - trans.y};
+			this.resource.push( {x:x - trans.x, y:y - trans.y} );
 		}
 
-		this.points[this.points.length] = {x:0, y:0};
+		this.points.push( {x:0, y:0} );
 	}
 
 	this.finish = function( )
@@ -79,9 +85,7 @@ function Polygon( )
 		x /= res.length;
 		y /= res.length;
 		for (var i = 0; i < res.length; i ++)
-		{
 			res[i] = {x:res[i].x - x, y:res[i].y - y};
-		}
 
 		Polygon.mul(this, this.matrix);
 	}
@@ -181,7 +185,7 @@ Polygon.mul = function(polygon, matrix)
 	var resource = polygon.resource;
 	var points = polygon.points;
 
-	for (var i = 0; i < resource.length; i ++)
+	for ( var i = 0; i < resource.length; i ++ )
 	{
 		var x = resource[i].x;
 		var y = resource[i].y;
@@ -241,9 +245,8 @@ Polygon.draw = function(polygon)
 Polygon.CreateRulePolygon = function(pn, d)
 {
 	if ( pn == null || d == null )
-	{
 		return new Polygon( );
-	}
+
 	var v = new Vector(d, 0);
 
 	var r = Math.PI * 2 / pn;
@@ -289,3 +292,6 @@ Polygon.CreateRulestar = function(pn, d1, d2)
 	pol.finish( );
 	return pol;
 }
+
+Polygon.typeid = Global.OBJECTID ++;
+Polygon.prototype = new PolygonType( );

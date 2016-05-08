@@ -4,7 +4,7 @@ function System( )
 
 System.isClip = false;
 
-System.OS =  "IOS"; // Androind, IOS.
+System.OS =  "win32"; // Androind, IOS.
 
 if ( System.OS == "win32" )
 {

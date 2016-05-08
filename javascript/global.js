@@ -154,3 +154,5 @@ Global.ALLSTYLE = 0x00000002;
 // Global.LImage.typeid = 0x00000001;
 
 Global.bgColor = Math.getRGBA( 0xff000000 );
+
+Global.OBJECTID = 0x00000000;

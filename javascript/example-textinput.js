@@ -20,10 +20,12 @@ window.rendercallbackfunc = function(e)
 	UISystem.render( e );
 }
 
-window.onMouseDown[window.onMouseDown.length] = function( b, x, y )
+function mouseDown( b, x, y )
 {
 	// log("event mousedown", b, x, y);
 }
+
+window.onMouseDown.push(mouseDown);
 
 window.onMouseMove[0] = function( x, y )
 {
@@ -35,7 +37,7 @@ window.onMouseUp[0] = function( b, x, y )
 	// log("event mouseup", b, x, y);
 }
 
-window.onKeyDown[window.onKeyDown.length] = function( key )
+function keyDown( key )
 {
 	// log("key down event", key);
 	if ( key == System.KeyLeft )
@@ -47,6 +49,8 @@ window.onKeyDown[window.onKeyDown.length] = function( key )
 
 	return true;
 }
+
+window.onKeyDown.push( keyDown );
 
 window.onKeyUp[0] = function( key )
 {

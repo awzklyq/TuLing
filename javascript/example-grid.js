@@ -1,6 +1,6 @@
 window.logEnable = true;
 
-var grids6 = new Grids6( 0, 0, 20, 1000, 800 );
+var grids6 = new Grids6( 0, 0, 60, 1920, 1080 );
 
 // var test = Polygon.CreateRulePolygon( 6, 20 );
 // test.moveTo( 100, 100 );
