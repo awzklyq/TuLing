@@ -40,8 +40,8 @@ function ParticleEmitter( )
 	this.color1 = 0xffffffff;
 	this.color2 = 0xffffffff;
 
-	this.pfxNumbers1 = 0;
-	this.pfxNumbers2 = 0;
+	this.pfxNumber1 = 0;
+	this.pfxNumber2 = 0;
 
 	this.pfxSize1 = 0;
 	this.pfxSize2 = 0;
@@ -229,7 +229,7 @@ ParticleEmitter.copy = function( emit )
 	result.interival = emit.interival;
 	result.delay = emit.delay;
 	result.pfxType = emit.pfxType; // Particle Type.
-	//result.sportType; // Particle SportType.
+	result.sportType = emit.sportType; // Particle SportType.
 	result.emitterType = emit.emitterType; // 1 All Direction.
 
 	result.pause = true; // 0 pause, 1 play, 2 stop.
@@ -258,8 +258,8 @@ ParticleEmitter.copy = function( emit )
 	result.color1 = emit.color1;
 	result.color2 = emit.color2;
 
-	result.pfxNumbers1 = emit.pfxNumbers1;
-	result.pfxNumbers2 = emit.pfxNumbers2;
+	result.pfxNumber1 = emit.pfxNumber1;
+	result.pfxNumber2 = emit.pfxNumber2;
 
 	result.pfxSize1 = emit.pfxSize1;
 	result.pfxSize2 = emit.pfxSize2;
