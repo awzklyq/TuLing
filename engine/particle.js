@@ -107,6 +107,11 @@ function Particle( )
 		}
 	}
 
+	this.stop = function( )
+	{
+		this.tick = this.duration;
+	}
+
 	this.update = function( e )
 	{
 		this.tick += e;
