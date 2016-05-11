@@ -35,7 +35,7 @@ function Collision( )
 		var points2 = obj2.points;
 
 		var k = aix.y / aix.x;
-
+		var absk = k / Math.abs( k );
 		var max1 = Math.MinNumber;
 		var min1 = Math.MaxNumber;
 		for ( var i = 0; i < points1.length; i ++ )
@@ -58,8 +58,7 @@ function Collision( )
 			}
 			else
 			{
-				var temp = k * ( ( points1[i].x + k * points1[i].y ) / ( 1 + k * k ) );
-
+				var temp = absk * k * ( ( points1[i].x + k * points1[i].y ) / ( 1 + k * k ) );
 				if ( max1 < temp )
 					max1 = temp;
 
@@ -90,8 +89,7 @@ function Collision( )
 			}
 			else
 			{
-				var temp = k * ( ( points2[i].x + k * points2[i].y ) / ( 1 + k * k ) );
-
+				var temp = absk * k * ( ( points2[i].x + k * points2[i].y ) / ( 1 + k * k ) );
 				if ( max2 < temp )
 					max2 = temp;
 
@@ -122,7 +120,12 @@ function Collision( )
 		if ( deep == null || deep == false )
 		{
 			if ( ref == true && this.callbac != null )
-				this.callbac( );
+			{
+				var k = obj1.range / ( obj1.range + obj2.range );
+				var x = x1 + ( x2 - x1 ) * k;
+				var y = y1 + ( y2 - y1 ) * k;
+				this.callbac( obj1, obj2, { x:x, y:y } );
+			}
 			
 			return ref;
 		}
@@ -146,8 +149,13 @@ function Collision( )
 		}
 
 		if ( this.callbac != null )
-			this.callbac( );
-
+		{
+			var k = obj1.range / ( obj1.range + obj2.range );
+			var x = x1 + ( x2 - x1 ) * k;
+			var y = y1 + ( y2 - y1 ) * k;
+			this.callbac( obj1, obj2, { x:x, y:y } );
+		}
+		
 		return true;
 	}
 
