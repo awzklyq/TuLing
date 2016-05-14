@@ -93,9 +93,9 @@ function Polygon( )
 	this.buildBox = function( )
 	{
 		this.range = 0;
-		for (var i = 0; i < this.resource.length; i ++)
+		for (var i = 0; i < this.points.length; i ++)
 		{
-			var dis = Math.sqrt(Math.pow(this.resource[i].x, 2) +  Math.pow(this.resource[i].y, 2));
+			var dis = Math.sqrt(Math.pow(this.points[i].x - this.matrix.mat[6], 2) +  Math.pow(this.points[i].y - this.matrix.mat[7], 2));
 			if (dis > this.range)
 				this.range = dis;
 		}
@@ -218,6 +218,9 @@ Polygon.render = function(polygon)
 		context.beginPath( );
 	}
 
+	var blender = Global.getCurrentBlender( );
+	context.globalAlpha = blender.alpha;
+	// log( context.globalAlpha );
 	context.lineWidth = polygon.lineWidth
 
 	if ( polygon.colorStyle != null )
@@ -227,7 +230,7 @@ Polygon.render = function(polygon)
 	for(var i = 1; i < length; i ++)
 		context.lineTo(points[i].x, points[i].y);
 
-	context.lineTo(points[0].x, points[0].y);
+	// context.lineTo(points[0].x, points[0].y);
 
 	if ( Global.combineRender == false )
 	{

@@ -22,6 +22,9 @@ function Collision( )
 			aixs.push( { x : temp.x, y : temp.y } );
 		}
 
+		temp.x = res[0].x - res[res.length - 1].x;
+		temp.y = res[res.length - 1].y - res[0].y;
+		aixs.push( { x : temp.x, y : temp.y } );
 		return aixs;
 	}
 
