@@ -23,8 +23,11 @@ function Particle( )
 
 	this.color = 0xffffffff;
 
+	this.alpha1 = 0xff;
+	this.alpha2 = 0xff;
 	this.image = new LImage( );
 
+	this.blender = new Blender( );
 	this.matrix = new Matrix( );
 
 	this.createResources = function( )
@@ -37,7 +40,7 @@ function Particle( )
 			if ( this.pfxType == Particle.PolygonType1 )
 				this.polygon = Polygon.CreateRulePolygon( this.number, this.size );
 			else
-				this.polygon = Polygon.CreateRulestar( this.number, this.size, this.size * 0.6 ); // TODO.
+				this.polygon = Polygon.CreateRulestar( this.number, this.size, this.size * 0.5 ); // TODO.
 
 			this.polygon.setColorStyle( this.color );
 		}
@@ -49,8 +52,9 @@ function Particle( )
 
 		if ( ( this.sportType & Particle.Scale ) != 0 )
 		{
-			this.scale.normalsize( );
+			// this.scale.normalsize( );
 			Vector.mul( this.scale, this.scalepower, this.scale );
+			log( this.scale.x, this.scale.y );
 		}
 
 		if ( ( this.sportType & Particle.Target ) != 0 )
@@ -62,6 +66,13 @@ function Particle( )
 		{
 			this.direction.normalsize( );
 			Vector.mul( this.direction, this.speed, this.direction );
+		}
+
+		// TODO.
+		if ( this.alpha1 != 1 || this.alpha2 != 1 )
+		{
+			this.blender.useAlpha( this.alpha1, this.alpha2, this.duration );
+			this.blender.setEnabelAlpha( true );
 		}
 	}
 
@@ -76,6 +87,7 @@ function Particle( )
 		delete this.scale;
 
 		delete this.image;
+		delete this.blender;
 	}
 
 	this.changeMartix = function( )
@@ -97,7 +109,9 @@ function Particle( )
 		if ( ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 )&& polygon != null )
 		{
 			// Global.bindMatrixToContext( context, this.mat );
+			Global.pushBlender( this.blender );
 			Polygon.render( polygon );
+			Global.popBlender( );
 		}
 		else if ( this.pfxType == Particle.ImageType )
 		{
@@ -118,36 +132,49 @@ function Particle( )
 	
 		if ( this.tick >= this.duration && this.duration != -1 )
 			return true;
+		
+		this.blender.update( e );
+		var isneedupdate = 0;
 
-		var isneedupdate = false;
 		if ( ( this.sportType & Particle.Scale ) != 0 )
 		{
-			isneedupdate = true;
-			// this.matrix.mulScalingLeft( this.scale.x, this.scale.y );
+			isneedupdate = 2;
+			buildbox = true;
+			this.matrix.mulScalingLeft( this.scale.x, this.scale.y );
 		}
 
 		if ( ( this.sportType & Particle.Rotation ) != 0 )
 		{
-			isneedupdate = true;
+			if ( isneedupdate == 0 )
+				isneedupdate = 1;
+
 			this.matrix.mulRotationLeft( this.rotationpower );
 		}
 
 		if ( ( this.sportType & Particle.Target ) != 0 )
 		{
-			isneedupdate = true;
+			if ( isneedupdate == 0 )
+				isneedupdate = 1;
+
 			var temp = e / this.duration;
 			this.matrix.mulTranslationRight( this.direction.x * temp, this.direction.y * temp );
 		}
 		else if ( ( this.sportType & Particle.Translation ) != 0 )
 		{
-			isneedupdate = true;
+			if ( isneedupdate == 0 )
+				isneedupdate = 1;
+
 			this.matrix.mulTranslationRight( this.direction.x, this.direction.y );
 		}
 
-		if ( isneedupdate && ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 ) && this.polygon != null )
+		if ( isneedupdate > 0 && ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 ) && this.polygon != null )
 		{
 			this.polygon.matrix.set( this.matrix.mat );
 			Polygon.mul( this.polygon, this.matrix );
+		
+			if ( isneedupdate > 1 )
+				this.polygon.buildBox( );
+				
 		}
 
 		return false;

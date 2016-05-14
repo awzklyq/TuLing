@@ -115,7 +115,11 @@ function ParticleEmitter( )
 		pfx.speed = Math.randomAToB( this.speed1, this.speed2 );
 		pfx.scalepower = Math.randomAToB( this.scalepower1, this.scalepower1 );
 
-		pfx.color = Math.randomColor( this.color1, this.color2 );
+		var color1 = Math.DecompressionRGBA( this.color1 );
+		var color2 = Math.DecompressionRGBA( this.color2 );
+		pfx.color = Math.randomColor( Math.CompressionRGBA( 0xff, color1.r, color1.g, color1.b ), Math.CompressionRGBA( 0xff, color2.r, color2.g, color2.b ) );
+		pfx.alpha1 = color1.a;
+		pfx.alpha2 = color2.a;
 
 		pfx.rotationpower = Math.randomAToB( this.rotationpower1, this.rotationpower2 );
 

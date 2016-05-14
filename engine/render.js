@@ -110,7 +110,7 @@ window.log = function()
 		message += arguments[i] + ', ';
 	}
 
-	if ( window.webkitCancelAnimationFrame )
+	if ( window.webkitCancelAnimationFrame || debug == null )
 	{
 		console.log( message );
 	}

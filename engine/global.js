@@ -27,7 +27,7 @@ Global.popMatrix = function( )
 	Global.matrix.pop( );
 }
 
-Global.getCurrentMatrix = function( transform )
+Global.getCurrentMatrix = function( )
 {
 	if ( Global.matrix.length > 0 )
 	{
@@ -50,6 +50,38 @@ Global.getCurrentMatrix = function( transform )
 }
 
 Global.bindMatrixToContext = function( context, matrix )
+{
+	if ( context != null && matrix != null )
+	{
+		var mat = matrix.mat;
+		context.setTransform( mat[0], mat[1], mat[3], mat[4], mat[6], mat[7] );
+	}
+}
+
+Global.blenders = new Array( );
+Global.pushBlender = function( blender )
+{
+	Global.blenders.push(blender);
+}
+
+Global.popBlender = function( )
+{
+	Global.blenders.pop( );
+}
+
+Global.getCurrentBlender = function( )
+{
+	var blender = { alpha: 1 };
+	if ( Global.blenders.length > 0 )
+	{
+		for ( var i = 0; i < Global.blenders.length; i ++ )
+			blender.alpha *= Global.blenders[i].getCurrentAlpha( );
+	}
+
+	return blender;
+}
+
+Global.bindBlenderToContext = function( context, blender )
 {
 	if ( context != null && matrix != null )
 	{
