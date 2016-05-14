@@ -1,3 +1,6 @@
+// Data type:
+// window.ImageAnimationData[0] = {x:0, y:0, w:0, h:0, image:"4.jpg", name:"test", cutx:9, cuty:4,framestime:200}
+
 function ImageAnimation( data )
 {
 	// x, y, w, h, scr, time, name, event.
@@ -35,14 +38,14 @@ function ImageAnimation( data )
 					{
 						if ( Global.isUndefined( frames[index]  ) )
 						{
-							frames[index] = { time:0, tick:0, src:null };
+							frames.push( { time:0, tick:0, src:null } );
 							frames[index].time = self.data.framestime;
 						}
 
 						self.duration += frames[index].time;
 						frames[index].tick = self.duration;
 						frames[index].src =  new LImage( );
-						frames[index].src.addResource( self.image, i * w, j * h, w, h );
+						frames[index].src.addResource( self.image, j * w, i * h, w, h );
 						index ++;
 					}
 				}
@@ -55,8 +58,8 @@ function ImageAnimation( data )
 	this.current = 0;
 	this.loop = false;
 	this.pause = false;
-	this.behaviors = this.data.name;
-	this.state = 0; // 0,stop; 1,play; 2,stop;
+	this.name = this.data.name;
+	this.state = 0; // 0,stop; 1,play
 	this.play = function( )
 	{
 		this.state = 1;
@@ -68,9 +71,15 @@ function ImageAnimation( data )
 	{
 		anima.state = 0;
 	}
+
+	this.getNextFrame = function( )
+	{
+		log(this.data.frames.length);
+		return ( ( ++ this.curindex)  % this.data.frames.length );
+	}
 }
 
-ImageAnimation.Update = function( anima, e )
+ImageAnimation.update = function( anima, e )
 {
 	if ( anima.state != 1 || anima.pause == true || anima.duration == 0 )
 	{
@@ -95,9 +104,9 @@ ImageAnimation.Update = function( anima, e )
 	}
 
 	var frames = anima.data.frames;
-	for ( var i = anima.curindex; i < anima.length; i ++ )
+	for ( var i = anima.curindex; i < frames.length; i ++ )
 	{
-		if ( frames[i].tick > anima.current)
+		if ( frames[i].tick >= anima.current)
 		{
 			anima.curindex = i;
 			break;
@@ -105,14 +114,15 @@ ImageAnimation.Update = function( anima, e )
 	}
 }
 
-ImageAnimation.Render = function( anima, e )
+ImageAnimation.render = function( anima, e )
 {
+	if ( anima.state == 0 )
+		return;
+
 	if ( anima.curindex < anima.length )
 	{
 		var frames = anima.data.frames;
 		if ( frames[anima.curindex].src )
-		{
 			frames[anima.curindex].src.drawImage( );
-		}
 	}
 }
