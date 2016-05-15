@@ -71,6 +71,11 @@ function Circle( x, y, r )
 		this.tick = 0;
 	}
 
+	this.insert = function( x, y )
+	{
+		return Math.pow( x - this.x, 2 ) + Math.pow( y - this.y, 2 ) < Math.pow( this.r, 2 ); 
+	}
+	
 	this.update = function( e )
 	{
 		// Update.

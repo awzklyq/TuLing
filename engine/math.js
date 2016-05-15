@@ -10,8 +10,22 @@ Math.randomAToB = function( a, b )
 
 Math.Linear = function( a, b, p )
 {
-	return a + ( b - a ) * p;
+	return a * ( 1 - p ) + b * p;
 }
+
+Math.LinearColor = function( color1, color2, t )
+{
+	var c1 = Math.DecompressionRGBA( color1 );
+	var c2 = Math.DecompressionRGBA( color2 );
+
+	var a = Math.Linear( c1.a, c2.a, t );
+	var r = Math.Linear( c1.r, c2.r, t );
+	var g = Math.Linear( c1.g, c2.g, t );
+	var b = Math.Linear( c1.b, c2.b, t );
+
+	return Math.CompressionRGBA( a * 255, r, g, b );
+}
+
 
 Math.randomVector = function( v1, v2, v3 )
 {
@@ -43,12 +57,12 @@ Math.CompressionRGBA = function( a, r, g, b )
 	return parseInt( temp.toString(16), 16);
 }
 
-Math.NumberConvertStringColor = function( color )
+Math.StringConvertNumberColor = function( color )
 {
 	return parseInt( StringEx.getRemoveAtResult( color, 0 ), 16 );
 }
 
-Math.StringConvertNumberColor = function( color )
+Math.NumberConvertStringColor = function( color )
 {
 	return "#"+color.toString(16)
 }

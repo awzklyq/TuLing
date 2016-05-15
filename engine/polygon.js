@@ -170,9 +170,7 @@ function Polygon( )
 		for(var i = 0; i < this.points.length; i ++)
 		{
 			if ( Vector.Intersect( v0, v1, points[i], points[ (i + 1) % length] ) )
-			{
 				tick ++;
-			}
 		}
 
 		return tick % 2 != 0;
