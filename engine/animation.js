@@ -4,6 +4,10 @@
 function ImageAnimation( data )
 {
 	// x, y, w, h, scr, time, name, event.
+	this.x = 0;
+	this.y = 0;
+	this.w = 0;
+	this.h = 0;
 	this.data = data;
 	this.length = 0;
 	this.duration = 0;
@@ -24,6 +28,8 @@ function ImageAnimation( data )
 				}
 				var w = self.image.w / self.data.cutx;
 				var h = self.image.h / self.data.cuty;
+				self.w = w;
+				self.h = h;
 				// TODO.. create.
 				if ( self.data.frames == null )
 				{
@@ -50,8 +56,29 @@ function ImageAnimation( data )
 					}
 				}
 			}
+
+			if ( self.callbackfunc != null )
+			{
+				self.callbackfunc( );
+				delete self.callbackfunc;
+			}
 		})
 	}
+
+	this.setImageLoadCallBack = function( func )
+	{
+		if ( this.callbackfunc )
+			delete this.callbackfunc;
+
+		if ( Global.isFunction( func ) == false )
+			return;
+
+		if ( this.image && this.image.isLoad == true )
+			func( );
+		else
+			this.callbackfunc = func;
+	}
+
 	this.curindex = 0;
 	this.visible = true;
 	this.isPlaying = false;
@@ -72,19 +99,50 @@ function ImageAnimation( data )
 		anima.state = 0;
 	}
 
+	this.moveTo = function( x, y )
+	{
+		this.x = x || 0;
+		this.y = y || 0;
+	}
+
 	this.getNextFrame = function( )
 	{
-		log(this.data.frames.length);
 		return ( ( ++ this.curindex)  % this.data.frames.length );
+	}
+
+	this.reset = function( )
+	{
+		var frames = this.data.frames;
+		for ( var i = 0; i < frames.length; i ++ )
+			frames[i].src.reset( );
+	}
+
+	this.addColor = function( color, x, y, w, h )
+	{
+		var frames = this.data.frames;
+		for ( var i = 0; i < frames.length; i ++ )
+			frames[i].src.addColor( color, 0, 0, w || this.w, h || this.h );
+	}
+
+	this.subColor = function( color, x, y, w, h )
+	{
+		var frames = this.data.frames;
+		for ( var i = 0; i < frames.length; i ++ )
+			frames[i].src.subColor( color, 0, 0, w || this.w, h || this.h );
+	}
+
+	this.mulColor = function( color, x, y, w, h )
+	{
+		var frames = this.data.frames;
+		for ( var i = 0; i < frames.length; i ++ )
+			frames[i].src.mulColor( color, 0, 0, w || this.w, h || this.h );
 	}
 }
 
 ImageAnimation.update = function( anima, e )
 {
 	if ( anima.state != 1 || anima.pause == true || anima.duration == 0 )
-	{
 		return;
-	}
 
 	anima.current += e;
 	if ( anima.current > anima.duration )
@@ -123,6 +181,6 @@ ImageAnimation.render = function( anima, e )
 	{
 		var frames = anima.data.frames;
 		if ( frames[anima.curindex].src )
-			frames[anima.curindex].src.drawImage( );
+			frames[anima.curindex].src.drawImage( anima.x, anima.y, anima.w, anima.h );
 	}
 }

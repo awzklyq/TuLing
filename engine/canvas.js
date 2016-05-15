@@ -1,12 +1,51 @@
-function LCanvas( id )
+function CanvasEx( )
 {
-	if ( id == null )
+	this.canvas = document.createElement( 'canvas' );
+	this.canvas.setAttribute( "id", CanvasEx.id ++ ); 
+
+	this.setAttribute = function( key, value )
 	{
-		alert("creat Canvas id is null!");
+		this.canvas.setAttribute( key, value );
 	}
 
-	this.canvas = document.createElement( 'canvas' );
-	this.canvas.setAttribute( "id", id ); 
+	this.bindImageData = function( imagedata, x, y )
+	{
+		if ( imagedata == null )
+			return;
+
+		var context = this.canvas.getContext('2d');
+		context.putImageData( imagedata, x || 0, y || 0 );
+	}
+
+	this.getContext = function( )
+	{
+		return this.canvas.getContext('2d');
+	}
+	
+	this.getCanvasData = function( )
+	{
+		return this.canvas;
+	}
+
+	this.release = function( )
+	{
+		document.deleteElement( 'canvas' );
+
+		delete this.canvas;
+	}
+
+	this.canvas.release = function( )
+	{
+		delete this.canvas.release( );
+		this.release( );
+	}
+
+	this.release = function( )
+	{
+		document.removeChild( this.canvas );
+
+		delete this.canvas;
+	}
 
 	this.bindImage = function( limge, x, y, w, h, sx, sy, sw, sh )
 	{
@@ -86,3 +125,5 @@ function LCanvas( id )
 		}
 	}
 }
+
+CanvasEx.id = 0;

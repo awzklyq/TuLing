@@ -71,11 +71,14 @@ Global.popBlender = function( )
 
 Global.getCurrentBlender = function( )
 {
-	var blender = { alpha: 1 };
+	var blender = { alpha: 1, color: 0x00 };
 	if ( Global.blenders.length > 0 )
 	{
 		for ( var i = 0; i < Global.blenders.length; i ++ )
+		{
 			blender.alpha *= Global.blenders[i].getCurrentAlpha( );
+			blender.color += Global.blenders[i].getCurrentColor( );
+		}
 	}
 
 	return blender;
