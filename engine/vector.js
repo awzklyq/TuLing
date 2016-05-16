@@ -23,12 +23,18 @@ function Vector(x, y)
 	
 	this.normalsize = function()
 	{
-		var w =  Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		var w =  Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
 		if ( isNaN( w ) )
 			return;
 
 		this.x /= w;
 		this.y /= w;
+
+		if ( isNaN( this.x ) )
+			this.x = 0;
+
+		if ( isNaN( this.y ) )
+			this.y = 0;
 	}
 
 	this.print = function( )

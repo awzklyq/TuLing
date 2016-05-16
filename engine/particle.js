@@ -156,6 +156,9 @@ function Particle( )
 			if ( isneedupdate == 0 )
 				isneedupdate = 1;
 
+			if ( ( this.sportType & Particle.Direction ) != 0 )
+				this.matrix.setYDirection( this.direction.x - this.matrix.mat[6], this.direction.y - this.matrix.mat[7] );
+
 			var temp = e / this.duration;
 			this.matrix.mulTranslationRight( this.direction.x * temp, this.direction.y * temp );
 		}
@@ -163,6 +166,9 @@ function Particle( )
 		{
 			if ( isneedupdate == 0 )
 				isneedupdate = 1;
+
+			if ( ( this.sportType & Particle.Direction ) != 0 )
+				this.matrix.setYDirection( this.direction.x, this.direction.y );
 
 			this.matrix.mulTranslationRight( this.direction.x, this.direction.y );
 		}
@@ -193,3 +199,4 @@ Particle.Rotation = 0x00000002;
 Particle.Translation = 0x00000004;
 Particle.Target = 0x00000008;
 Particle.BindTarget = 0x00000010;
+Particle.Direction = 0x00000020;

@@ -159,6 +159,34 @@ function Matrix( mat )
 				}
 	}
 
+	// Set x aixs to direction.
+	this.setXDirection = function( x, y )
+	{
+		var dir = new Vector( x, y );
+		dir.normalsize( );
+		var vv = new Vector( this.mat[0], this.mat[1] );
+		vv.normalsize( );
+		if ( Math.abs( dir.x - vv.x ) < Math.MinNumber && Math.abs( dir.y - vv.y ) < Math.MinNumber )
+			return;
+
+		var r = Vector.angle( vv, new Vector( 1, 0 ) );
+		this.mulRotationLeft( r );
+	}
+
+	// Set y aixs to direction.
+	this.setYDirection = function( x, y )
+	{
+		var dir = new Vector( x, y );
+		dir.normalsize( );
+		var vv = new Vector( this.mat[3], this.mat[4] );
+		vv.normalsize( );
+		if ( Math.abs( dir.x - vv.x ) < Math.MinNumber && Math.abs( dir.y - vv.y ) < Math.MinNumber )
+			return;
+
+		var r = Vector.angle( vv, dir );
+		this.mulRotationLeft( r );
+	}
+
 	this.resetTranslation = function( )
 	{
 	}
@@ -172,11 +200,7 @@ function Matrix( mat )
 	}
 
 	if ( mat != null )
-	{
 		this.set( mat );
-	}
 	else
-	{
 		this.reset( );
-	}
 }

@@ -86,6 +86,6 @@ Math.getRGBA = function( color )
 	return "rgba(" + temp.r + "," + temp.g + "," + temp.b + "," + temp.a + ")";
 }
 
-Math.MinNumber = 0.000000001;
+Math.MinNumber = 0.00000001;
 Math.MaxNumber = 99999999.0;
 Math.ARC = Math.PI * 2;
