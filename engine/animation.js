@@ -137,6 +137,13 @@ function ImageAnimation( data )
 		for ( var i = 0; i < frames.length; i ++ )
 			frames[i].src.mulColor( color, 0, 0, w || this.w, h || this.h );
 	}
+	
+	this.blendColor = function( color, x, y, w, h )
+	{
+		var frames = this.data.frames;
+		for ( var i = 0; i < frames.length; i ++ )
+			frames[i].src.blendColor( color, 0, 0, w || this.w, h || this.h );
+	}
 }
 
 ImageAnimation.update = function( anima, e )

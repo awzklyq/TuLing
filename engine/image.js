@@ -208,7 +208,7 @@ function LImage( )
 		var data = imagedata.data;
 		for ( var i = 0; i < data.length - 4; i += 4 )
 		{
-			if ( cc.a != 0x0 ||  data[i] != 0x0 )
+			if ( data[i] != 0x0 )
 			{
 				data[i] += cc.a;
 				data[i + 1] += cc.r;
@@ -246,12 +246,49 @@ function LImage( )
 		var data = imagedata.data;
 		for ( var i = 0; i < data.length - 4; i += 4 )
 		{
-			if ( cc.a != 0x0 ||  data[i] != 0x0 )
+			if ( data[i] != 0x0 )
 			{
 				data[i] -= cc.a;
 				data[i + 1] -= cc.r;
 				data[i + 2] -= cc.g;
 				data[i + 3] -= cc.b;
+			}
+		}
+
+		this.reset( );
+
+		this.imagehelper = canvas.getCanvasData( );
+		canvas.bindImageData( imagedata );
+		this.imagehelper.isLoad = true;
+	}
+
+	this.blendColor = function( color, x, y, w, h )
+	{
+		var img = this.imagehelper || this.image || this.resource;
+		if ( img == null )
+			return;
+
+		var canvas = new CanvasEx( );
+		canvas.setAttribute( "width", w || img.width );
+		canvas.setAttribute( "height", w || img.height );
+		var context = canvas.getContext( );
+		var cc = window.context;
+		window.context = context;
+		this.drawImage( x || 0, y || 0, w || img.width, h || img.height );
+		window.context = cc;
+		var imagedata = context.getImageData( x || 0, y || 0, w || img.width, h || img.height );
+
+		var cc = Math.DecompressionRGBA( color );
+
+		var data = imagedata.data;
+		var k = cc.a;
+		for ( var i = 0; i < data.length - 4; i += 4 )
+		{
+			if ( data[i] != 0x0 )
+			{
+				data[i + 1] = data[i + 1] * ( 1 - k ) + cc.r * k;
+				data[i + 2] = data[i + 2] * ( 1 - k ) + cc.g * k;
+				data[i + 3] = data[i + 3] * ( 1 - k ) + cc.b * k;
 			}
 		}
 
@@ -284,7 +321,7 @@ function LImage( )
 		var data = imagedata.data;
 		for ( var i = 0; i < data.length - 4; i += 4 )
 		{
-			if ( cc.a != 0x0 ||  data[i] != 0x0 )
+			if ( data[i] != 0x0 )
 			{
 				data[i] *= cc.a;
 				data[i + 1] *= cc.r;
