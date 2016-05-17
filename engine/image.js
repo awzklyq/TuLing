@@ -55,7 +55,10 @@ function LImage( )
 
 	this.setLoadCallBack = function( func )
 	{
-		if ( this.image.isLoad == true )
+		if ( Global.isFunction( this.loadcallback ) )
+			delete this.loadcallback;
+
+		if ( this.isLoad == true )
 			func( );
 		else
 			this.loadcallback = func;
@@ -63,6 +66,7 @@ function LImage( )
 
 	this.addResource = function( image, x, y, w, h )
 	{
+		this.isLoad = true;
 		if ( arguments.length == 1 )
 		{
 			this.resource = image.image || image.resource;
@@ -84,6 +88,34 @@ function LImage( )
 			this.h = h;
 			// log( this.resource, x, y, w, h)
 		}
+	}
+
+	this.getWidth = function( )
+	{
+		if ( this.w != 0 )
+			return this.w;
+
+		if ( this.resource != null )
+			return this.resource.width;
+
+		if ( this.image != null )
+			return this.image.width;
+
+		return 0;
+	}
+
+	this.getHeight = function( )
+	{
+		if ( this.h != 0 )
+			return this.h;
+
+		if ( this.resource != null )
+			return this.resource.height;
+
+		if ( this.image != null )
+			return this.image.height;
+
+		return 0;
 	}
 
 	this.drawImage = function( x, y, w, h, sx, sy, sw, sh )

@@ -45,7 +45,8 @@ function ParticleEmitter( )
 
 	this.pfxSize1 = 0;
 	this.pfxSize2 = 0;
-	
+
+	this.imageAnimaData = {};
 	this.bindMatrix = new Matrix( );
 
 	this.image = new LImage( );
@@ -126,12 +127,26 @@ function ParticleEmitter( )
 		pfx.number = Math.randomAToB( this.pfxNumber1, this.pfxNumber2 );
 		pfx.size = Math.randomAToB( this.pfxSize1, this.pfxSize2 );
 
-		pfx.createResources( );
-
 		pfx.matrix.mulRight( this.bindMatrix );
 
 		if ( pfx.pfxType == Particle.ImageType )
+		{
 			pfx.image.addResource( this.image );
+			pfx.image.w = pfx.number;
+			pfx.image.h = pfx.size;
+		}
+		else if ( pfx.pfxType == Particle.ImageAnimaType )
+		{
+			pfx.imageAnima.w = pfx.number;
+			pfx.imageAnima.h = pfx.size;
+			var self = this;
+			this.imageAnimaData.image.setLoadCallBack( function(){
+				pfx.imageAnima.bindData( self.imageAnimaData );
+				pfx.imageAnima.play( );
+			});
+		}
+
+		pfx.createResources( );
 
 		// Add pfx.
 		this.pfxs.push( pfx );
@@ -267,7 +282,7 @@ ParticleEmitter.copy = function( emit )
 
 	result.pfxSize1 = emit.pfxSize1;
 	result.pfxSize2 = emit.pfxSize2;
-	
+	result.imageAnimaData = emit.imageAnimaData;
 	// result.bindMatrix = new Matrix( );
 
 	// TODO.

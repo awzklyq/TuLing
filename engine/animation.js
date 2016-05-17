@@ -8,62 +8,76 @@ function ImageAnimation( data )
 	this.y = 0;
 	this.w = 0;
 	this.h = 0;
-	this.data = data;
 	this.length = 0;
 	this.duration = 0;
-	if ( isNaN( data.image ) )
+
+	this.bindDataHelper = function( self )
 	{
-		this.length =  data.cuty *  data.cutx;
-		this.image = new LImage( data.image );
-		var self = this;
-		
-		this.image.setLoadCallBack( function( )
+		if ( self.data.w != 0 && self.data.h != 0 )
 		{
-			if ( isNaN( self.data ) )
+			self.image.w = data.w;
+			self.image.h = data.h;
+		}
+		var w = self.image.getWidth( ) / self.data.cutx;
+		var h = self.image.getHeight( ) / self.data.cuty;
+		self.w = w;
+		self.h = h;
+
+		// TODO.. create.
+		if ( self.data.frames == null )
+			self.data.frames = new ArrayEx( self.data.cutx * self.data.cuty );
+
+		var frames = self.data.frames;
+		var index = 0;
+		for ( var i = 0; i < self.data.cutx; i++ )
+		{
+			for ( var j = 0; j < self.data.cuty; j++ )
 			{
-				if ( self.data.w != 0 && self.data.h != 0 )
+				if ( Global.isUndefined( frames[index]  ) )
 				{
-					self.image.w = data.w;
-					self.image.h = data.h;
-				}
-				var w = self.image.w / self.data.cutx;
-				var h = self.image.h / self.data.cuty;
-				self.w = w;
-				self.h = h;
-				// TODO.. create.
-				if ( self.data.frames == null )
-				{
-					self.data.frames = new ArrayEx( self.data.cutx * self.data.cuty );
+					frames.push( { time:0, tick:0, src:null } );
+					frames[index].time = self.data.framestime;
 				}
 
-				var frames = self.data.frames;
-				var index = 0;
-				for ( var i = 0; i < self.data.cutx; i++ )
-				{
-					for ( var j = 0; j < self.data.cuty; j++ )
-					{
-						if ( Global.isUndefined( frames[index]  ) )
-						{
-							frames.push( { time:0, tick:0, src:null } );
-							frames[index].time = self.data.framestime;
-						}
-
-						self.duration += frames[index].time;
-						frames[index].tick = self.duration;
-						frames[index].src =  new LImage( );
-						frames[index].src.addResource( self.image, j * w, i * h, w, h );
-						index ++;
-					}
-				}
+				self.duration += frames[index].time;
+				frames[index].tick = self.duration;
+				frames[index].src =  new LImage( );
+				frames[index].src.addResource( self.image, j * w, i * h, w, h );
+				index ++;
 			}
+		}
 
-			if ( self.callbackfunc != null )
-			{
-				self.callbackfunc( );
-				delete self.callbackfunc;
-			}
-		})
+		if ( self.callbackfunc != null )
+		{
+			self.callbackfunc( );
+			delete self.callbackfunc;
+		}
 	}
+
+	this.bindData = function( data )
+	{
+		if ( this.data != null || data == null || data.image == null )
+			return;
+
+		this.data = data;
+		if ( this.data.loop == true )
+			this.loop = true;
+
+		this.name = this.data.name;
+		this.length =  data.cuty *  data.cutx;
+		if ( Global.isString( data.image ) )
+			this.image = new LImage( data.image );
+		else
+			this.image = data.image;
+
+		var self = this;
+		if ( this.image.isLoad )
+			this.bindDataHelper( self );
+		else
+			this.image.setLoadCallBack( function(){ this.bindDataHelper( self ); });
+	}
+
+	this.bindData( data );
 
 	this.setImageLoadCallBack = function( func )
 	{
@@ -85,13 +99,13 @@ function ImageAnimation( data )
 	this.current = 0;
 	this.loop = false;
 	this.pause = false;
-	this.name = this.data.name;
 	this.state = 0; // 0,stop; 1,play
 	this.play = function( )
 	{
 		this.state = 1;
 		this.current = 0;
 		this.curindex = 0;
+		this.pause = false;
 	}
 
 	this.stop = function( )
@@ -158,7 +172,7 @@ ImageAnimation.update = function( anima, e )
 		{
 			anima.current = anima.duration;
 			anima.curindex = anima.length - 1;
-			anima.state = 0;
+			anima.pause = true;
 			return;
 		}
 		else

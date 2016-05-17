@@ -26,6 +26,7 @@ function Particle( )
 	this.alpha1 = 0xff;
 	this.alpha2 = 0xff;
 	this.image = new LImage( );
+	this.imageAnima = new ImageAnimation( );
 
 	this.blender = new Blender( );
 	this.matrix = new Matrix( );
@@ -46,8 +47,15 @@ function Particle( )
 		}
 		else if ( this.pfxType == Particle.ImageType )
 		{
-			this.image.w = this.number;
-			this.image.h = this.size;
+			var w = this.image.getWidth( );
+			var h = this.image.getHeight( );
+			this.polygon = new Polygon( { x: 0, y: 0}, { x: w, y: 0}, { x: w, y: h}, { x: h, y: h} );
+		}
+		else if ( this.pfxType == Particle.ImageAnimaType )
+		{
+			var w = this.imageAnima.w;
+			var h = this.imageAnima.h;
+			this.polygon = new Polygon( { x: 0, y: 0}, { x: w, y: 0}, { x: w, y: h}, { x: h, y: h} );
 		}
 
 		if ( ( this.sportType & Particle.Scale ) != 0 )
@@ -119,6 +127,12 @@ function Particle( )
 			this.image.drawImage( );
 			Global.popMatrix( );
 		}
+		else if ( this.pfxType == Particle.ImageAnimaType )
+		{
+			Global.pushMatrix( this.matrix );
+			ImageAnimation.render( this.imageAnima, e );
+			Global.popMatrix( );
+		}
 	}
 
 	this.stop = function( )
@@ -173,14 +187,16 @@ function Particle( )
 			this.matrix.mulTranslationRight( this.direction.x, this.direction.y );
 		}
 
-		if ( isneedupdate > 0 && ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 ) && this.polygon != null )
+		if ( isneedupdate > 0 && ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 || this.pfxType == Particle.ImageType || this.pfxType == Particle.ImageAnimaType ) && this.polygon != null )
 		{
 			this.polygon.matrix.set( this.matrix.mat );
 			Polygon.mul( this.polygon, this.matrix );
 		
 			if ( isneedupdate > 1 )
 				this.polygon.buildBox( );
-				
+
+			if ( this.pfxType == Particle.ImageAnimaType )
+				ImageAnimation.update( this.imageAnima, e );
 		}
 
 		return false;
