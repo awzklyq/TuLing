@@ -100,7 +100,7 @@ function Collision( )
 					min2 = temp;
 			}
 		}
-		// log("33333333333", max1, min2, max2, min1);
+
 		// The result is true -> intersect.
 		return ( max1 < min2 || max2 < min1 ) == false;
 	}

@@ -19,6 +19,7 @@ function Grids6( x, y, side, w, h )
 			this.grids[j].push( Polygon.CreateRulePolygon( 6, side ) )
 			this.grids[j][i].moveTo( i * side * 1.5, j * yy + ( i % 2 == 0 ? 0 : yy * 0.5 ) );
 			this.grids[j][i].setColorStyle( 0x00 );
+			//this.grids[j][i].resetCanvas( );
 		}
 	}
 
@@ -26,7 +27,7 @@ function Grids6( x, y, side, w, h )
 	{
 		var jj = Math.MaxNumber;
 		var jjj = -1;
-		// log(this.grids.length)
+
 		for ( var j = 0; j < this.grids.length; j ++ )
 		{
 			var grid = this.grids[j];
@@ -38,7 +39,6 @@ function Grids6( x, y, side, w, h )
 			}
 		}
 
-		// log(jjj)
 		if ( jjj == -1 || jjj >= this.grids.length )
 			return null;
 
@@ -60,13 +60,46 @@ function Grids6( x, y, side, w, h )
 
 	this.draw = function( )
 	{
+		if ( this.canvas != null )
+		{
+			this.canvas.draw( 0, 0, window.canvas.width, window.canvas.height );
+			return;
+		}
+
 		// Global.beginCombineRender( );
 		for ( var j = 0; j < this.grids.length; j ++ )
 		{
 			var grid = this.grids[j];
 			for ( var i = 0; i < grid.length; i ++ )
 				Polygon.render( grid[i] );
+
 		}
 		// Global.endCombineRender( Global.CombineRenderStroke );
+	}
+
+	this.resetCanvas = function( )
+	{
+		if ( this.canvas != null )
+			delete this.canvas;
+
+		var canvas = new CanvasEx( );
+		canvas.setAttribute( "width", window.canvas.width );
+		canvas.setAttribute( "height", window.canvas.height );
+		var context =  window.context;
+		window.context = canvas.getContext( );
+		this.draw( )
+		window.context = context;
+		this.canvas = canvas;
+	}
+
+	this.refreshGrid = function( grid )
+	{
+		if ( this.canvas == null )
+			return null;
+
+		var context =  window.context;
+		window.context = this.canvas.getContext( );
+		Polygon.render( grid );
+		window.context = context;
 	}
 }

@@ -124,7 +124,6 @@ function LImage( )
 		var img = this.imagehelper || this.image;
 		context.save( );
 		context.beginPath( );
-		context.begine
 		Global.bindMatrixToContext( context, Global.getCurrentMatrix( ) );
 
 		// Use blender.

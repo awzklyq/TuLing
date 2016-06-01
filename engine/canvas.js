@@ -1,5 +1,9 @@
 function CanvasEx( )
 {
+	this.x = 0;
+	this.y = 0;
+	this.w = 0;
+	this.h = 0;
 	this.canvas = document.createElement( 'canvas' );
 	this.canvas.setAttribute( "id", CanvasEx.id ++ ); 
 
@@ -102,27 +106,33 @@ function CanvasEx( )
 	{
 		var context = window.context;
 		var img = this.canvas
-		if ( img != null )
+		if ( img == null )
+			return;
+
+		context.save( );
+		context.beginPath( );
+		Global.bindMatrixToContext( context, Global.getCurrentMatrix( ) );
+		if ( arguments.length == 0 )
 		{
-			context.save( );
-			if ( arguments.length == 0 )
-			{
+			if ( this.w == 0 || this.h == 0 )
+				context.drawImage( img, this.x, this.y );
+			else
 				context.drawImage( img, this.x, this.y, this.w, this.h );
-			}
-			else if ( arguments.length == 2 )
-			{
-				context.drawImage( img, x, y );
-			}
-			else if ( arguments.length == 4 )
-			{
-				context.drawImage( img, x, y, w, h );
-			}
-			else if ( arguments.length == 8 )
-			{
-				context.drawImage( img, x, y, w, h, sx, sy, sw, sh );
-			}
-			context.restore( );
 		}
+		else if ( arguments.length == 2 )
+		{
+			context.drawImage( img, x, y );
+		}
+		else if ( arguments.length == 4 )
+		{
+			context.drawImage( img, x, y, w, h );
+		}
+		else if ( arguments.length == 8 )
+		{
+			context.drawImage( img, x, y, w, h, sx, sy, sw, sh );
+		}
+		context.closePath( );
+		context.restore( );
 	}
 }
 

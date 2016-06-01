@@ -96,6 +96,7 @@ if ( System.OS == "win32" )
 }
 
 window.context = canvas.getContext('2d');
+window.canvas = canvas;
 var context = window.context;
 // context.globalAlpha = 0.5;
 // context.globalCompositeOperation = "source-out";
@@ -148,7 +149,7 @@ function render( )
 		context.fillStyle = Math.getRGBA( 0xffffff00 );
 		context.fillText("FPS: " + fps + " X: " + System.getClipX( ) + " Y: " + System.getClipY( ) +" CW: " + System.getClipW( ) + " CH: " + System.getClipH( ) + " PC: " + Global.renderPolygonCount + " CPC: " + Global.clipPolygonCount, System.getClipX( ) + 20, System.getClipY( ) + 20);
 	}
-
+	
 	tick = newtick
 	window.requestNextAnimationFrame(render);
 }

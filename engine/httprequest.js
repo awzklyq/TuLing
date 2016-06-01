@@ -109,7 +109,6 @@ function HTTPRequest( )
 			if ( stateChangeEvent != null )
 				stateChangeEvent( );
 
-			log( func != null, http.readyState == HTTPRequest.DONE, http.status == HTTPRequest.OK );
 			if ( func != null && http.readyState == HTTPRequest.DONE && http.status == HTTPRequest.OK )
 			{
 				func( http.responseText );

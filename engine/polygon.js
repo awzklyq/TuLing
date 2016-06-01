@@ -96,7 +96,7 @@ function Polygon( )
 		for (var i = 0; i < this.points.length; i ++)
 		{
 			var dis = Math.sqrt(Math.pow(this.points[i].x - this.matrix.mat[6], 2) +  Math.pow(this.points[i].y - this.matrix.mat[7], 2));
-			if (dis > this.range)
+			if ( dis > this.range )
 				this.range = dis;
 		}
 	}
@@ -175,6 +175,32 @@ function Polygon( )
 
 		return tick % 2 != 0;
 	}
+
+	this.resetCanvas = function( )
+	{
+		if ( this.canvas != null )
+			delete this.canvas;
+ 
+		var mat = new Matrix( );
+		mat.set( this.matrix.mat );
+		this.matrix.reset( );
+		Polygon.mul( this, this.matrix );
+		this.buildBox( );
+		this.moveTo( this.range, this.range );
+		var canvas = new CanvasEx( );
+		canvas.setAttribute( "width", Math.ceil( this.range * 2 ) );
+		canvas.setAttribute( "height", Math.ceil( this.range * 2 ) );
+		canvas.range = Math.ceil( this.range * 2 );
+		var context =  window.context;
+		window.context = canvas.getContext( );
+		Polygon.render( this );
+		window.context = context;
+		this.canvas = canvas;
+
+		this.matrix.set( mat.mat );
+		Polygon.mul( this, this.matrix );
+		this.buildBox( );
+	}
 }
 
 Polygon.mul = function(polygon, matrix)
@@ -192,16 +218,27 @@ Polygon.mul = function(polygon, matrix)
 	}
 }
 
-Polygon.render = function(polygon)
+Polygon.render = function( polygon )
 {
+	if ( polygon.canvas != null )
+	{
+		var range = polygon.canvas.range;
+		Global.pushMatrix( polygon.matrix );
+		polygon.canvas.draw( 0, 0, range, range, -range * 0.5, -range * 0.5, range, range );
+		//polygon.canvas.draw( );
+		Global.popMatrix( );
+		return;
+	}
+
 	var points = polygon.points;
 	var length = points.length;
 	if ( length < 2 )
 		return;
 
-	// TODO.
 	var x = polygon.matrix.mat[6];
 	var y = polygon.matrix.mat[7];
+
+	// TODO.
 	if ( System.isClip && System.checkInClipArea( x + polygon.range, y + polygon.range, x - polygon.range, y - polygon.range ) == false )
 	{
 		Global.clipPolygonCount ++;
@@ -209,16 +246,15 @@ Polygon.render = function(polygon)
 	}
 
 	Global.renderPolygonCount ++;
+
 	var context = window.context;
 	if ( Global.combineRender == false )
 	{
 		context.save( );
 		context.beginPath( );
 	}
-
 	var blender = Global.getCurrentBlender( );
 	context.globalAlpha = blender.alpha;
-	// log( context.globalAlpha );
 	context.lineWidth = polygon.lineWidth
 
 	if ( polygon.colorStyle != null )
@@ -229,11 +265,9 @@ Polygon.render = function(polygon)
 		context.lineTo(points[i].x, points[i].y);
 
 	// context.lineTo(points[0].x, points[0].y);
-
 	if ( Global.combineRender == false )
 	{
 		context.closePath( );
-
 		if ( polygon.colorStyle != null )
 			context.fill( );
 

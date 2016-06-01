@@ -2,6 +2,7 @@ function File( )
 {
 	this.file = document.createElement("input");
 	this.file.setAttribute("type", "file");
+	this.file.setAttribute("id", "file");
 	this.file.setAttribute("width", 300);
 	this.file.setAttribute("height", 80);
 	document.body.insertBefore( this.file, document.getElementById('canvas') );

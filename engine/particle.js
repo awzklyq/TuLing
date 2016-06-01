@@ -44,6 +44,7 @@ function Particle( )
 				this.polygon = Polygon.CreateRulestar( this.number, this.size, this.size * 0.5 ); // TODO.
 
 			this.polygon.setColorStyle( this.color );
+			this.polygon.resetCanvas( );
 		}
 		else if ( this.pfxType == Particle.ImageType )
 		{
@@ -62,7 +63,6 @@ function Particle( )
 		{
 			// this.scale.normalsize( );
 			Vector.mul( this.scale, this.scalepower, this.scale );
-			log( this.scale.x, this.scale.y );
 		}
 
 		if ( ( this.sportType & Particle.Target ) != 0 )
@@ -186,7 +186,7 @@ function Particle( )
 
 			this.matrix.mulTranslationRight( this.direction.x, this.direction.y );
 		}
-
+			
 		if ( isneedupdate > 0 && ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 || this.pfxType == Particle.ImageType || this.pfxType == Particle.ImageAnimaType ) && this.polygon != null )
 		{
 			this.polygon.matrix.set( this.matrix.mat );
