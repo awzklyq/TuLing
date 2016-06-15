@@ -9,6 +9,7 @@ function ParticleEmitter( )
 	this.duration = 0;
 	this.limit = 0;
 	this.interival = 0;
+	this.interivalHelper = 0;
 	this.delay = 0;
 	this.pfxType = 0; // Particle Type.
 	this.sportType; // Particle SportType.
@@ -71,6 +72,7 @@ function ParticleEmitter( )
 	{
 		this.tick = 0;
 		this.pause = false;
+		this.interivalHelper = this.interival;
 		this.pfxs.clear( );
 	}
 
@@ -157,7 +159,7 @@ function ParticleEmitter( )
 		if ( this.pause == true )
 			return;
 
-		var isdead = this.tick >= this.duration && ( this.duration != -1 || this.tick == -1 );
+		var isdead = ( this.tick >= this.duration ) || ( this.duration == -1 );
 		if ( isdead == false )
 			this.tick += e;
 
@@ -166,10 +168,15 @@ function ParticleEmitter( )
 		
 		var isneedcreate = false;
 		
-		if ( this.interival == 0 )
+		if ( this.interivalHelper == 0 )
+		{
 			isneedcreate = true;
+		}
 		else
-			isneedcreate = Math.floor( this.tick / this.interival ) > Math.floor( ( this.tick - e ) / this.interival );
+		{
+			if ( this.tick > this.interivalHelper )
+				isneedcreate = true;
+		}
 
 		var pfxs = this.pfxs;
 		if ( isneedcreate && isdead == false )
@@ -182,6 +189,7 @@ function ParticleEmitter( )
 					if ( pfxs.length >= this.limit )
 						break;
 
+					this.interivalHelper = this.interival + this.tick;
 					this.createParticle( );
 				}
 			}
@@ -189,11 +197,11 @@ function ParticleEmitter( )
 
 		for ( var i = 0; i < pfxs.length; i ++ )
 		{
-			var isdead = pfxs[i].update( e );
+			var dead = pfxs[i].update( e );
 
 			if ( this.targetEvent == null || this.duration == -1 )
 			{
-				if ( isdead )
+				if ( dead )
 				{
 					pfxs.remove( pfxs[i] );
 					-- i;
@@ -208,7 +216,7 @@ function ParticleEmitter( )
 					this.targetEvent( this.tags[j].name );
 			}
 
-			if ( isdead )
+			if ( dead )
 			{
 				pfxs.remove( pfxs[i] );
 				-- i;
