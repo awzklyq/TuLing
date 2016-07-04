@@ -112,6 +112,10 @@ function CanvasEx( )
 		context.save( );
 		context.beginPath( );
 		Global.bindMatrixToContext( context, Global.getCurrentMatrix( ) );
+
+		var blender = Global.getCurrentBlender( );
+		context.globalAlpha = blender.alpha;
+
 		if ( arguments.length == 0 )
 		{
 			if ( this.w == 0 || this.h == 0 )

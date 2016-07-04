@@ -225,7 +225,6 @@ Polygon.render = function( polygon )
 		var range = polygon.canvas.range;
 		Global.pushMatrix( polygon.matrix );
 		polygon.canvas.draw( 0, 0, range, range, -range * 0.5, -range * 0.5, range, range );
-		//polygon.canvas.draw( );
 		Global.popMatrix( );
 		return;
 	}
@@ -253,6 +252,7 @@ Polygon.render = function( polygon )
 		context.save( );
 		context.beginPath( );
 	}
+
 	var blender = Global.getCurrentBlender( );
 	context.globalAlpha = blender.alpha;
 	context.lineWidth = polygon.lineWidth
@@ -260,15 +260,16 @@ Polygon.render = function( polygon )
 	if ( polygon.colorStyle != null )
 		context.fillStyle = polygon.colorStyle;
 
+	Global.bindAffectToContext( context );
+
 	context.moveTo(points[0].x, points[0].y);
 	for(var i = 1; i < length; i ++)
 		context.lineTo(points[i].x, points[i].y);
 
-	// context.lineTo(points[0].x, points[0].y);
 	if ( Global.combineRender == false )
 	{
 		context.closePath( );
-		if ( polygon.colorStyle != null )
+		if ( polygon.colorStyle != null || Global.affects.length > 0 )
 			context.fill( );
 
 		context.stroke( );

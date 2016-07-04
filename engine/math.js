@@ -22,7 +22,6 @@ Math.LinearColor = function( color1, color2, t )
 	var r = Math.Linear( c1.r, c2.r, t );
 	var g = Math.Linear( c1.g, c2.g, t );
 	var b = Math.Linear( c1.b, c2.b, t );
-
 	return Math.CompressionRGBA( a * 255, r, g, b );
 }
 
@@ -41,6 +40,7 @@ Math.randomVector = function( v1, v2, v3 )
 	return new Vector( x, y );
 }
 
+// Note: a/255.
 Math.DecompressionRGBA = function( argb )
 {
 	var bb = argb % 0x100;
@@ -53,13 +53,13 @@ Math.DecompressionRGBA = function( argb )
 
 Math.CompressionRGBA = function( a, r, g, b )
 {
-	var temp = a * 0x01000000 + r * 0x00010000 + g * 0x00000100 + b;
+	var temp = Math.ceil( a ) * 0x01000000 + Math.ceil( r ) * 0x00010000 + Math.ceil( g ) * 0x00000100 + Math.ceil( b );
 	return parseInt( temp.toString(16), 16);
 }
 
 Math.StringConvertNumberColor = function( color )
 {
-	return parseInt( StringEx.getRemoveAtResult( color, 0 ), 16 );
+	return parseInt( StringEx.getRemoveAtResult( color, 1 ), 16 );
 }
 
 Math.NumberConvertStringColor = function( color )
@@ -86,6 +86,11 @@ Math.getRGBA = function( color )
 	return "rgba(" + temp.r + "," + temp.g + "," + temp.b + "," + temp.a + ")";
 }
 
-Math.MinNumber = 0.00000001;
-Math.MaxNumber = 99999999.0;
+Math.getRGBAFromStr = function( colorstyle )
+{
+	return Math.DecompressionRGBA( Math.StringConvertNumberColor( colorstyle ) );
+}
+
+Math.MinNumber = 0.000001;
+Math.MaxNumber = 999999.0;
 Math.ARC = Math.PI * 2;

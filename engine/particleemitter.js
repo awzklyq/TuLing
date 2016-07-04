@@ -47,6 +47,7 @@ function ParticleEmitter( )
 	this.pfxSize1 = 0;
 	this.pfxSize2 = 0;
 
+	this.affect = new Affect( );
 	this.imageAnimaData = {};
 	this.bindMatrix = new Matrix( );
 
@@ -66,6 +67,9 @@ function ParticleEmitter( )
 		delete this.bindMatrix;
 
 		delete this.image;
+	
+		delete this.affect;
+		delete this.imageAnimaData;
 	}
 
 	this.play = function( )
@@ -152,6 +156,7 @@ function ParticleEmitter( )
 
 		// Add pfx.
 		this.pfxs.push( pfx );
+		pfx.host = this;
 	}
 
 	this.update = function( e )
@@ -291,6 +296,8 @@ ParticleEmitter.copy = function( emit )
 	result.pfxSize1 = emit.pfxSize1;
 	result.pfxSize2 = emit.pfxSize2;
 	result.imageAnimaData = emit.imageAnimaData;
+
+	result.affect = emit.affect;
 	// result.bindMatrix = new Matrix( );
 
 	// TODO.

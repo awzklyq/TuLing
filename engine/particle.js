@@ -1,6 +1,7 @@
 // Temp variables.
 var polygon = null;
 
+// Host: ParticleEmitter.
 function Particle( )
 {
 	this.pfxType = 0;
@@ -80,6 +81,7 @@ function Particle( )
 		if ( this.alpha1 != 1 || this.alpha2 != 1 )
 		{
 			this.blender.useAlpha( this.alpha1, this.alpha2, this.duration );
+			log(this.alpha1, this.alpha2, this.duration);
 			this.blender.setEnabelAlpha( true );
 		}
 	}
@@ -96,6 +98,8 @@ function Particle( )
 
 		delete this.image;
 		delete this.blender;
+
+		delete this.host;
 	}
 
 	this.changeMartix = function( )
@@ -116,7 +120,6 @@ function Particle( )
 		polygon = this.polygon;
 		if ( ( this.pfxType == Particle.PolygonType1 || this.pfxType == Particle.PolygonType2 )&& polygon != null )
 		{
-			// Global.bindMatrixToContext( context, this.mat );
 			Global.pushBlender( this.blender );
 			Polygon.render( polygon );
 			Global.popBlender( );

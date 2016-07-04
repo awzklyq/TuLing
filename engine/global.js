@@ -93,6 +93,79 @@ Global.bindBlenderToContext = function( context, blender )
 	}
 }
 
+Global.affects = new Array( );
+Global.pushAffect = function( affect )
+{
+	Global.affects.push( affect );
+}
+
+Global.popAffect = function( )
+{
+	Global.affects.pop( );
+}
+
+Global.bindAffectToContext = function( context, t )
+{
+	if ( Global.affects.length == 0 ) return;
+
+	if ( t == null )
+		t = -1;
+
+	var affect = Global.affects[ Global.affects.length - 1 ];
+	if ( affect.state & Affect.COLOR != 0 )
+	{
+		var color1 = affect.getValue( Affect.COLOR, t );
+		context.fillStyle = Math.getRGBA( color1 );
+		// log(context.fillStyle)
+	}
+	else
+	{	
+		var color2 = Math.getRGBAFromStr( context.fillStyle );
+
+		// TODO.. globalAlpha or fillStyle alpha.
+		if ( affect.state & Affect.COLORA != 0 )
+		{
+			var alpha = affect.getValue( Affect.COLORA, t );
+			if ( alpha != Affect.NONE )
+				context.globalAlpha = alpha;
+		}
+
+		if ( affect.state & Affect.COLORRGB != 0 )
+		{
+			var color1 = affect.getValue( Affect.COLORRGB, t );
+			context.fillStyle = Math.getRGBA( color2.a * 0xff000000 + color1 );
+		}
+		else
+		{
+			var r = color2.r;
+			if ( affect.state & Affect.COLORR != 0 )
+			{
+				var rr = affect.getValue( Affect.COLORR, t );
+				if ( rr != Affect.NONE )
+					r = rr;
+			}
+
+			var g = color2.g;
+			if ( affect.state & Affect.COLORG != 0 )
+			{
+				var gg = affect.getValue( Affect.COLORG, t );
+				if ( gg != Affect.NONE )
+					g = gg;
+			}
+
+			var b = color2.b;
+			if ( affect.state & Affect.COLORB != 0 )
+			{
+				var bb = affect.getValue( Affect.COLORB, t );
+				if ( bb != Affect.NONE )
+					b = bb;
+			}
+
+			context.fillStyle = "rgba(" + r + "," + g + "," + b + "," + color2.a + ")";
+		}
+	}
+}
+
 Global.loadJSFile = function( url, async, func )
 {
 	var script = document.createElement("script");
