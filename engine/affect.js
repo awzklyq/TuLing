@@ -69,53 +69,53 @@ function Affect( )
 		if ( t == -1 )
 			t = this.tick;
 
-		if ( type == Affect.COLOR )
+		if ( ( type & Affect.COLOR ) != 0 )
 		{
 			var temp = this.linear( this.color, t );
 			if ( temp.value1 == Affect.NONE )
 				return Affect.NONE;
-			return Math.LinearColor( temp.value1, temp.value2, temp.value3 );
+			return Math.ceil( Math.LinearColor( temp.value1, temp.value2, temp.value3 ) );
 
 		}
-		else if ( type == Affect.COLORA )
+		else if ( ( type & Affect.COLORA ) != 0 )
 		{
 			var temp = this.linear( this.colora, t );
 			if ( temp.value1 == Affect.NONE )
 				return Affect.NONE;
 			
-			return Math.Linear( temp.value1, temp.value2, temp.value3 );
+			return Math.ceil( Math.Linear( temp.value1, temp.value2, temp.value3 ) );
 		}
-		else if ( type == Affect.COLORR )
+		else if ( ( type & Affect.COLORR ) != 0 )
 		{
 			var temp = this.linear( this.colorr, t );
 			if ( temp.value1 == Affect.NONE )
 				return Affect.NONE;
 			
-			return Math.Linear( temp.value1, temp.value2, temp.value3 );
+			return Math.ceil( Math.Linear( temp.value1, temp.value2, temp.value3 ) );
 		}
-		else if ( type == Affect.COLORG )
+		else if ( ( type & Affect.COLORG ) != 0 )
 		{
 			var temp = this.linear( this.colorg, t );
 			if ( temp.value1 == Affect.NONE )
 				return Affect.NONE;
-			
-			return Math.Linear( temp.value1, temp.value2, temp.value3 );
+
+			return Math.ceil( Math.Linear( temp.value1, temp.value2, temp.value3 ) );
 		}
-		else if ( type == Affect.COLORB )
+		else if ( ( type & Affect.COLORB ) != 0 )
 		{
 			var temp = this.linear( this.colorb, t );
 			if ( temp.value1 == Affect.NONE )
 				return Affect.NONE;
 			
-			return Math.Linear( temp.value1, temp.value2, temp.value3 );
+			return Math.ceil( Math.Linear( temp.value1, temp.value2, temp.value3 ) );
 		}
-		else if ( type == Affect.NUMBER )
+		else if ( ( type & Affect.NUMBER ) != 0 )
 		{
 			var temp = this.linear( this.nums, t );
 			if ( temp.value1 == Affect.NONE )
 				return Affect.NONE;
 			
-			return Math.Linear( temp.value1, temp.value2, temp.value3 );
+			return Math.ceil( Math.Linear( temp.value1, temp.value2, temp.value3 ) );
 		}
 
 		return Affect.NONE;
@@ -123,37 +123,37 @@ function Affect( )
 
 	this.addValue = function( value, t, type )
 	{
-		if ( type == Affect.COLOR )
+		if ( ( type & Affect.COLOR ) != 0 )
 		{
 			this.color.push( {value:value, time:t} );
 			this.color.sort( sorthelper );
 		}
-		else if ( type == Affect.COLORA )
+		else if ( ( type & Affect.COLORA ) != 0 )
 		{
 			this.colora.push( {value:value, time:t} );
 			this.colora.sort( sorthelper );
 		}
-		else if ( type == Affect.COLORR )
+		else if ( ( type & Affect.COLORR ) != 0 )
 		{
 			this.colorr.push( {value:value, time:t} );
 			this.colorr.sort( sorthelper );
 		}
-		else if ( type == Affect.COLORG )
+		else if ( ( type & Affect.COLORG ) != 0 )
 		{
 			this.colorg.push( {value:value, time:t} );
 			this.colorg.sort( sorthelper );
 		}
-		else if ( type == Affect.COLORB )
+		else if ( ( type & Affect.COLORB ) != 0 )
 		{
 			this.colorb.push( {value:value, time:t} );
 			this.colorb.sort( sorthelper );
 		}
-		else if ( type == Affect.COLORRGB )
+		else if ( ( type & Affect.COLORRGB ) != 0 )
 		{
 			this.colorrbb.push( {value:value, time:t} );
 			this.colorrbb.sort( sorthelper );
 		}
-		else if ( type == Affect.NUMBER )
+		else if ( ( type & Affect.NUMBER ) != 0 )
 		{
 			this.nums.push( {value:value, time:t} );
 			this.nums.sort( sorthelper );
@@ -176,8 +176,8 @@ function Affect( )
 Affect.NONE = null;
 Affect.COLOR = 0x00000001;
 Affect.COLORA = 0x00000002;
-Affect.COLORR = 0x00000003;
-Affect.COLORG = 0x00000004;
-Affect.COLORB = 0x00000005;
-Affect.COLORRGB = 0x00000006;
-Affect.NUMBER = 0x00000007;
+Affect.COLORR = 0x00000004;
+Affect.COLORG = 0x00000008;
+Affect.COLORB = 0x00000010;
+Affect.COLORRGB = 0x00000020;
+Affect.NUMBER = 0x00000040;
