@@ -76,6 +76,7 @@ function ParticleEmitter( )
 	{
 		this.tick = 0;
 		this.pause = false;
+
 		this.interivalHelper = this.interival;
 		this.pfxs.clear( );
 	}
@@ -91,6 +92,10 @@ function ParticleEmitter( )
 		}
 	}
 
+	this.isDead = function( )
+	{
+		return this.tick == this.duration;
+	}
 	this.addTargetEvent = function( func )
 	{
 		if ( this.targetEvent != null )
@@ -164,7 +169,7 @@ function ParticleEmitter( )
 		if ( this.pause == true )
 			return;
 
-		var isdead = ( this.tick >= this.duration ) || ( this.duration == -1 );
+		var isdead = ( this.tick >= this.duration ) && ( this.duration != -1 );
 		if ( isdead == false )
 			this.tick += e;
 
@@ -229,7 +234,10 @@ function ParticleEmitter( )
 		}
 
 		if ( isdead && pfxs.length == 0 )
+		{
+			this.tick = this.duration;
 			this.pause = true;
+		}
 	}
 
 	this.render = function( e )

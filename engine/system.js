@@ -18,8 +18,8 @@ if ( System.OS == "win32" )
 	System.KeyA 		= 65;
 	System.KeyZ 		= 90;
 
-	System.MouseLeft	= 0;
-	System.MouseMiddle	= 1;
+	System.MouseLeft	= 1;
+	System.MouseMiddle	= 4;
 	System.MouseRight	= 2;
 }
 

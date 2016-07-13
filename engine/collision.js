@@ -162,6 +162,11 @@ function Collision( )
 		return true;
 	}
 
+	this.checkCircles = function( )
+	{
+		
+	}
+
 	this.setCallback = function( func )
 	{
 		if ( this.callback != null )

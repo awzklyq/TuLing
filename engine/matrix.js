@@ -15,6 +15,9 @@ function Matrix( mat )
 		this.mat[6] = mat[6];
 		this.mat[7] = mat[7];
 		this.mat[8] = mat[8];
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
 	}
 
 	this.reset = function( )
@@ -30,6 +33,9 @@ function Matrix( mat )
 		this.mat[6] = 0;
 		this.mat[7] = 0;
 		this.mat[8] = 1;
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
 	}
 
 	this.setTranslation = function(x, y)
@@ -37,6 +43,9 @@ function Matrix( mat )
 		this.reset( );
 		this.mat[6] = x;
 		this.mat[7] = y;
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
 	}
 
 	this.getTranslation = function( )
@@ -51,6 +60,9 @@ function Matrix( mat )
 		this.mat[1] = Math.sin(r);
 		this.mat[3] = -Math.sin(r);
 		this.mat[4] = Math.cos(r);
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
 	}
 
 	this.setScaling = function(x, y)
@@ -58,7 +70,16 @@ function Matrix( mat )
 		this.reset( );
 		matrix.mat[0] = x;
 		matrix.mat[4] = y;
-		this.mulRight(matrix)
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
+	}
+
+	this.getScaling = function( )
+	{
+		return {
+			x : Math.sqrt( this.mat[0] * this.mat[0] + this.mat[1] * this.mat[1] ),
+			y : Math.sqrt( this.mat[3] * this.mat[3] + this.mat[4] * this.mat[4] ) };
 	}
 
 	this.mulTranslationRight = function(x, y)
@@ -66,7 +87,7 @@ function Matrix( mat )
 		var matrix = new Matrix( );
 		matrix.mat[6] += x;
 		matrix.mat[7] += y;
-		this.mulRight(matrix)
+		this.mulRight(matrix);
 	}
 
 	this.mulRotationRight = function(r)
@@ -76,7 +97,7 @@ function Matrix( mat )
 		matrix.mat[1] = Math.sin(r);
 		matrix.mat[3] = -Math.sin(r);
 		matrix.mat[4] = Math.cos(r);
-		this.mulRight(matrix)
+		this.mulRight(matrix);
 	}
 
 	this.mulScalingRight = function(x, y)
@@ -84,7 +105,7 @@ function Matrix( mat )
 		var matrix = new Matrix( );
 		matrix.mat[0] = x;
 		matrix.mat[4] = y;
-		this.mulRight(matrix)
+		this.mulRight(matrix);
 	}
 
 	this.mulTranslationLeft = function(x, y)
@@ -92,7 +113,7 @@ function Matrix( mat )
 		var matrix = new Matrix( );
 		matrix.mat[6] += x;
 		matrix.mat[7] += y;
-		this.mulLeft(matrix)
+		this.mulLeft(matrix);
 	}
 
 	this.mulRotationLeft = function(r)
@@ -102,7 +123,7 @@ function Matrix( mat )
 		matrix.mat[1] = Math.sin(r);
 		matrix.mat[3] = -Math.sin(r);
 		matrix.mat[4] = Math.cos(r);
-		this.mulLeft(matrix)
+		this.mulLeft(matrix);
 	}
 
 	this.mulScalingLeft = function(x, y)
@@ -110,7 +131,7 @@ function Matrix( mat )
 		var matrix = new Matrix( );
 		matrix.mat[0] = x;
 		matrix.mat[4] = y;
-		this.mulLeft(matrix)
+		this.mulLeft(matrix);
 	}
 
 	this.mulRight = function(matrix)
@@ -130,6 +151,9 @@ function Matrix( mat )
 		this.mat[6] = mat20 * temp[0] + mat21 * temp[3] +  mat22 * temp[6];
 		this.mat[7] = mat20 * temp[1] + mat21 * temp[4] +  mat22 * temp[7];
 		this.mat[8] = mat20 * temp[2] + mat21 * temp[5] +  mat22 * temp[8];
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
 	}
 
 	this.mulLeft = function(matrix)
@@ -148,7 +172,10 @@ function Matrix( mat )
         
 		this.mat[6] = temp[6] *  mat00 + temp[7] * mat10 + temp[8] * mat20; 
 		this.mat[7] = temp[6] *  mat01 + temp[7] * mat11 + temp[8] * mat21; 
-		this.mat[8] = temp[6] *  mat02 + temp[7] * mat12 + temp[8] * mat22; 
+		this.mat[8] = temp[6] *  mat02 + temp[7] * mat12 + temp[8] * mat22;
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
 	}
 
 	this.mul = function(v)

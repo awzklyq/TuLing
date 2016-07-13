@@ -185,7 +185,7 @@ Global.loadJSFile = function( url, async, func )
 	// TODO.
 	script.onload = function( )
 	{
-		if ( Global.isFunction(func ) )
+		if ( Global.isFunction( func ) )
 			func( );
 
 		script.onload = null;	

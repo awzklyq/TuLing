@@ -1,12 +1,9 @@
 // Point: x, y
 
-function PolygonType( )
-{
-	this.typeid = Polygon.typeid;
-}
-
 function Polygon( )
 {
+	this.typeid = Polygon.typeid;
+
 	this.points = new Array( );
 	var x = 0, y = 0;
 	for (var i = 0; i < arguments.length; i ++)
@@ -218,27 +215,34 @@ Polygon.mul = function(polygon, matrix)
 	}
 }
 
+// Optimize..
+var range_render = 0;
+var points_render = new ArrayEx( );
+var length_render = 0;
+var x_render = 0;
+var y_render = 0;
+var context_render = window.context;
 Polygon.render = function( polygon )
 {
 	if ( polygon.canvas != null )
 	{
-		var range = polygon.canvas.range;
+		range_render = polygon.canvas.range;
 		Global.pushMatrix( polygon.matrix );
 		polygon.canvas.draw( 0, 0, range, range, -range * 0.5, -range * 0.5, range, range );
 		Global.popMatrix( );
 		return;
 	}
 
-	var points = polygon.points;
-	var length = points.length;
-	if ( length < 2 )
+	points_render = polygon.points;
+	length_render = points_render.length;
+	if ( length_render < 2 )
 		return;
 
-	var x = polygon.matrix.mat[6];
-	var y = polygon.matrix.mat[7];
+	x_render = polygon.matrix.mat[6];
+	y_render = polygon.matrix.mat[7];
 
 	// TODO.
-	if ( System.isClip && System.checkInClipArea( x + polygon.range, y + polygon.range, x - polygon.range, y - polygon.range ) == false )
+	if ( System.isClip && System.checkInClipArea( x_render + polygon.range, y_render + polygon.range, x_render - polygon.range, y_render - polygon.range ) == false )
 	{
 		Global.clipPolygonCount ++;
 		return;
@@ -246,34 +250,33 @@ Polygon.render = function( polygon )
 
 	Global.renderPolygonCount ++;
 
-	var context = window.context;
+	context_render = window.context;
 	if ( Global.combineRender == false )
 	{
-		context.save( );
-		context.beginPath( );
+		context_render.save( );
+		context_render.beginPath( );
 	}
 
-	var blender = Global.getCurrentBlender( );
-	context.globalAlpha = blender.alpha;
-	context.lineWidth = polygon.lineWidth
+	context_render.globalAlpha = Global.getCurrentBlender( ).alpha;
+	context_render.lineWidth = polygon.lineWidth
 
 	if ( polygon.colorStyle != null )
-		context.fillStyle = polygon.colorStyle;
+		context_render.fillStyle = polygon.colorStyle;
 
-	Global.bindAffectToContext( context );
+	Global.bindAffectToContext( context_render );
 
-	context.moveTo(points[0].x, points[0].y);
-	for(var i = 1; i < length; i ++)
-		context.lineTo(points[i].x, points[i].y);
+	context_render.moveTo(points_render[0].x, points_render[0].y);
+	for(var i = 1; i < length_render; i ++)
+		context_render.lineTo(points_render[i].x, points_render[i].y);
 
 	if ( Global.combineRender == false )
 	{
-		context.closePath( );
+		context_render.closePath( );
 		if ( polygon.colorStyle != null || Global.affects.length > 0 )
-			context.fill( );
+			context_render.fill( );
 
-		context.stroke( );
-		context.restore( );
+		context_render.stroke( );
+		context_render.restore( );
 	}
 }
 
@@ -332,4 +335,3 @@ Polygon.CreateRulestar = function(pn, d1, d2)
 }
 
 Polygon.typeid = Global.OBJECTID ++;
-Polygon.prototype = new PolygonType( );

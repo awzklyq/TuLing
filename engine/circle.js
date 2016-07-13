@@ -3,6 +3,7 @@ function Circle( x, y, r )
 	this.x = x || 0;
 	this.y = y || 0;
 	this.r = r || 0;
+	this.helper_r = r || 0;
 	this.line = "2";
 
 	this.xx1 = this.x;
@@ -16,6 +17,8 @@ function Circle( x, y, r )
 	this.endAngle = Math.ARC;
 	this.lineColorStyle = Math.getRGBA( 0xff000000 );
 	this.colorStyle = Math.getRGBA( 0x00ffffff );
+
+	this.typeid = Circle.typeid;
 
 	this.setLineColor = function( color )
 	{
@@ -78,6 +81,16 @@ function Circle( x, y, r )
 	
 	this.update = function( e )
 	{
+		// Update matrix.
+		var mat = Global.getCurrentMatrix( );
+		if ( mat != null )
+		{
+			var trans = mat.getTranslation( );
+			this.x = trans.x;
+			this.y = trans.y;
+			// Get scaling..
+		}
+
 		// Update.
 		if ( this.time <= this.tick )
 			return;
@@ -106,5 +119,6 @@ function Circle( x, y, r )
 		context.stroke( );
 		context.restore( );
 	}
-	
 }
+
+Circle.typeid = Global.OBJECTID ++;

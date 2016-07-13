@@ -45,7 +45,6 @@ function Particle( )
 				this.polygon = Polygon.CreateRulestar( this.number, this.size, this.size * 0.5 ); // TODO.
 
 			this.polygon.setColorStyle( this.color );
-			this.polygon.resetCanvas( );
 		}
 		else if ( this.pfxType == Particle.ImageType )
 		{

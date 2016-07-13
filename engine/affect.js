@@ -1,6 +1,6 @@
 function sorthelper(a, b)
 {
-	return a.time < b.time;
+	return a.time > b.time;
 }
 
 function Affect( )
@@ -46,13 +46,13 @@ function Affect( )
 			}
 		}
 
-		if ( start == Affect.NONE )
+		if ( start == null )
 		{
 			t1 = t2;
 			start = end;
 		}
 
-		if ( end == Affect.NONE )
+		if ( end == null )
 		{
 			t2 = t1;
 			end = start;
@@ -90,7 +90,7 @@ function Affect( )
 			var temp = this.linear( this.colorr, t );
 			if ( temp.value1 == Affect.NONE )
 				return Affect.NONE;
-			
+
 			return Math.ceil( Math.Linear( temp.value1, temp.value2, temp.value3 ) );
 		}
 		else if ( ( type & Affect.COLORG ) != 0 )

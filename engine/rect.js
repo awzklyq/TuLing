@@ -1,5 +1,6 @@
 function Rect( x, y, w, h )
 {
+	this.typeid = Rect.typeid;
 	this.x = x || 0;
 	this.y = y || 0;
 	this.w = w || 0;
@@ -24,6 +25,7 @@ function Rect( x, y, w, h )
 	{
 		var context = window.context;
 		context.save( );
+		Global.bindMatrixToContext( context, Global.getCurrentMatrix( ) ); 
 		context.beginPath( );
 		context.lineWidth = this.line;
 		context.fillStyle = this.colorStyle;
@@ -35,3 +37,6 @@ function Rect( x, y, w, h )
 		context.restore( );
 	}
 }
+
+
+Rect.typeid = Global.OBJECTID ++;
