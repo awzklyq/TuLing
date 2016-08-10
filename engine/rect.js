@@ -27,6 +27,9 @@ function Rect( x, y, w, h )
 		context.save( );
 		Global.bindMatrixToContext( context, Global.getCurrentMatrix( ) ); 
 		context.beginPath( );
+		var blender = Global.getCurrentBlender( );
+		context.globalAlpha = blender.alpha;
+		context.globalCompositeOperation = blender.mode;
 		context.lineWidth = this.line;
 		context.fillStyle = this.colorStyle;
 		context.strokeStyl = this.lineColorStyle;

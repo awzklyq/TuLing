@@ -71,7 +71,7 @@ Global.popBlender = function( )
 
 Global.getCurrentBlender = function( )
 {
-	var blender = { alpha: 1, color: 0x00 };
+	var blender = { alpha: 1, color: 0x00, mode: "source-over" };
 	if ( Global.blenders.length > 0 )
 	{
 		for ( var i = 0; i < Global.blenders.length; i ++ )
@@ -79,6 +79,7 @@ Global.getCurrentBlender = function( )
 			blender.alpha *= Global.blenders[i].getCurrentAlpha( );
 			blender.color += Global.blenders[i].getCurrentColor( );
 		}
+		blender.mode = Global.blenders[Global.blenders.length - 1].getBlendMode( );
 	}
 
 	return blender;

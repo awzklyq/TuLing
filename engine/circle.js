@@ -110,6 +110,9 @@ function Circle( x, y, r )
 		var context = window.context;
 		context.save( );
 		context.beginPath( );
+		var blender = Global.getCurrentBlender( );
+		context.globalAlpha = blender.alpha;
+		context.globalCompositeOperation = blender.mode;
 		context.lineWidth = this.line;
 		context.fillStyle = this.colorStyle;
 		context.strokeStyl = this.lineColorStyle;

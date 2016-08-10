@@ -129,6 +129,7 @@ function LImage( )
 		// Use blender.
 		var blender = Global.getCurrentBlender( );
 		context.globalAlpha = blender.alpha;
+		context.globalCompositeOperation = blender.mode;
 		var xx = 0, yy = 0, ww = 0, zz = 0;
 
 		if ( img != null && img.isLoad == true )

@@ -257,7 +257,9 @@ Polygon.render = function( polygon )
 		context_render.beginPath( );
 	}
 
-	context_render.globalAlpha = Global.getCurrentBlender( ).alpha;
+	var blend = Global.getCurrentBlender( );
+	context_render.globalAlpha = blend.alpha;
+	context_render.globalCompositeOperation = blender.mode;
 	context_render.lineWidth = polygon.lineWidth
 
 	if ( polygon.colorStyle != null )
