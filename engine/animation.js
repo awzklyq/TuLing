@@ -74,7 +74,7 @@ function ImageAnimation( data )
 		if ( this.image.isLoad )
 			this.bindDataHelper( self );
 		else
-			this.image.setLoadCallBack( function(){ this.bindDataHelper( self ); });
+			this.image.setLoadCallBack( function(){ self.bindDataHelper( self ); });
 	}
 
 	this.bindData( data );
@@ -162,7 +162,7 @@ function ImageAnimation( data )
 
 ImageAnimation.update = function( anima, e )
 {
-	if ( anima.state != 1 || anima.pause == true || anima.duration == 0 )
+	if ( anima.state == 0 || anima.pause == true || anima.duration == 0 )
 		return;
 
 	anima.current += e;
@@ -172,7 +172,7 @@ ImageAnimation.update = function( anima, e )
 		{
 			anima.current = anima.duration;
 			anima.curindex = anima.length - 1;
-			anima.pause = true;
+			anima.state = 0;
 			return;
 		}
 		else
@@ -185,7 +185,7 @@ ImageAnimation.update = function( anima, e )
 	var frames = anima.data.frames;
 	for ( var i = anima.curindex; i < frames.length; i ++ )
 	{
-		if ( frames[i].tick >= anima.current)
+		if ( frames[i].tick >= anima.current )
 		{
 			anima.curindex = i;
 			break;
