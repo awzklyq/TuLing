@@ -54,8 +54,18 @@ function Grids6( x, y, side, w, h )
 			}
 		}
 
-		if ( iii != -1 && iii < this.grids[jjj].length )
-			return this.grids[jjj][iii];
+		if ( iii == -1 || iii >= this.grids[jjj].length )
+			return null;
+
+		// TODO.
+		jj = Math.abs( y - this.grids[jjj][iii].matrix.mat[7] );
+		if ( this.grids[jjj - 1] != null && jj > Math.abs( y - this.grids[jjj - 1][iii].matrix.mat[7] ) )
+			return this.grids[jjj - 1][iii];
+
+		if ( this.grids[jjj + 1] != null && jj > Math.abs( y - this.grids[jjj + 1][iii].matrix.mat[7] ) )
+			return this.grids[jjj + 1][iii];
+
+		return this.grids[jjj][iii];
 	}
 
 	this.draw = function( )

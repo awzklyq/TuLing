@@ -259,7 +259,7 @@ Polygon.render = function( polygon )
 
 	var blend = Global.getCurrentBlender( );
 	context_render.globalAlpha = blend.alpha;
-	context_render.globalCompositeOperation = blender.mode;
+	context_render.globalCompositeOperation = blend.mode;
 	context_render.lineWidth = polygon.lineWidth
 
 	if ( polygon.colorStyle != null )
