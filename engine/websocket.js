@@ -16,7 +16,6 @@ function LWebSocket( url, subprotocol )
 		log( "Reset WebSocket onOpen callback !" );
 		this.ws.onopen = function( event )
 		{
-			log("asdasfdds");
 			func( event );
 			
 			for ( var i = 0; i < self.messages.length; i ++ )

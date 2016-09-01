@@ -228,7 +228,7 @@ Polygon.render = function( polygon )
 	{
 		range_render = polygon.canvas.range;
 		Global.pushMatrix( polygon.matrix );
-		polygon.canvas.draw( 0, 0, range, range, -range * 0.5, -range * 0.5, range, range );
+		polygon.canvas.draw( 0, 0, polygon.range, polygon.range, -polygon.range * 0.5, -polygon.range * 0.5, polygon.range, polygon.range );
 		Global.popMatrix( );
 		return;
 	}

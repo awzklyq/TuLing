@@ -31,6 +31,7 @@ function Particle( )
 
 	this.blender = new Blender( );
 	this.matrix = new Matrix( );
+	this.polygon = new Polygon( );
 
 	this.createResources = function( )
 	{
