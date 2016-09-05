@@ -7,6 +7,7 @@ function TextInput( x, y, w, h, text )
 	this._h = h || 0;
 	this.text = text || "";
 
+	this.isEditor = true;
 	this.borderWidth = 2;
 
 	this.textColor = "rgba(0, 0, 0, 255)";
@@ -118,6 +119,9 @@ function TextInput( x, y, w, h, text )
 
 	this.triggerMouseDown = function( b, x, y )
 	{
+		if ( this.isEditor == false )
+			return;
+
 		this.fouse = false;
 		if ( this.insert( x, y ) == false )
 			return false;
@@ -172,6 +176,9 @@ UISystem.isTextInput = function( obj )
 // Windows...
 TextInput.doActionForKeyDown = function( keyCode, textinput)
 {
+	if ( textinput.isEditor == false )
+		return;
+
 	if ( System.KeyBack == keyCode && textinput.curindex != 0 )
 	{
 		textinput.text = StringEx.getRemoveAtResult( textinput.text, textinput.curindex );

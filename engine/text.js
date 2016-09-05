@@ -18,11 +18,6 @@ function Text( text, x, y, w, h )
 		this._w = w;
 	}
 
-	if ( h != null )
-	{
-		this._h = h;
-	}
-
 	if ( text != null )
 	{
 		this.text = text;
@@ -36,9 +31,14 @@ function Text( text, x, y, w, h )
 	this.font = Global.FONT;
 	this.setFont = function( font )
 	{
-		this.font = font;
+		this.font = font+"px Georgia";
 	}
 
+	if ( h != null )
+	{
+		this._h = h;
+		this.setFont(this._h);
+	}
 	this.style = Global.FILLSTYLE;
 	this.setStyle = function( style )
 	{
@@ -61,7 +61,8 @@ function Text( text, x, y, w, h )
 
 		context.font = this.font;
 		context.lineWidth = this.lineWidth;
-
+		context.textAlign = Global.textAlign;
+		context.textBaseline = Global.textBaseline;
 		if ( this.color1 != null )
 		{
 			context.fillStyle = this.color1;

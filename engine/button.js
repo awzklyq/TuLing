@@ -29,6 +29,21 @@ function Button( x, y, w, h, text )
 		this._h = h;
 	}
 
+	this.text = new Text();
+	if ( text )
+	{
+		this.text._x = this._x;
+		this.text._y = this._y;
+		this.text._w = this._w;
+		this.text.setFont( this._h );
+		this.text.text = text;
+	}
+	
+	this.elements = new ArrayEx( );
+	this.elements.push( this.text );
+
+	this.color1 = 0xff888888;
+	this.color2 = 0xffaaaaaa;
 	this.setColor = function( color1, color2 )
 	{
 		if ( this.color1 )

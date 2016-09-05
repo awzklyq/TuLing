@@ -177,7 +177,7 @@ Global.loadJSFile = function( url, async, func )
 
 	// TODO.
 	script.async = async;
-	// script.defer = false; 
+	//script.defer = false; 
 
 	script.src = url;
 	var parent = document.getElementsByTagName("script")[0].parentNode;
@@ -258,7 +258,6 @@ Global.windowToCanvas = function( canvas, x, y )
 		y : ( y - bbox.top ) * ( canvas.height / bbox.height ) };
 }
 
-Global.FONT = "60px Georgia";
 Global.FILLSTYLE = 0x00000000;
 Global.STROKESTYLE = 0x00000001;
 
@@ -269,3 +268,9 @@ Global.ALLSTYLE = 0x00000002;
 Global.bgColor = Math.getRGBA( 0xff000000 );
 
 Global.OBJECTID = 0x00000000;
+
+// Set Font
+Global.FONT = "60px Georgia";
+Global.textAlign = "center"; // start, center, end, left, right.
+Global.textBaseline = "middle"; // top, bottom, middle, alphabetic, ideographic, hanging.
+// window.context.textAlign = Global.textAlign;
