@@ -1,22 +1,27 @@
-function UIView( x, y, w, h )
+function UIList( x, y, w, h )
 {
-	this._x = x || 0;
-	this._y = y || 0;
-	this._w = w || 0;
-	this._h = h || 0;
+	this._x = 0;
+	this._y = 0;
+	this._w = 0;
+	this._h = 0;
 
 	this.elements = new ArrayEx( );
-	this.addUI = function( ui )
+	this.addView = function( ui )
 	{
 		if ( UISystem.isUIView( ui ) )
 		{
 			ui._parent = this;
+			if ( this.elements.length != 0 )
+			{
+				var view = this.elements[this.elements.length - 1];
+				ui.y = view.y + view.h;
+			}
 			this.elements.push( ui );
 			UISystem.removeUI( ui );
 		}
 	}
-
-	this.removeUI = function( ui )
+	
+	this.removeView = function( ui )
 	{
 		if ( UISystem.isUIView( ui ) == false || ui._parent != this )
 			return
@@ -25,21 +30,13 @@ function UIView( x, y, w, h )
 		delete ui._parent;
 	}
 
-	this.clearUIs = function( )
-	{
-		for ( var i = 0; i < this.elements.length; i ++ )
-			delete this.elements._parent;
-
-		this.elements.clear( );
-	}
-
 	this.draw = function( )
 	{
 		var elements = this.elements;
 		for ( var i = 0; i < elements.length; i ++ )
 			elements[i].draw( );
 	}
-
+	
 	this.triggerMouseDown = function( b, x, y )
 	{
 		var elements = this.elements;
@@ -52,19 +49,14 @@ function UIView( x, y, w, h )
 		return false;
 	}
 
-	UISystem.uiviews.push( this );
-	this.type = "UIView";
+
+	UISystem.uilists.push( this );
+	this.type = "UIList";
 }
 
-UIView.prototype = Global.UI;
+UIList.prototype = Global.UI;
 
-UISystem.isUIView = function( obj, isview )
+UISystem.isUIList = function( ui )
 {
-	if ( isview == true )
-	{
-		if ( obj.type == "UIView" )
-			return;
-	}
-
-	return ( obj.type == "UIView" ) || UISystem.isButton( obj ) || UISystem.isText( obj ) || UISystem.isTextArea( obj ) || UISystem.isTextInput( obj );
+	return ui && ui.type && ui.type == "UIList";
 }

@@ -16,6 +16,8 @@ UISystem.uiviews = new ArrayEx( );
 
 UISystem.fouseuis = new ArrayEx( );
 
+UISystem.uilists = new ArrayEx( );
+
 // TODO.
 UISystem.removeUI = function( ui )
 {
@@ -29,6 +31,8 @@ UISystem.removeUI = function( ui )
 		UISystem.textinputs.remove( ui );
 	else if ( UISystem.isUIView( ui ) )
 		UISystem.uiviews.remove( ui );
+	else if ( UISystem.isUIList( ui ) )
+		UISystem.uilists.remove( ui );
 } 
 
 UISystem.render = function( e )
@@ -53,6 +57,10 @@ UISystem.render = function( e )
 	var uiviews = UISystem.uiviews;
 	for ( var i = 0; i < uiviews.length; i ++ )
 		uiviews[i].draw( );
+
+	var uilists = UISystem.uilists;
+	for ( var i = 0; i < uilists.length; i ++ )
+		uilists[i].draw( );
 }
 
 function mouseDown( b, x, y )
@@ -76,6 +84,13 @@ function mouseDown( b, x, y )
 	for ( var i = 0; i < uiviews.length; i ++ )
 	{
 		if ( uiviews[i].triggerMouseDown( b, x, y ) )
+			return true;
+	}
+
+	var uilists = UISystem.uilists;
+	for ( var i = 0; i < uilists.length; i ++ )
+	{
+		if ( uilists[i].triggerMouseDown( b, x, y ) )
 			return true;
 	}
 
@@ -126,8 +141,7 @@ Global.UI = Object.create( Object.prototype, {
 			var intervalx = this._x - oldx;
 			for ( var i = 0; i < temp.length; i ++ )
 			{
-				temp[i]._x += intervalx;
-
+				temp[i].x += intervalx;
 				if ( temp[i].triggerResizeXY != null && Global.isFunction( temp[i].triggerResizeXY ) )
 					temp[i].triggerResizeXY( intervalx, 0 );
 			}
@@ -160,7 +174,7 @@ Global.UI = Object.create( Object.prototype, {
 			var intervaly = this._y - oldy;
 			for ( var i = 0; i < temp.length; i ++ )
 			{
-				temp[i]._y += intervaly;
+				temp[i].y += intervaly;
 
 				if ( temp[i].triggerResizeXY != null && Global.isFunction( temp[i].triggerResizeXY ) )
 					temp[i].triggerResizeXY( 0, intervaly );
@@ -168,6 +182,26 @@ Global.UI = Object.create( Object.prototype, {
 		}
 	}
 	},// End y.
+	w:{
+	get:function( )
+	{
+		return this._w;
+	},
+	set:function( ww )
+	{
+		this._w = ww;
+	}
+	},// End w.
+	h:{
+	get:function( )
+	{
+		return this._h;
+	},
+	set:function( hh )
+	{
+		this._h = hh;
+	}
+	},// End h.
 	_x:{writable:true},
 	_y:{writable:true},
 })

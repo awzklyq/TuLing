@@ -171,6 +171,27 @@ Global.bindAffectToContext = function( context, t )
 	}
 }
 
+Global.clips = new Array( );
+Global.pushClip = function( x, y, w, h )
+{
+	Global.clips.push( {x: x, y: y, w: w, h: h} );
+}
+
+Global.useClip = function( context )
+{
+	if ( Global.clips.length == 0 )
+		return;
+
+	var clip = Global.clips[ Global.clips.length - 1 ];
+	context.rect( clip.x, clip.y, clip.w, clip.h );
+	context.clip( );
+}
+
+Global.popClip = function( )
+{
+	Global.clips.pop( );
+} 
+
 Global.loadJSFile = function( url, async, func )
 {
 	var script = document.createElement("script");

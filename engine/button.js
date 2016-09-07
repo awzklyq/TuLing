@@ -29,7 +29,8 @@ function Button( x, y, w, h, text )
 		this._h = h;
 	}
 
-	this.text = new Text();
+	this.text = new Text( );
+	
 	if ( text )
 	{
 		this.text._x = this._x;
@@ -41,6 +42,24 @@ function Button( x, y, w, h, text )
 	
 	this.elements = new ArrayEx( );
 	this.elements.push( this.text );
+	this.addUI = function( ui )
+	{
+		if ( UISystem.isUIView( ui ) == false )
+			return;
+
+		ui._parent = this;
+		this.elements.push( ui );
+		UISystem.removeUI( ui );
+	}
+
+	this.removeUI = function( ui )
+	{
+		if ( UISystem.isUIView( ui ) == false || ui._parent != this )
+			return
+
+		this.elements.remove( ui );
+		delete ui._parent;
+	}
 
 	this.color1 = 0xff888888;
 	this.color2 = 0xffaaaaaa;
@@ -101,6 +120,8 @@ function Button( x, y, w, h, text )
 				break;
 			}
 		}
+
+		this.removeUI( this.text );
 	}
 
 	this.renderType = 0x00000001;
@@ -180,6 +201,9 @@ function Button( x, y, w, h, text )
 				this.tick = 0;
 			}
 		}
+
+		if ( this.text.text != "" )
+			this.text.draw( );
 	}
 
 	// Called from parent.
