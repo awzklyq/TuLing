@@ -201,7 +201,7 @@ Global.loadJSFile = function( url, async, func )
 	//script.defer = false; 
 
 	script.src = url;
-	var parent = document.getElementsByTagName("script")[0].parentNode;
+	var parent = document.getElementsById("script")[0].parentNode;
 	parent.appendChild( script );
 
 	// TODO.
@@ -212,6 +212,40 @@ Global.loadJSFile = function( url, async, func )
 
 		script.onload = null;	
 	}
+}
+
+Global.createElement = function( name )
+{
+	var element = document.createElement( name );
+	console.assert( element == null, "createElement faild!!" );
+	return element;
+}
+
+Global.getElementById = function( name )
+{
+	var element = document.getElementById( name )
+	console.assert( element == null, "getElement faild!!" );
+	return element;
+}
+
+Global.getElementByName = function( name )
+{
+	var element = document.getElementByName( name )
+	console.assert( element == null, "getElement faild!!" );
+	return element;
+}
+
+Global.showElement = function( element, show )
+{
+	console.assert( element == null || element.style == null, "showElement faild!!" );
+
+	if ( show == null )
+	{
+		element.style.visibility = "none";
+		return
+	}
+
+	element.style.visibility = show ?  "visible": "hidden" ;
 }
 
 Global.isString = function( param )
