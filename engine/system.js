@@ -57,4 +57,20 @@ System.checkInClipArea = function ( x1, y1, x2, y2 )
 	return x1 > clipx1 && y1 > clipy1 && x2 < clipx2 && y2 < clipy2;
 }
 
+System.getWidth = function( )
+{
+	if ( System.OS == "win32" )
+		return window.innerWidth;
+
+	return screen.width
+}
+
+System.getHeight = function( )
+{
+	if ( System.OS == "win32" )
+		return window.innerHeight;
+
+	return screen.height
+}
+window.innerWidth
 System( );

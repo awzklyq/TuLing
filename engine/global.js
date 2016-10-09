@@ -214,30 +214,43 @@ Global.loadJSFile = function( url, async, func )
 	}
 }
 
-Global.createElement = function( name )
+Global.createElement = function( obj, id, type, name )
 {
-	var element = document.createElement( name );
-	console.assert( element == null, "createElement faild!!" );
+	var element = document.createElement( obj );
+	console.assert( element != null, "createElement faild!!" );
+
+	if ( id != null )
+		element.id = id;
+
+	if ( type != null )
+		element.type = type;
+
+	if ( name != null )
+		element.name = name;
+
+	// Insert first.
+	document.body.insertBefore( element, document.body.firstChild );
+
 	return element;
 }
 
-Global.getElementById = function( name )
+Global.getElementById = function( id )
 {
-	var element = document.getElementById( name )
-	console.assert( element == null, "getElement faild!!" );
+	var element = document.getElementById( id )
+	console.assert( element != null, "getElementById faild!!" );
 	return element;
 }
 
 Global.getElementByName = function( name )
 {
 	var element = document.getElementByName( name )
-	console.assert( element == null, "getElement faild!!" );
+	console.assert( element != null, "getElementByName faild!!" );
 	return element;
 }
 
 Global.showElement = function( element, show )
 {
-	console.assert( element == null || element.style == null, "showElement faild!!" );
+	console.assert( element != null && element.style != null, "showElement faild!!" );
 
 	if ( show == null )
 	{
@@ -246,6 +259,44 @@ Global.showElement = function( element, show )
 	}
 
 	element.style.visibility = show ?  "visible": "hidden" ;
+}
+
+Global.setElementX = function( element, x )
+{
+	console.assert( element != null && element.style != null, "setElementX faild!!" );
+	element.style.position = "absolute";
+	element.style.left = x;
+}
+
+Global.getElementX = function( element )
+{
+	console.assert( element != null && element.style != null, "getElementX faild!!" );
+	return element.style.left;
+}
+
+Global.setElementY = function( element, y )
+{
+	console.assert( element != null && element.style != null, "setElementY faild!!" );
+	element.style.position = "absolute";
+	element.style.top = y;
+}
+
+Global.getElementY = function( element )
+{
+	console.assert( element != null && element.style != null, "getElementY faild!!" );
+	return element.style.top;
+}
+
+Global.setElementWidth = function( element, w )
+{
+	console.assert( element != null && element.style != null, "setElementWidth faild!!" );
+	element.style.Width = w;
+}
+
+Global.setElementHeight = function( element, h )
+{
+	console.assert( element != null && element.style != null, "setElementHeight faild!!" );
+	element.style.height = h;
 }
 
 Global.isString = function( param )

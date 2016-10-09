@@ -91,8 +91,8 @@ var canvas = document.getElementById('canvas');
 // Test.
 if ( System.OS == "win32" )
 {
-	canvas.width = screen.width * 2;
-	canvas.height = screen.height * 3;
+	// canvas.width = screen.width * 2;
+	// canvas.height = screen.height * 3;
 }
 
 window.context = canvas.getContext('2d');
