@@ -214,13 +214,13 @@ Global.loadJSFile = function( url, async, func )
 	}
 }
 
-Global.createElement = function( obj, id, type, name )
+Global.createElement = function( obj, id, type, name, value )
 {
 	var element = document.createElement( obj );
 	console.assert( element != null, "createElement faild!!" );
 
 	if ( id != null )
-		element.id = id;
+		element.id = "button1";
 
 	if ( type != null )
 		element.type = type;
@@ -228,10 +228,21 @@ Global.createElement = function( obj, id, type, name )
 	if ( name != null )
 		element.name = name;
 
+	if ( value != null )
+		element.value = value;
+
 	// Insert first.
 	document.body.insertBefore( element, document.body.firstChild );
 
 	return element;
+}
+
+Global.deleteElement = function( element )
+{
+	console.assert( element != null, "deleteElement faild!!" );
+
+	// Delete first.
+	document.body.removeChild( element );
 }
 
 Global.getElementById = function( id )
@@ -290,13 +301,32 @@ Global.getElementY = function( element )
 Global.setElementWidth = function( element, w )
 {
 	console.assert( element != null && element.style != null, "setElementWidth faild!!" );
-	element.style.Width = w;
+	element.style.width = w;
 }
 
 Global.setElementHeight = function( element, h )
 {
 	console.assert( element != null && element.style != null, "setElementHeight faild!!" );
 	element.style.height = h;
+}
+
+Global.setElementValue = function( element, value )
+{
+	console.assert( element != null , "setElementValue faild!!" );
+	log(element.value, value)
+	element.value = value;
+}
+
+Global.getElementValue = function( element )
+{
+	console.assert( element != null && element.value != null , "getElementValue faild!!" );
+	return element.value;
+}
+
+Global.setElementOnClickEvent = function( element, func )
+{
+	console.assert( element != null && ( Global.isFunction( func ) || func == null ), "setElementOnClickEvent faild!!" );
+	element.onclick = func;
 }
 
 Global.isString = function( param )
