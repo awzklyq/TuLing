@@ -220,7 +220,7 @@ Global.createElement = function( obj, id, type, name, value )
 	console.assert( element != null, "createElement faild!!" );
 
 	if ( id != null )
-		element.id = "button1";
+		element.id = id;
 
 	if ( type != null )
 		element.type = type;
