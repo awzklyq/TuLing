@@ -95,8 +95,9 @@ if ( System.OS == "win32" )
 	// canvas.height = screen.height * 3;
 }
 
-window.context = canvas.getContext('2d');
 window.canvas = canvas;
+window.context = canvas.getContext("2d");
+console.log(context)
 var context = window.context;
 // context.globalAlpha = 0.5;
 // context.globalCompositeOperation = "source-out";
@@ -139,17 +140,24 @@ function render( )
 	{
 		window.updatecallbackfunc(elapse)
 	}
+
 	
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	Global.renderPolygonCount = 0;
+	Global.clipPolygonCount = 0;
+
+	if ( window.webglrendercallbackfunc != null )
+	{
+		window.webglrendercallbackfunc(window.context, elapse);
+	}
+
 	if ( window.rendercallbackfunc != null )
 	{
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		Global.renderPolygonCount = 0;
-		Global.clipPolygonCount = 0;
 		window.rendercallbackfunc(elapse);
-		context.fillStyle = Math.getRGBA( 0xffffff00 );
-		context.fillText("FPS: " + fps + " X: " + System.getClipX( ) + " Y: " + System.getClipY( ) +" CW: " + System.getClipW( ) + " CH: " + System.getClipH( ) + " PC: " + Global.renderPolygonCount + " CPC: " + Global.clipPolygonCount, System.getClipX( ) + 20, System.getClipY( ) + 20);
 	}
-	
+
+	context.fillStyle = Math.getRGBA( 0xffffff00 );
+	context.fillText("FPS: " + fps + " X: " + System.getClipX( ) + " Y: " + System.getClipY( ) +" CW: " + System.getClipW( ) + " CH: " + System.getClipH( ) + " PC: " + Global.renderPolygonCount + " CPC: " + Global.clipPolygonCount, System.getClipX( ) + 20, System.getClipY( ) + 20);
 	tick = newtick
 	window.requestNextAnimationFrame(render);
 }

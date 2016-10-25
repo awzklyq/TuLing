@@ -13,7 +13,6 @@ function LWebSocket( url, subprotocol )
 			return;
 
 		var self = this;
-		log( "Reset WebSocket onOpen callback !" );
 		this.ws.onopen = function( event )
 		{
 			func( event );

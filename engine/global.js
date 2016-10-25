@@ -214,7 +214,7 @@ Global.loadJSFile = function( url, async, func )
 	}
 }
 
-Global.createElement = function( obj, id, type, name, value )
+Global.createElementOnly = function( obj, id, type, name, value )
 {
 	var element = document.createElement( obj );
 	console.assert( element != null, "createElement faild!!" );
@@ -230,6 +230,13 @@ Global.createElement = function( obj, id, type, name, value )
 
 	if ( value != null )
 		element.value = value;
+
+	return element;
+}
+
+Global.createElement = function( obj, id, type, name, value )
+{
+	var element = Global.createElementOnly( obj, id, type, name, value )
 
 	// Insert first.
 	document.body.insertBefore( element, document.body.firstChild );
