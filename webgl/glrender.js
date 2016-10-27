@@ -1,6 +1,6 @@
 window.webglcanvas = Global.createElementOnly( "canvas", "webgl"); //obj, id, type, name, value
 Global.setElementWidth( window.webglcanvas, 800 );
-Global.setElementHeight( window.webglcanvas, 800 );
+Global.setElementHeight( window.webglcanvas, 600 );
 
 // Get webgl.
 var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
@@ -18,11 +18,21 @@ console.assert( window.gl != null, "gl is null!" );
 
 window.webgl = new WebGl( );
 
+var cwidth = Global.getElementWidth( window.webglcanvas );
+var cheight = Global.getElementHeight( window.webglcanvas );
+
 window.webglrendercallbackfunc = function(context, e)
 {
-	webgl.clearColor( 0xffff0000 );
+	webgl.clearColor( webgl.bgColor );
 	webgl.clear( );
-	webgl.viewPort( 0, 0, 100, 100 );
-	context.drawImage( webglcanvas, 0, 0, 100, 100 );
+	webgl.viewPort( 0, 0, cwidth, cheight );
+
+	if ( webgl.update != null )
+		webgl.update( e );
+
+	if ( webgl.render != null )
+		webgl.render( e );
+
+	context.drawImage( webglcanvas, 0, 0, cwidth, cheight );
 	// TODO.
 }
