@@ -23,10 +23,6 @@ var cheight = Global.getElementHeight( window.webglcanvas );
 
 window.webglrendercallbackfunc = function(context, e)
 {
-	webgl.clearColor( webgl.bgColor );
-	webgl.clear( );
-	webgl.viewPort( 0, 0, cwidth, cheight );
-
 	if ( webgl.update != null )
 		webgl.update( e );
 

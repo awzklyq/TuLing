@@ -2,12 +2,12 @@ function WebGl( )
 {
 	this.bgColor = 0xff000000;
 
-	this.clear = function( )
+	this.clear = function( state )
 	{
 		if ( window.gl == null)
 			return;
 
-		gl.clear( gl.COLOR_BUFFER_BIT );
+		gl.clear( state );
 	}
 
 	this.clearColor = function( color )
@@ -176,12 +176,12 @@ function WebGl( )
 		return gl.getAttribLocation( this.program, name );
 	}
 
-	this.vertexAttribPointer = function( index, size, type, isnormal, offset, pointer )
+	this.vertexAttribPointer = function( index, size, type, isnormalized, offset, pointer )
 	{
 		if ( window.gl == null && this.program != null )
 			return;
 
-		gl.vertexAttribPointer( index, size, type, isnormal, offset, pointer );
+		gl.vertexAttribPointer( index, size, type, isnormalized, offset, pointer );
 	}
 	
 	this.enableVertexAttribArray = function( index )
@@ -208,6 +208,39 @@ function WebGl( )
 		gl.uniformMatrix4fv( index, false, value );
 	}
 
-	// Enable state.
-	this.DEPTH_TEST = gl.DEPTH_TEST;
+	this.drawElements = function( mode, count, type, offset )
+	{
+		if ( window.gl == null )
+			return;
+
+		gl.drawElements( mode, count, type, offset );
+	}
+
+	if ( window.gl != null )
+	{
+		// Enable state.
+		this.DEPTH_TEST = gl.DEPTH_TEST;
+
+		// Draw type.
+		this.POINTS			= gl.POINTS;
+		this.LINE_STRIP		= gl.LINE_STRIP;
+		this.LINE_LOOP		= gl.LINE_LOOP;
+		this.LINES			= gl.LINES;
+		this.TRIANGLE_STRIP	= gl.TRIANGLE_STRIP;
+		this.TRIANGLE_FAN	= gl.TRIANGLE_FAN;
+		this.TRIANGLES		= gl.TRIANGLES;
+		this.QUAD_STRIP		= gl.QUAD_STRIP;
+		this.POLYGON		= gl.POLYGON;
+
+		// WebGl data type.
+		this.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
+		this.UNSIGNED_SHORT = gl.UNSIGNED_SHORT;
+		this.UNSIGNED_INT = gl.UNSIGNED_INT;
+
+		this.FLOAT = gl.FLOAT;
+
+		// Clear buffer.
+		this.COLOR_BUFFER_BIT = gl.COLOR_BUFFER_BIT;
+		this.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
+	}
 }
