@@ -205,6 +205,7 @@ function WebGl( )
 		if ( window.gl == null && this.program != null )
 			return;
 
+		console.assert( index != null && value != null, "uniformMatrix4fv param is null");
 		gl.uniformMatrix4fv( index, false, value );
 	}
 
