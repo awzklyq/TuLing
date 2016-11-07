@@ -114,7 +114,7 @@ function WebGl( )
 
 		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
 		{
-            console.alert(gl.getShaderInfoLog(shader));
+            console.error(gl.getShaderInfoLog(shader));
             return null;
         }
 
@@ -134,7 +134,7 @@ function WebGl( )
 
 		if ( !gl.getShaderParameter( shader, gl.COMPILE_STATUS ) )
 		{
-            console.alert(gl.getShaderInfoLog(shader));
+            console.error(gl.getShaderInfoLog(shader));
             return null;
         }
 
@@ -153,7 +153,7 @@ function WebGl( )
 		gl.linkProgram( program );
 
 		if ( !gl.getProgramParameter( program, gl.LINK_STATUS ) ) 
-			console.alert('Could not initialise shaders');
+			console.error('Could not initialise shaders');
 
 		return program;
 	}
@@ -207,6 +207,44 @@ function WebGl( )
 
 		console.assert( index != null && value != null, "uniformMatrix4fv param is null");
 		gl.uniformMatrix4fv( index, false, value );
+	}
+
+	this.createTexture = function( )
+	{
+		if ( window.gl == null )
+			return;
+
+		return gl.createTexture( );
+	}
+
+	this.deleteTexture = function( texture )
+	{
+		if ( window.gl == null )
+			return;
+
+		return gl.deleteTexture( texture );
+	}
+
+	this.bindTexture2D = function( texture )
+	{
+		if ( window.gl == null )
+			return;
+
+		gl.bindTexture( gl.TEXTURE_2D, texture );
+	}
+
+	this.texImage2D = function( image, w, h, level, internalformat, format, type )
+	{
+		if ( window.gl == null )
+			return;
+
+		var param1 = level || 0;
+		var param2 = internalformat || gl.RGBA;
+		var param3 = w || 0;
+		var param4 = h || 0;
+		var param5 = format || gl.RGBA;
+		var param6 = type || gl.UNSIGEND_BYTE;
+		gl.texImage2D( gl.TEXTURE_2D, 0, param2, param3, param4, param5, param6, image );
 	}
 
 	this.drawElements = function( mode, count, type, offset )
