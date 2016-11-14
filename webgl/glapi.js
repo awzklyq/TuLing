@@ -233,18 +233,42 @@ function WebGl( )
 		gl.bindTexture( gl.TEXTURE_2D, texture );
 	}
 
-	this.texImage2D = function( image, w, h, level, internalformat, format, type )
+	this.setTexture2D = function( texture, level, internalformat, format, type, image, mip, repeat, stage )
 	{
 		if ( window.gl == null )
 			return;
 
-		var param1 = level || 0;
-		var param2 = internalformat || gl.RGBA;
-		var param3 = w || 0;
-		var param4 = h || 0;
-		var param5 = format || gl.RGBA;
-		var param6 = type || gl.UNSIGEND_BYTE;
-		gl.texImage2D( gl.TEXTURE_2D, 0, param2, param3, param4, param5, param6, image );
+		// TODO...
+
+		gl.bindTexture( gl.TEXTURE_2D, texture );
+		gl.texImage2D( gl.TEXTURE_2D, level, internalformat, format, type, image.image );
+
+		var state = 0;
+		if ( stage == true )
+			state += 1;
+
+		if ( mip == true )
+		{
+			state += 2;
+			gl.generateMipmap( gl.TEXTURE_2D );
+		}
+
+		var param = gl.LINEAR;
+		if ( state == 1 )
+			param = gl.NEAREST;
+		else if ( state == 2 )
+			param = gl.LINEAR_MIPMAP_LINEAR;
+		else if ( state == 3 )
+			param == gl.LINEAR_MIPMAP_NEAREST;
+
+		gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, param );
+		gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, state ? gl.NEAREST : gl.LINEAR );
+
+		gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE );
+
+		gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE );
+
+		gl.bindTexture( gl.TEXTURE_2D, null );
 	}
 
 	this.drawElements = function( mode, count, type, offset )

@@ -20,6 +20,7 @@ function Geometry( )
 
 		webgl.bindBufferIBO( this.indexBuffer );
 		webgl.bufferDataIBO( new Uint16Array( this.indexData ) );
+		webgl.bindBufferIBO( null );
   
 		if ( ( this.format & Geometry.VERTEX ) != 0  )
 			this.offset += Geometry.dataSize * 3;	
@@ -44,19 +45,13 @@ function Geometry( )
 			}
 
 			self.textures[index] = webgl.createTexture( );
-			webgl.bindTexture2D( self.textures[index] );
-			
-			// TODO.
-			// w, h, level, internalformat, format, type
-			// webgl.texImage2D( image.image, image.w, image.h, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE );
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image.image);
-			gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
-			gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST );
 
-			webgl.bindTexture2D( null );
+			webgl.setTexture2D( self.textures[index], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image, true );
 
 			if ( index == 0 )
 				self.format |= Geometry.TEXTURE0 = 0x00000004;
+
+			self.methonId = webgl.createProgram( shader.createVertexShaderVS( self.format ), shader.createVertexShaderPS( self.format ) )
 		})
 	}
 	
