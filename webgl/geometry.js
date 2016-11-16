@@ -29,30 +29,63 @@ function Geometry( )
 			this.offset += Geometry.dataSize * 2;
 	}
 
-	this.setTexture = function( index, image )
+	this.setImage = function( index, image )
 	{
 		if ( index > this.textures.length )
 			return;
 
-		var texture = webgl.createTexture( );
+		console.assert( Global.LImage_typeid == image.typeid, "function setImage parame must be LImage!" );
+
+		if ( this.textures[index] != null )
+			this.textures[index] = null;
+
+		if ( index == 0 )
+		{
+			if ( image == null )
+				self.format &= ~Geometry.TEXTURE0;
+		}
+
 		var self = this;
 		image.setLoadCallBack(function()
 		{
-			if ( self.textures[index] != null )
-			{
-				webgl.deleteTexture( self.textures[index] );
-				self.textures[index] = null;
-			}
 
 			self.textures[index] = webgl.createTexture( );
 
-			webgl.setTexture2D( self.textures[index], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image, true );
+			webgl.setTexture2D( self.textures[index], 0, gl.RGBA, -1, -1, gl.RGBA, gl.UNSIGNED_BYTE, image, true );
 
 			if ( index == 0 )
-				self.format |= Geometry.TEXTURE0 = 0x00000004;
+				self.format |= Geometry.TEXTURE0;
 
 			self.methonId = webgl.createProgram( shader.createVertexShaderVS( self.format ), shader.createVertexShaderPS( self.format ) )
 		})
+	}
+
+	this.setTexture = function( index, texture )
+	{
+		if ( index > this.textures.length )
+			return;
+
+		if ( this.textures[index] != null )
+			this.textures[index] = null;
+
+		this.textures[index] = texture;
+
+		if ( index == 0 )
+		{
+			if ( texture == null )
+				self.format &= ~Geometry.TEXTURE0;
+			else
+				self.format |= Geometry.TEXTURE0;
+		}
+
+		self.methonId = webgl.createProgram( shader.createVertexShaderVS( self.format ), shader.createVertexShaderPS( self.format ) )
+	}
+
+	this.release = function( )
+	{
+		// TODO.
+		webgl.deletebuffer( this.vertexBuffer );
+		webgl.deletebuffer( this.indexBuffer );
 	}
 	
 }

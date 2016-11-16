@@ -80,6 +80,14 @@ function RenderWebgl( )
 		webgl.bindBufferIBO( null );
 
 		webgl.useProgram( null );
+
+		if ( ( geo.format & Geometry.TEXCOORD0 ) != 0 && ( geo.format & Geometry.TEXTURE0 ) != 0 && geo.textures[0] != null )
+			webgl.bindTexture2D( null );
+	}
+
+	this.setRenderTarget = function( target )
+	{
+		webgl.bindFrameBuffer( target == null ? null : target.fbuffer );
 	}
 }
 

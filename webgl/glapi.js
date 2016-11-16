@@ -34,6 +34,14 @@ function WebGl( )
 		
 		gl.enable( state );
 	}
+
+	this.disableState = function( state )
+	{
+		if ( window.gl == null)
+			return;
+		
+		gl.disable( state );
+	}
 	
 	this.createBuffer = function( )
 	{
@@ -209,12 +217,20 @@ function WebGl( )
 		gl.uniformMatrix4fv( index, false, value );
 	}
 
-	this.createTexture = function( )
+	this.createTexture = function( level, internalformat, w, h, format, type, image )
 	{
 		if ( window.gl == null )
 			return;
 
-		return gl.createTexture( );
+		var texture = gl.createTexture( );
+
+		if ( arguments.length == 0 )
+			return texture;
+
+		this.setTexture2D( texture, level, internalformat, w, h, format, type, image, true )
+		
+		return texture;
+		
 	}
 
 	this.deleteTexture = function( texture )
@@ -233,7 +249,15 @@ function WebGl( )
 		gl.bindTexture( gl.TEXTURE_2D, texture );
 	}
 
-	this.setTexture2D = function( texture, level, internalformat, format, type, image, mip, repeat, stage )
+	this.texImage2D = function( level, internalformat, w, h, format, type, image )
+	{
+		if ( window.gl == null )
+			return;
+
+		gl.texImage2D( gl.TEXTURE_2D, level, internalformat, w, h, 0, format, type, image != null ? image.image : null );
+	}
+
+	this.setTexture2D = function( texture, level, internalformat, w, h, format, type, image, mip, repeat, stage )
 	{
 		if ( window.gl == null )
 			return;
@@ -241,7 +265,10 @@ function WebGl( )
 		// TODO...
 
 		gl.bindTexture( gl.TEXTURE_2D, texture );
-		gl.texImage2D( gl.TEXTURE_2D, level, internalformat, format, type, image.image );
+		if ( w <= 0 || h <= 0 )
+			gl.texImage2D( gl.TEXTURE_2D, level, internalformat, format, type, image == null ? null : image.image );
+		else
+			gl.texImage2D( gl.TEXTURE_2D, level, internalformat, w, h, 0, format, type, image == null ? null : image.image );
 
 		var state = 0;
 		if ( stage == true )
@@ -269,6 +296,45 @@ function WebGl( )
 		gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE );
 
 		gl.bindTexture( gl.TEXTURE_2D, null );
+	}
+
+	this.createRenderBuffer = function( w, h )
+	{
+		if ( window.gl == null )
+			return;
+
+		var rbuffer = gl.createRenderbuffer( );
+		gl.bindRenderbuffer( gl.RENDERBUFFER, rbuffer );
+		gl.renderbufferStorage( gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, w, h );
+		return rbuffer;
+	}
+
+	this.bindRenderBuffer = function( rbuffer )
+	{
+		if ( window.gl == null )
+			return;
+
+		gl.bindRenderbuffer( gl.RENDERBUFFER, rbuffer );
+	}
+
+	this.createFrameBuffer = function( texture, rbuffer )
+	{
+		if ( window.gl == null )
+			return;
+
+		var fbuffer = gl.createFramebuffer( );
+		gl.bindFramebuffer( gl.FRAMEBUFFER, fbuffer );
+		gl.framebufferTexture2D( gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0 );
+		gl.framebufferRenderbuffer( gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rbuffer );
+		return fbuffer;
+	}
+
+	this.bindFrameBuffer = function( fbuffer )
+	{
+		if ( window.gl == null )
+			return;
+
+		gl.bindFramebuffer( gl.FRAMEBUFFER, fbuffer );
 	}
 
 	this.drawElements = function( mode, count, type, offset )
