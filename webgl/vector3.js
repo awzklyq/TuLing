@@ -1,5 +1,6 @@
 function Vector3( x, y, z )
 {
+	this.typeid = Global.Vector3_typeid;
 	this.x = x || 0;
 	this.y = y || 0;
 	this.z = z || 0;
@@ -38,12 +39,33 @@ function Vector3( x, y, z )
 	{
 		return this.x * v.x + this.y * v.y + this.z * v.z;
 	}
-	this.mul = function( mat)
+
+	this.negative = function( )
+	{
+		this.x = -this.x;
+		this.y = -this.y;
+		this.z = -this.z;
+	}
+
+	this.mul = function( d )
+	{
+		this.x *= d;
+		this.y *= d;
+		this.z *= d;
+	}
+	
+	this.mulMatrix = function( mat)
 	{
 		var xx = this.x, yy = this.y, zz = this.z, mm = mat.mat;
 		this.x = xx * mm[0] + yy * mm[4] + zz * mm[8] + mm[12];
 		this.y = xx * mm[1] + yy * mm[5] + zz * mm[9] + mm[13];
 		this.z = xx * mm[2] + yy * mm[6] + zz * mm[10] + mm[14];
+	}
+
+	// For debug.
+	this.log = function( info )
+	{
+		log( info == null ? "" : info,"Vector3 : ", this.x, this.y, this.z );
 	}
 }
 
@@ -66,5 +88,5 @@ Vector3.scross = function( v1, v2 )
 
 Vector3.sdot = function( v1, v2 )
 {
-	return v1.x * v2.x + v1.y * v2.y + v1.z + v2.z;
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 } 
