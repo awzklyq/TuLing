@@ -303,12 +303,33 @@ function Matrix3D( )
 		this.mat[15] = mm1[12] * mm2[3] + mm1[13] * mm2[7] + mm1[14] * mm2[11] + mm1[15] * mm2[15];
 	}
 
-	this.perspective = function()
+	this.setPerspectiveFov = function( fovy, aspect, znear, zfar)
 	{
+		var ys = Math.cot( Math.convertRadian( fovy ) / 2.0 );
+		var xs = ys / aspect;
+		var zf = ( zfar + znear ) / ( znear - zfar );
+		var zn = ( 2 * znear * zfar ) / ( znear - zfar );
 		// TODO.
+		this.mat[0] = xs, this.mat[1] = 0.0, this.mat[2] = 0.0, this.mat[3] = 0.0;
+		this.mat[4] = 0.0, this.mat[5] = ys, this.mat[6] = 0.0, this.mat[7] = 0.0;
+		this.mat[8] = 0.0, this.mat[9] = 0.0, this.mat[10] = zf, this.mat[11] = -1.0;
+		this.mat[12] = 0.0, this.mat[13] = 0.0, this.mat[14] = zn, this.mat[15] = 0.0;
 	}
 
-	this.setCameraAtForRight = function( eye, look, up )
+	this.setOrtho = function( width, height, znear, zfar )
+	{
+		var xs = 2.0 / width;
+		var ys = 2.0 / height;
+		var zf = 2.0 / ( znear - zfar );
+		var zn = znear * zf;
+
+		this.mat[0] = xs, this.mat[1] = 0.0, this.mat[2] = 0.0, this.mat[3] = 0.0;
+		this.mat[4] = 0.0, this.mat[5] = ys, this.mat[6] = 0.0, this.mat[7] = 0.0;
+		this.mat[8] = 0.0, this.mat[9] = 0.0, this.mat[10] = zf, this.mat[11] = 1.0;
+		this.mat[12] = 0.0, this.mat[13] = 0.0, this.mat[14] = zn, this.mat[15] = 1.0;
+	}
+
+	this.setCameraAt = function( eye, look, up )
 	{
 		var n = Vector3.ssub( eye, look );
 		n.normalize( );

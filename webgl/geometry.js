@@ -56,6 +56,7 @@ function Geometry( )
 			if ( index == 0 )
 				self.format |= Geometry.TEXTURE0;
 
+			// TODO.
 			self.methonId = webgl.createProgram( shader.createVertexShaderVS( self.format ), shader.createVertexShaderPS( self.format ) )
 		})
 	}
@@ -78,6 +79,7 @@ function Geometry( )
 				self.format |= Geometry.TEXTURE0;
 		}
 
+		// TODO.
 		self.methonId = webgl.createProgram( shader.createVertexShaderVS( self.format ), shader.createVertexShaderPS( self.format ) )
 	}
 

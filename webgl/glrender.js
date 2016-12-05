@@ -70,7 +70,7 @@ function RenderWebgl( )
 		if ( this.vmat.length > 0 )
 		{
 			geo.methonId.vmat = webgl.getUniformLocation('vmat');
-			webgl.uniformMatrix4fv(geo.methonId.vmat, this.vmat[this.vmat.length - 1]); // TODO.
+			webgl.uniformMatrix4fv(geo.methonId.vmat, this.vmat[this.vmat.length - 1].mat); // TODO.
 		}
 	}
 

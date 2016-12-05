@@ -3,19 +3,22 @@ function Camera( )
 	this.eye = new Vector3( 10, 10, 10);
 	this.look = new Vector3( 0, 0, 0 );
 	this.up = new Vector3( 0, 0, 1 );
+	this.near = 1.0;
+	this.far = 5000.0;
+	this.fov = 45;
+	this.w = Global.getElementWidth( window.webglcanvas );
+	this.h = Global.getElementHeight( window.webglcanvas );
+	this.ortho = false;
 
-	// this.near = 0;
-	// this.far = 0;
-	// this.fov = 0;
-	this.mat = new Matrix3D( );
+	this.cameramat = new Matrix3D( );
+	this.perspectivemat = new Matrix3D( );
 
 	this.movePhi = function( r )
 	{
-		this.mat.setTranslation( this.eye.x, this.eye.y, this.eye.z );
-		this.mat.mulTranslationRight( -this.look.x, -this.look.y, -this.look.z );
-		this.mat.mulRotationRight( this.up.x, this.up.y, this.up.z, r );
-		this.mat.mulTranslationRight( this.look.x, this.look.y, this.look.z );
-		this.mat.getTranslation( this.eye );
+		this.cameramat.setTranslation( this.eye.x, this.eye.y, this.eye.z );
+		this.cameramat.mulRotationRight( this.up.x, this.up.y, this.up.z, r );
+		this.cameramat.mulTranslationRight( this.look.x, this.look.y, this.look.z );
+		this.cameramat.getTranslation( this.eye );
 	}
 
 	this.moveTheta = function( r )
@@ -25,11 +28,11 @@ function Camera( )
 
 		var v1 = Vector3.scross( Vector3.ssub( this.eye, this.look ), cross );
 
-		this.mat.setTranslation( this.eye.x, this.eye.y, this.eye.z );
-		this.mat.mulTranslationRight( -this.look.x, -this.look.y, -this.look.z );
-		this.mat.mulRotationRight( cross.x, cross.y, cross.z, r );
-		this.mat.mulTranslationRight( this.look.x, this.look.y, this.look.z );
-		this.mat.getTranslation( this.eye );
+		this.cameramat.setTranslation( this.eye.x, this.eye.y, this.eye.z );
+		this.cameramat.mulTranslationRight( -this.look.x, -this.look.y, -this.look.z );
+		this.cameramat.mulRotationRight( cross.x, cross.y, cross.z, r );
+		this.cameramat.mulTranslationRight( this.look.x, this.look.y, this.look.z );
+		this.cameramat.getTranslation( this.eye );
 
 		var v2 = Vector3.scross( Vector3.ssub( this.eye, this.look ), cross );
 
@@ -47,7 +50,13 @@ function Camera( )
 
 	this.getCameraMatrix = function( )
 	{
-		this.mat.setCameraAtForRight( this.eye, this.look, this.up );
-		return this.mat;
+		this.cameramat.setCameraAt( this.eye, this.look, this.up );
+		if ( this.ortho )
+			this.perspectivemat.setOrtho( this.w, this.h, this.near, this.far );
+		else
+			this.perspectivemat.setPerspectiveFov( this.fov, this.w / this.h, this.near, this.far );
+
+		this.perspectivemat.mulLeft( this.cameramat );
+		return this.perspectivemat;
 	}
 }
