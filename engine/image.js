@@ -6,6 +6,7 @@ function LImage( )
 	this.w = 0;
 	this.h = 0;
 
+	this.typeid = Global.LImage_typeid;
 	if ( arguments.length > 0 )
 	{
 		this.image = new Image( );
@@ -369,3 +370,5 @@ function LImage( )
 		this.imagehelper.isLoad = true;
 	}
 }
+
+LImage.typeid

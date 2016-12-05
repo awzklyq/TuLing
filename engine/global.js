@@ -311,10 +311,24 @@ Global.setElementWidth = function( element, w )
 	element.style.width = w;
 }
 
+Global.getElementWidth = function( element )
+{
+	console.assert( element != null && element.style != null, "getElementWidth faild!!" );
+	
+	return parseInt( element.style.width );
+}
+
 Global.setElementHeight = function( element, h )
 {
 	console.assert( element != null && element.style != null, "setElementHeight faild!!" );
 	element.style.height = h;
+}
+
+Global.getElementHeight = function( element )
+{
+	console.assert( element != null && element.style != null, "getElementHeight faild!!" );
+
+	return parseInt( element.style.height );
 }
 
 Global.setElementValue = function( element, value )
@@ -406,7 +420,10 @@ Global.STROKESTYLE = 0x00000001;
 
 Global.ALLSTYLE = 0x00000002;
 
-// Global.LImage.typeid = 0x00000001;
+Global.LImage_typeid = 0x00000001;
+
+// For 3D.
+Global.Vector3_typeid = 0x00000002;
 
 Global.bgColor = Math.getRGBA( 0xff000000 );
 

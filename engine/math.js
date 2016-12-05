@@ -1,3 +1,12 @@
+Math.cot = function( r )
+{
+	return 1 / Math.tan( r );
+}
+
+Math.convertRadian = function( r )
+{
+	return r * Math.PI / 180;
+}
 Math.randomAt = function( d )
 {
 	return Math.random() * d

@@ -1,6 +1,6 @@
 function Storage( )
 {
-	console.assert( window.localStorage, "window.localStorage is null£¡");
+	console.assert( window.localStorage != null, "window.localStorage is null£¡");
 	
 	// Use cookie.
 	if ( window.localStorage == null )
