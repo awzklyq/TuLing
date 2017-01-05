@@ -321,7 +321,7 @@ function Matrix3D( )
 		var xs = 2.0 / width;
 		var ys = 2.0 / height;
 		var zf = 2.0 / ( znear - zfar );
-		var zn = znear * zf;
+		var zn = ( zfar + znear ) / ( znear - zfar );
 
 		this.mat[0] = xs, this.mat[1] = 0.0, this.mat[2] = 0.0, this.mat[3] = 0.0;
 		this.mat[4] = 0.0, this.mat[5] = ys, this.mat[6] = 0.0, this.mat[7] = 0.0;

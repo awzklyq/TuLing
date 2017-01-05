@@ -230,7 +230,6 @@ function WebGl( )
 		this.setTexture2D( texture, level, internalformat, w, h, format, type, image, true )
 		
 		return texture;
-		
 	}
 
 	this.deleteTexture = function( texture )
