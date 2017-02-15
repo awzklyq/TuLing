@@ -405,6 +405,11 @@ Global.endCombineRender = function( mode )
 	context.restore( );
 }
 
+Global.getMilliseconds = function( )
+{
+	return (new Date( )).getMilliseconds( );
+}
+
 Global.CombineRenderFill = 0x00000001;
 Global.CombineRenderStroke = 0x00000002;
 
@@ -413,6 +418,16 @@ Global.windowToCanvas = function( canvas, x, y )
 	var bbox = canvas.getBoundingClientRect( );
 	return { x: ( x - bbox.left ) * ( canvas.width / bbox.width ),
 		y : ( y - bbox.top ) * ( canvas.height / bbox.height ) };
+}
+
+Global.getClientWidth = function( )
+{
+	return document.body.clientWidth;
+}
+
+Global.getClientHeight = function( )
+{
+	return document.body.clientHeight;
 }
 
 Global.FILLSTYLE = 0x00000000;
