@@ -1,37 +1,18 @@
 // UI Button.
-function Button( x, y, w, h, text )
+function Button( name, x, y, w, h, text )
 {
-	this._x = 0;
-	this._y = 0;
-	this._w = 0;
-	this._h = 0;
+	this._x = x || 0;
+	this._y = y || 0;
+	this._w = w || 0;
+	this._h = h || 0;
 
 	// 1.normal, 2.down.
 	this.state = 1;
 
-	if ( x != null )
-	{
-		this._x = x;
-	}
-
-	if ( y != null )
-	{
-		this._y = y;
-	}
-
-	if ( w != null )
-	{
-		this._w = w;
-	}
-
-	if ( h != null )
-	{
-		this._h = h;
-	}
-
+	this._name = name || "";
 	this.text = new Text( );
 	
-	if ( text )
+	if ( text != null && text != "" )
 	{
 		this.text._x = this._x;
 		this.text._y = this._y;
@@ -141,8 +122,10 @@ function Button( x, y, w, h, text )
 
 		if ( this.renderType == Button.Polygon )
 		{
-			this.polygon = new Polygon( {x:0, y:0}, {x:this._w, y:0}, {x:this._w, y:this._h}, {x:0, y:this._h});
-			this.polygon.moveTo( this._x, this._y );
+			this.polygon = new Polygon( {x:this._x, y:this._y}, {x:this._w + this._x, y:this._y}, {x:this._w + this._x, y:this._h + this._y}, {x:this._x, y:this._h + this._y});
+
+			// TODO.
+			// this.polygon.moveTo( this._x, this._y );
 		}
 		else if ( this.renderType == Button.Circle )
 		{
@@ -210,9 +193,14 @@ function Button( x, y, w, h, text )
 	this.triggerResizeXY = function( intervalx, intervaly )
 	{
 		if ( this.renderType == Button.Polygon && this.polygon != null )
-			this.polygon.moveTo( this._x, this._y );
+		{
+			// TODO, Only for rect.
+			this.polygon.moveTo( this._x + this.w * 0.5, this._y + this.h * 0.5 );
+		}
 		else if ( this.renderType == Button.Circle && this.circle != null )
+		{
 			this.circle.moveTo( this._x, this._y );
+		}
 	}
 
 	this.triggerMouseDown = function( b, x, y )

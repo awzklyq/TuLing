@@ -1,9 +1,10 @@
-function UIView( x, y, w, h )
+function UIView( x, y, w, h, name )
 {
 	this._x = x || 0;
 	this._y = y || 0;
 	this._w = w || 0;
 	this._h = h || 0;
+	this._name = name || "";
 
 	this.elements = new ArrayEx( );
 	this.addUI = function( ui )
@@ -14,6 +15,9 @@ function UIView( x, y, w, h )
 			this.elements.push( ui );
 			UISystem.removeUI( ui );
 		}
+
+		if ( ui._name != null && ui._name != "" )
+			this[ui._name] = ui;
 	}
 
 	this.removeUI = function( ui )
@@ -22,7 +26,12 @@ function UIView( x, y, w, h )
 			return
 
 		this.elements.remove( ui );
+
+		if ( this[ui._name] != null )
+			delete this[ui._name];
+
 		delete ui._parent;
+		ui._parent = null;
 	}
 
 	this.clearUIs = function( )

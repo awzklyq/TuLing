@@ -202,8 +202,38 @@ Global.UI = Object.create( Object.prototype, {
 		this._h = hh;
 	}
 	},// End h.
+	name:{
+	get:function( )
+	{
+		return this._name;
+	},
+	set:function( uiname )
+	{
+		log('sssssss', uiname)
+		if ( this._parent != null )
+		{
+			if ( this._parent[uiname] != null )
+			{
+				Debug.error( "The ui name is used ！");
+				return
+			}
+
+			if ( this._parent[this._name] != null )
+			{
+				delete this._parent[this._name];
+				log("This ui's name is alive!")
+			}
+		}
+
+		this._name = uiname;
+
+		if ( this._parent != null )
+			this._parent[this._name] = this;
+	}
+	},// End name.
 	_x:{writable:true},
 	_y:{writable:true},
+	_name:{writable:true}
 })
 	
 	//this.elements = new ArrayEx( );

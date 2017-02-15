@@ -68,8 +68,8 @@ function Matrix( mat )
 	this.setScaling = function(x, y)
 	{
 		this.reset( );
-		matrix.mat[0] = x;
-		matrix.mat[4] = y;
+		this.mat[0] = x;
+		this.mat[4] = y;
 
 		if ( this.callback != null && Global.isFunction( this.callback ) )
 			this.callback( );
