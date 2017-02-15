@@ -2,6 +2,22 @@ function WebGl( )
 {
 	this.bgColor = 0xff000000;
 
+	this.gBlur = false;
+	this.beginGBlur = function( )
+	{
+		this.gBlur = true;
+	}
+
+	this.endGBlur = function( )
+	{
+		this.gBlur = false;
+	}
+	
+	this.getGBlur = function( )
+	{
+		return this.gBlur;
+	}
+
 	this.clear = function( state )
 	{
 		if ( window.gl == null)

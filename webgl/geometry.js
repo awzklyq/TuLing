@@ -4,6 +4,7 @@ function Geometry( )
 	this.indexData = new ArrayEx( );
 	this.texcoords = new ArrayEx( );
 	this.textures = new ArrayEx( null, null, null, null, null, null, null, null ); // TODO.
+	this.finalData = new ArrayEx( );
 	this.methodId = -1;
 
 	this.offset = 0;
@@ -12,10 +13,36 @@ function Geometry( )
 	this.format = 0;
 	this.vertexBuffer = webgl.createBuffer( );
 	this.indexBuffer = webgl.createBuffer( );
-	this.createBufferData = function( )
+
+	this.combineVertexData = function( )
 	{
+		var temp = this.vertexData.length / 3;
+		if ( temp == 0 )
+			return;
+
+		this.finalData.clear( );
+
+		log("sssssssss", temp)
+		for ( var i = 0; i < temp; i ++ )
+		{
+			var vsize = i * 3;
+			this.finalData.push( this.vertexData[vsize] );
+			this.finalData.push( this.vertexData[vsize + 1] );
+			this.finalData.push( this.vertexData[vsize + 2] );
+
+			if ( this.texcoords.length > 0 )
+			{
+				vsize = i * 2;
+				this.finalData.push( this.texcoords[vsize] );
+				this.finalData.push( this.texcoords[vsize + 1] );
+			}				
+		}
+	}
+
+	this.createBufferData = function( )
+	{ 
 		webgl.bindBufferVBO( this.vertexBuffer );
-		webgl.bufferDataVBO( new Float32Array( this.vertexData ) );
+		webgl.bufferDataVBO( new Float32Array( this.finalData ) );
 		webgl.bindBufferVBO( null );
 
 		webgl.bindBufferIBO( this.indexBuffer );
@@ -57,7 +84,7 @@ function Geometry( )
 				self.format |= Geometry.TEXTURE0;
 
 			// TODO.
-			self.methonId = webgl.createProgram( shader.createVertexShaderVS( self.format ), shader.createVertexShaderPS( self.format ) )
+			self.methonId = shader.buildShader( self.format );
 		})
 	}
 
@@ -80,7 +107,7 @@ function Geometry( )
 		}
 
 		// TODO.
-		self.methonId = webgl.createProgram( shader.createVertexShaderVS( self.format ), shader.createVertexShaderPS( self.format ) )
+		self.methonId = shader.buildShader( self.format );
 	}
 
 	this.release = function( )
