@@ -25,6 +25,8 @@ function Vector3( x, y, z )
 		this.x /= w;
 		this.x /= w;
 		this.y /= w;
+
+		return this;
 	}
 
 	this.corss = function( v )
@@ -62,6 +64,11 @@ function Vector3( x, y, z )
 		this.z = xx * mm[2] + yy * mm[6] + zz * mm[10] + mm[14];
 	}
 
+	this.magnitude = function( )
+	{
+		 return Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+	}
+
 	// For debug.
 	this.log = function( info )
 	{
@@ -89,4 +96,9 @@ Vector3.scross = function( v1, v2 )
 Vector3.sdot = function( v1, v2 )
 {
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-} 
+}
+
+Vector3.smul = function( v, d )
+{
+	return new Vector3( v.x * d, v.y *d, v.z * d );
+}

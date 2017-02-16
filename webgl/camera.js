@@ -48,6 +48,25 @@ function Camera( )
 		this.eye.add( dir );
 	}
 
+	this.getRadius = function( )
+	{
+		return Vector3.ssub( this.eye, this.look ).magnitude( );
+	}
+
+	this.moveEye = function( x, y, z )
+	{
+		this.eye.x = x || this.eye.x;
+		this.eye.y = y || this.eye.y;
+		this.eye.z = z || this.eye.z;
+	}
+
+	this.moveLook = function( x, y, z )
+	{
+		this.look.x = x || this.look.x;
+		this.look.y = y || this.look.y;
+		this.look.z = z || this.look.z;
+	}
+
 	this.getCameraMatrix = function( )
 	{
 		this.cameramat.setCameraAt( this.eye, this.look, this.up );
@@ -58,5 +77,7 @@ function Camera( )
 
 		this.perspectivemat.mulLeft( this.cameramat );
 		return this.perspectivemat;
+
+		// return this.cameramat;
 	}
 }
