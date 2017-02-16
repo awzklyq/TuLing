@@ -10,14 +10,28 @@ else
 	log("use canvas.addEventListener event");
 }
 
-window.onMouseDown = new Array( );
-var mousedowncallback = window.onMouseDown
+window.onMouseDown = new ArrayEx( );
 if ( System.OS == "win32" )
 {
 	canvas.addEventListener( "mousedown", function( event ) { // mouseevent.
 		var temp = Global.windowToCanvas( window.canvas, event.x, event.y );
-		for ( var i = 0; i < mousedowncallback.length; i ++ )
-			mousedowncallback[i]( event.button, temp.x, temp.y );
+
+		var def = false;
+		for ( var i = 0; i < window.onMouseDown.length; i ++ )
+		{
+			if ( window.onMouseDown[i]( event.button, temp.x, temp.y ) )
+				def = true;
+		}
+
+		if ( def )
+			event.preventDefault( );
+
+		if ( System.keyDowns.find( event.button ) == -1 )
+		{
+			System.keyDowns.push( event.button )
+			log( event.button, System.MouseMiddle )
+		}
+			// System.keyDowns.push( event.button )
 	}, false );
 }
 else
@@ -31,14 +45,21 @@ else
 	}, false );
 }
 
-window.onMouseMove = new Array( );
-var mousemovecallback = window.onMouseMove
+window.onMouseMove = new ArrayEx( );
 if ( System.OS == "win32" )
 {
-	canvas.addEventListener( "mousemove", function( event ) { // mouseevent.
-		var temp = Global.windowToCanvas( window.canvas, event.x, event.y ) 
-		for ( var i = 0; i < mousemovecallback.length; i ++ )
-			mousemovecallback[i]( temp.x, temp.y );
+	canvas.addEventListener( "mousemove", function( event ) { // mouseevent
+		var temp = Global.windowToCanvas( window.canvas, event.x, event.y )
+
+		var def = false;
+		for ( var i = 0; i < window.onMouseMove.length; i ++ )
+		{
+			if ( window.onMouseMove[i]( temp.x, temp.y ) )
+				def = true;
+		}
+
+		if ( def )
+			event.preventDefault( event );
 	}, false );
 }
 else
@@ -52,14 +73,23 @@ else
 	}, false );
 }
 
-window.onMouseUp = new Array( );
-var mouseupcallback = window.onMouseUp
+window.onMouseUp = new ArrayEx( );
 if ( System.OS == "win32" || System.OS == "IOS")
 {
 	canvas.addEventListener( "mouseup", function( event ) { // mouseevent.
 		var temp = Global.windowToCanvas( window.canvas, event.x, event.y ) 
-		for ( var i = 0; i < mouseupcallback.length; i ++ )
-			mouseupcallback[i]( event.button, temp.x, temp.y );
+
+		var def = false;
+		for ( var i = 0; i < window.onMouseUp.length; i ++ )
+		{
+			if (window.onMouseUp[i]( event.button, temp.x, temp.y ) )
+				def = true;
+		}
+
+		if ( def )
+			event.preventDefault( event );
+
+		System.keyDowns.remove( event.button );
 	}, false );
 }
 else
@@ -71,25 +101,44 @@ else
 	}, false );
 }
 
+window.onMouseWheel = new ArrayEx( );
+if ( System.OS == "win32" || System.OS == "IOS")
+{
+	canvas.addEventListener( "mousewheel", function( event ) { // mouseevent.
+		var def = false;
+		var delta = event.wheelDelta ? ( event.wheelDelta / 120 ) : ( -event.detail / 3 );	
+		for ( var i = 0; i < window.onMouseWheel.length; i ++ )
+		{
+			if (window.onMouseWheel[i]( delta ) )
+				def = true;
+		}
+
+		if ( def )
+			event.preventDefault( event );
+	}, false );
+}
 
 //??????
-window.onKeyDown = new Array( );
-var keydowncallback = window.onKeyDown;
+window.onKeyDown = new ArrayEx( );
 document.addEventListener("keydown", function( event ){
 	var def = false;
-	for ( var i = 0; i < keydowncallback.length; i ++ )
+	for ( var i = 0; i < window.onKeyDown.length; i ++ )
 	{
-		if ( keydowncallback[i]( event.keyCode ) )
+		if ( window.onKeyDown[i]( event.keyCode ) )
 			def = true;
 	}
 
 	if ( def )
 		event.preventDefault( event );
+
+	if ( System.keyDowns.find( event.keyCode ) == -1 )
+		System.keyDowns.push( event.keyCode )
 }, false);
 
-window.onKeyUp = new Array( );
-var keyupcallback = window.onKeyUp
+window.onKeyUp = new ArrayEx( );
 document.addEventListener("keyup", function( event ){
-	for ( var i = 0; i < keyupcallback.length; i ++ )
-		keyupcallback[i]( event.keyCode );
+	for ( var i = 0; i < window.onKeyUp.length; i ++ )
+		window.onKeyUp[i]( event.keyCode );
+
+	System.keyDowns.remove( event.keyCode )
 }, false);

@@ -15,11 +15,13 @@ if ( System.OS == "win32" )
 	System.KeyRight 	= 39;
 	System.KeyUp 		= 38;
 	System.KeyDown 		= 40;
+	System.KeyCtrl 		= 17;
+	System.KeyAlt 		= 18;
 	System.KeyA 		= 65;
 	System.KeyZ 		= 90;
 
-	System.MouseLeft	= 1;
-	System.MouseMiddle	= 4;
+	System.MouseLeft	= 0;
+	System.MouseMiddle	= 1;
 	System.MouseRight	= 2;
 }
 
@@ -29,13 +31,13 @@ System.getClipX = function( )
 	return window.pageXOffset || document.documentElement.scrollLeft;
 }
 
-// Clip x.
+// Clip x. TODO.
 System.getClipY = function( )
 {
 	return window.pageYOffset || document.documentElement.scrollTop;
 }
 
-// Clip w.
+// Clip w. TODO.
 System.getClipW = function( )
 {
 	return screen.width || document.body.clientWidth;
@@ -72,5 +74,9 @@ System.getHeight = function( )
 
 	return screen.height
 }
-window.innerWidth
-System( );
+
+System.keyDowns = new ArrayEx( );
+System.isKeyDown = function( value )
+{
+	return System.keyDowns.find( value ) != -1;
+}
