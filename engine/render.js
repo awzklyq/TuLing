@@ -101,16 +101,23 @@ console.log(context)
 var context = window.context;
 // context.globalAlpha = 0.5;
 // context.globalCompositeOperation = "source-out";
-
 var debug = top.parent.frames["help"]
+var logCount = 0;
 window.log = function()
 {
+	if ( window.limitLog!= null && logCount >= window.limitLog )
+		return;
+
 	var newtick = new Date( )
 	var message = newtick.getHours( ) + ":" + newtick.getMinutes( ) + ":" + newtick.getSeconds( ) + ": ";
 	for(var i = 0; i < arguments.length; i ++)
 	{
 		message += arguments[i] + ', ';
 	}
+
+	logCount ++;
+	if ( window.limitLog != null && logCount == window.limitLog )
+		message += "The log limit " + window.limitLog;
 
 	if ( window.webkitCancelAnimationFrame || debug == null )
 	{

@@ -430,15 +430,32 @@ Global.getClientHeight = function( )
 	return document.body.clientHeight;
 }
 
+Global.copyObject = function( source, deep )
+{
+	var temp = {};
+	for ( var key in source )
+		temp[key] = source[key];
+
+	return temp;
+
+	// Deep.
+}
+
 Global.FILLSTYLE = 0x00000000;
 Global.STROKESTYLE = 0x00000001;
 
 Global.ALLSTYLE = 0x00000002;
 
-Global.LImage_typeid = 0x00000001;
+Global.LImage_typeid = 1;
 
 // For 3D.
-Global.Vector3_typeid = 0x00000002;
+Global.Vector3_typeid = 2;
+Global.AmbientLight_typeid = 3;
+Global.SkyLight_typeid = 4;
+Global.PointLight_typeid = 5;
+
+Global.Grid6_typeid = 6;
+Global.Grid4_typeid = 7;
 
 Global.bgColor = Math.getRGBA( 0xff000000 );
 

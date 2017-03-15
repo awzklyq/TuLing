@@ -1,4 +1,4 @@
-function Grids6( x, y, side, w, h )
+function Grids6( x, y, w, h, side )
 {
 	if ( arguments.length < 5 )
 		return;
@@ -111,5 +111,56 @@ function Grids6( x, y, side, w, h )
 		window.context = this.canvas.getContext( );
 		Polygon.render( grid );
 		window.context = context;
+	}
+}
+
+function Grids4( x, y, w, h, size, element )
+{
+	this.hgNum = h / size;
+	this.wgNum = w / size;
+	this.gridSize = size;
+	this.grids = new ArrayEx( );
+	for ( var i = 0; i < this.hgNum; i ++ )
+	{
+		this.grids.push( new ArrayEx( ) );
+		for ( var j = 0; j < this.wgNum; j ++ )
+			this.grids[i].push( {state:0, weight:0, color:0xffffffff} );
+	}
+
+	this.rect = new Rect( );
+
+	this.randomGrid = function( datas )
+	{
+		if ( datas.length == 0 )
+			return;
+
+		for ( var i = 0; i < this.grids.length; i ++ )
+		{
+			for ( var j = 0; j < this.grids[i].length; j ++ )
+				this.grids[i][j] = Global.copyObject( datas[Math.floor( Math.randomAt( datas.length ) )] );
+		}
+	}
+
+	this.selectAt = function( x, y )
+	{
+		x = Math.floor( x / this.gridSize );
+		y = Math.floor( y / this.gridSize );
+
+		return { row: Math.floor( y ), column: Math.floor( x ), element: this.grids[y][x] };
+	}
+
+	this.draw = function( )
+	{
+		for ( var i = 0; i < this.grids.length; i ++ )
+		{
+			for ( var j = 0; j < this.grids[i].length; j ++ )
+			{
+				if ( this.grids[i][j].color != null )
+					this.rect.setColor( this.grids[i][j].color );
+
+				this.rect.resetSize( j * this.gridSize, i * this.gridSize, this.gridSize, this.gridSize );
+				this.rect.draw( )
+			}
+		}
 	}
 }

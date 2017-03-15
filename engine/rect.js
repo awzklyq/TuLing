@@ -11,6 +11,14 @@ function Rect( x, y, w, h )
 	this.lineColorStyle = Math.getRGBA( 0xff000000 );
 	this.colorStyle = Math.getRGBA( 0xffffffff );
 
+	this.resetSize = function( x, y, w, h )
+	{
+		this.x = x || 0;
+		this.y = y || 0;
+		this.w = w || 0;
+		this.h = h || 0;
+	}
+
 	this.setLineColor = function( color )
 	{
 		this.lineColorStyle = Math.getRGBA( color );

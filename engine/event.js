@@ -29,7 +29,6 @@ if ( System.OS == "win32" )
 		if ( System.keyDowns.find( event.button ) == -1 )
 		{
 			System.keyDowns.push( event.button )
-			log( event.button, System.MouseMiddle )
 		}
 			// System.keyDowns.push( event.button )
 	}, false );
