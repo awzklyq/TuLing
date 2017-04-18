@@ -116,10 +116,11 @@ function Grids6( x, y, w, h, side )
 
 function Grids4( x, y, w, h, size, element )
 {
+	this.typeid = Global.Grid4_typeid;
 	this.hgNum = h / size;
 	this.wgNum = w / size;
 	this.gridSize = size;
-	this.grids = new ArrayEx( );
+	this.grids = new ArrayEx( ); // state = -1: no path.
 	for ( var i = 0; i < this.hgNum; i ++ )
 	{
 		this.grids.push( new ArrayEx( ) );
@@ -141,12 +142,31 @@ function Grids4( x, y, w, h, size, element )
 		}
 	}
 
+	this.setGrids = function( grid )
+	{
+		Debug.assert( grid == null || Global.Grid4_typeid != grid.typeid, "The param is not right! ");
+
+		delete this.grids;
+		this.grids = new ArrayEx( );
+
+		var grids = grid.grids;
+		for ( var i = 0; i < grids.length; i ++ )
+		{
+			for ( var j = 0; j < grids[i].length; j ++ )
+				this.grids[i][j] = Global.copyObject( grids[i][j] );
+		}
+
+		this.hgNum = grid.hgNum;
+		this.wgNum = grid.wgNum;
+		this.gridSize = grid.gridSize;
+	}
+
 	this.selectAt = function( x, y )
 	{
 		x = Math.floor( x / this.gridSize );
 		y = Math.floor( y / this.gridSize );
 
-		return { row: Math.floor( y ), column: Math.floor( x ), element: this.grids[y][x] };
+		return { row: y, column: x, element: this.grids[y][x] };
 	}
 
 	this.draw = function( )

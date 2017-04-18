@@ -33,3 +33,10 @@ else
 {
 	Debug.trace = console.trace;
 }
+
+Debug.assert = function( param1, param2 )
+{
+	console.assert( param1, param2 );
+	if ( param1 == true )
+		Debug.trace( );
+}

@@ -100,6 +100,15 @@ Math.getRGBAFromStr = function( colorstyle )
 	return Math.DecompressionRGBA( Math.StringConvertNumberColor( colorstyle ) );
 }
 
+Math.clamp = function( value, min, max )
+{
+	if ( value < min )
+		value = min;
+	else if ( value > max )
+		value = max;
+
+	return value;
+}
 Math.MinNumber = 0.000001;
 Math.MaxNumber = 999999.0;
 Math.ARC = Math.PI * 2;

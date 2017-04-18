@@ -41,6 +41,45 @@ function ArrayEx( )
 
 		this.splice( i, 0, element );
 	}
+
+	this.insertBinary = function( element, start, end )
+	{
+		if ( this.length == 0 )
+		{
+			this.push( element );
+			return;
+		}
+
+		var index = Math.floor( ( start + end ) * 0.5 );
+		var temp1 = element;
+		// TODO.. i don't know why.
+		var temp2 = Global.isUndefined( arguments[3] ) ? this[index] : Global.copyObject( this[index] );
+		for ( var i = 3; i < arguments.length; i ++ )
+		{
+			if ( Global.isUndefined( arguments[i] ) )
+				break;
+
+			temp1 = temp1[arguments[i]];
+			temp2 = temp2[arguments[i]];
+		}
+
+		if ( start == end )
+		{
+			if ( temp1 > temp2 )
+				this.insert( index + 1, element );
+			else
+				this.insert( index, element );
+			return;
+		}
+
+		if ( temp1 == temp2 )
+			this.insert( index, element );
+		else if ( temp1 > temp2 )
+			this.insertBinary( element, Math.clamp( index + 1, 0, end ), end, arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9] );
+		else
+			this.insertBinary( element, start, Math.clamp( index - 1, 0, end ), arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9] ); 
+	}
+
 }
 
 ArrayEx.prototype = new Array( );
