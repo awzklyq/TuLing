@@ -375,6 +375,11 @@ Global.isFunction = function( param )
 	return typeof( param ) == "function";
 }
 
+Global.isObject = function( param )
+{
+	return typeof( param ) == "object";
+}
+
 Global.isArray = function( param )
 {
 	return ( param instanceof Array ) || ( param instanceof ArrayEx );
@@ -434,7 +439,7 @@ Global.copyObject = function( source, deep )
 {
 	var temp = {};
 	for ( var key in source )
-		temp[key] = source[key];
+		temp[key] = Global.isObject( source[key] ) && Global.isObject( source[key] ) != null ? Global.copyObject( source[key] ) : source[key];
 
 	return temp;
 

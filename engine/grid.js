@@ -144,7 +144,7 @@ function Grids4( x, y, w, h, size, element )
 
 	this.setGrids = function( grid )
 	{
-		Debug.assert( grid == null || Global.Grid4_typeid != grid.typeid, "The param is not right! ");
+		Debug.assert( grid != null && Global.Grid4_typeid == grid.typeid, "The param is not right! ");
 
 		delete this.grids;
 		this.grids = new ArrayEx( );
@@ -152,6 +152,7 @@ function Grids4( x, y, w, h, size, element )
 		var grids = grid.grids;
 		for ( var i = 0; i < grids.length; i ++ )
 		{
+			this.grids[i] = new ArrayEx( );
 			for ( var j = 0; j < grids[i].length; j ++ )
 				this.grids[i][j] = Global.copyObject( grids[i][j] );
 		}
@@ -179,7 +180,7 @@ function Grids4( x, y, w, h, size, element )
 					this.rect.setColor( this.grids[i][j].color );
 
 				this.rect.resetSize( j * this.gridSize, i * this.gridSize, this.gridSize, this.gridSize );
-				this.rect.draw( )
+				this.rect.draw( );
 			}
 		}
 	}

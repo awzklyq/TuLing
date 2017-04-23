@@ -36,7 +36,8 @@ else
 
 Debug.assert = function( param1, param2 )
 {
-	console.assert( param1, param2 );
-	if ( param1 == true )
+	if ( param1 == false )
 		Debug.trace( );
+
+	console.assert( param1, param2 );
 }

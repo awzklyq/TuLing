@@ -7,7 +7,7 @@ function ArrayEx( )
 
 		this.splice( i, 1 );
 	}
-	
+
 	this.remove = function( element )
 	{
 		if ( element == null )
@@ -34,6 +34,28 @@ function ArrayEx( )
 		return -1;
 	}
 
+	this.findHelper = function( element )
+	{
+		if ( arguments.length == 1 )
+			return this.find( element );
+
+		var temp1 = element;
+		for ( var i = 1; i < arguments.length; i ++ )
+			temp1 = temp1[arguments[i]];
+
+		for ( var i = 0; i < this.length; i ++ )
+		{
+			var temp2 = this[i];
+			for ( var j = 1; j < arguments.length; j ++ )
+				temp2 = temp2[arguments[j]];
+
+			if ( temp2 == temp1 )
+				return i;
+		}
+
+		return -1;
+	}
+
 	this.insert = function( i, element )
 	{
 		if ( Global.isNumber( i ) == false || element == null )
@@ -44,7 +66,7 @@ function ArrayEx( )
 
 	this.insertBinary = function( element, start, end )
 	{
-		if ( this.length == 0 )
+		if ( this.length == 0 || start >= this.length )
 		{
 			this.push( element );
 			return;
@@ -60,7 +82,7 @@ function ArrayEx( )
 				break;
 
 			temp1 = temp1[arguments[i]];
-			temp2 = temp2[arguments[i]];
+			temp2 = Global.isObject( temp2[arguments[i]] ) ? Global.copyObject( temp2[arguments[i]] ) : temp2[arguments[i]];
 		}
 
 		if ( start == end )

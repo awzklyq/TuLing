@@ -103,6 +103,17 @@ var context = window.context;
 // context.globalCompositeOperation = "source-out";
 var debug = top.parent.frames["help"]
 var logCount = 0;
+
+window.tickTimer = 0;
+window.startTimer = new Date( );
+
+window.getTick = function( )
+{
+	var date = new Date( );
+	window.tickTimer += date - window.startTimer;
+	window.startTimer = date;
+	return window.tickTimer;
+}
 window.log = function()
 {
 	if ( window.limitLog!= null && logCount >= window.limitLog )
