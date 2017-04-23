@@ -14,8 +14,22 @@ function PathFinder( grid )
 	this.target = {};
 
 	this.grid = new Grids4( 0, 0, 0, 0 );
-	this.grid.setGrids( grid );
-	this.grids = this.grid.grids;
+
+	this.setGrids = function( grid )
+	{
+		if ( this.grids != null )
+			delete this.grids;
+
+		this.grid.setGrids( grid );
+		this.grids = this.grid.grids;
+	}
+
+	this.setGrids( grid );
+
+	this.selectAt = function( x, y )
+	{
+		return this.grid.selectAt( x, y );
+	}
 
 	this.findPath = function( x1, y1, x2, y2 )
 	{
@@ -63,12 +77,11 @@ function PathFinder( grid )
 		var isclose = false;
 		if ( x1 - 1 >= 0 )
 		{
-			var temp = { column: x1 - 1, row: y1, element:this.grid.grids[y1][x1 - 1]};
 			if ( this.checkPathHelper( source, x1 - 1, y1, x2, y2 ) )
 				isclose = true;
 		}
 
-		if ( x1 + 1 != this.grids.length )
+		if ( x1 + 1 < this.grids[0].length )
 		{
 			if ( this.checkPathHelper( source, x1 + 1, y1, x2, y2 ) )
 				isclose = true;
@@ -80,7 +93,7 @@ function PathFinder( grid )
 				isclose = true;
 		}
 
-		if ( y1 + 1 != this.grids[0].length )
+		if ( y1 + 1 < this.grids.length )
 		{
 			if ( this.checkPathHelper( source, x1, y1 + 1, x2, y2 ) )
 				isclose = true;
@@ -107,10 +120,10 @@ function PathFinder( grid )
 
 	this.checkPathHelper = function( element, x1, y1, x2, y2 )
 	{
-		if ( this.grid.grids[y1][x1].state == 1 )
+		if ( this.grids[y1][x1].state == 1 )
 			return false;
 
-		var temp = { column: x1, row: y1, element:this.grid.grids[y1][x1]};
+		var temp = { column: x1, row: y1, element:this.grids[y1][x1]};
 
 		if ( this.openList.findHelper( temp, 'element' ) != -1 )
 			return false;
@@ -121,5 +134,9 @@ function PathFinder( grid )
 		element.sons.insertBinary( temp, 0, element.sons.length, "element", "weight" );
 		return true;
 	}
-	
+
+	this.draw = function( )
+	{
+		this.grid.draw( );
+	}
 }
