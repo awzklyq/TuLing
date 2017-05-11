@@ -1,69 +1,159 @@
 ﻿function log( )
 {
-	var str = "";
+	var str = arguments.length == 0 ? ' ' : '';
 	for ( var i = 0; i < arguments.length; i ++ )
 	{
 		if ( i != 0 )
-			str += ", ";
+			str += ', ';
+
 		str += arguments[i];
 	}
 
 	flash.trace( str );
 }
 
+function logObject( name, obj, dp )
+{
+	log( 'The object name is', name )
+	var i;
+	for ( i in obj )
+	{
+		if ( obj[i] == null )
+		{
+			log( i, 'null' );
+		}
+		else if ( typeof(obj[i]) == 'function' )
+		{
+			log( i, 'function' );
+		}
+		else if ( typeof(obj[i]) == 'object' && dp )
+		{
+			log( );
+			log( "the parent is", name);
+			logObject( i, obj[i], false );
+			log( );
+		}
+		else
+		{
+			log( i, typeof(obj[i]), obj[i] )
+		}
+	}
+
+	log( );
+}
+
 var doc = fl.getDocumentDOM( );
+
+doc.selectAll();
+
 var timeline = doc.getTimeline( );
-// var allframes = timeline.selectAllFrames( );
 var layers = timeline.layers;
 
 log( 'fla name', doc.name );
-log( 'layers length', layers.length );
-doc.selectAll();
-var theElems = doc.selection;
+log( 'layers length', layers.length  );
+
+var values = doc.name + '={';
+
+function writeValue( key, value, end )
+{
+	if ( typeof( value ) == 'function' || typeof( value ) == 'null' || typeof( value ) == 'undefined' )
+		return;
+
+	if ( typeof( value ) == 'string' )
+	{
+		values += key + ':\''+ value + '\'';
+	}
+	else if ( typeof( value ) == 'boolean' )
+	{
+		values += key + ':'+ ( value ? 'true' : 'false' );
+	}
+	else if ( typeof( value ) == 'object' )
+	{
+		values += key + ':{';
+		var i;
+		for ( i in value )
+		{
+			writeValue( i, value[i] );
+		}
+		values += '}';
+	}
+	else
+	{
+		values += key + ':'+ value;
+	}
+
+	if ( end == null || end == false )
+		values += ',';
+}
 
 function beginReadyElement( elements )
 {
-	for (var c = 0; c < elements.length; c++ ) 
+	for (var c = 0; c < elements.length; c ++ ) 
 	{
-		log( 'name', elements[c].name ); // Instance name.
-		log( 'libraryItem.name', elements[c].libraryItem.name ); // Class name.
-		log( 'x', elements[c].x ); 
-		log( 'y', elements[c].y );
-		log( 'elementType', elements[c].elementType ); // 元素的类型. "shape" 、 "text" 、 "instance" 或 "shapeObj" 
-		log( 'scaleX', elements[c].scaleX );
-		log( 'scaleY', elements[c].scaleY );
-		log( "matrix", elements[c].matrix.a, elements[c].matrix.b, elements[c].matrix.c, elements[c].matrix.d, elements[c].matrix.tx, elements[c].matrix.ty );
-		log( "width, height", elements[c].width, elements[c].height );
-		log( "transformX, transformy", elements[c].transformX, elements[c].transformY );
-		log( "depth", elements[c].depth );
-	}
+		values += 'elements' + c + ':{';
 
-	if ( elements.length > 0 )
-		log( "end beginReadyElement \n" );
+		// logObject( 'elements' + c, elements[c], true );
+		writeValue( 'name', elements[c].name ); // Instance name.
+		writeValue( 'typename', elements[c].libraryItem.name ); // Class name.
+		writeValue( 'x', elements[c].x ); 
+		writeValue( 'y', elements[c].y );
+		// log( 'elementType', elements[c].elementType ); // 元素的类型. "shape" 、 "text" 、 "instance" 或 "shapeObj" 
+		writeValue( 'scaleX', elements[c].scaleX );
+		writeValue( 'scaleY', elements[c].scaleY );
+		writeValue( "matrix", elements[c].matrix );
+		writeValue( "width", elements[c].width, elements[c].height );
+		writeValue( "height", elements[c].height );
+		writeValue( "transformX", elements[c].transformX );
+		writeValue( "transformy", elements[c].transformY );
+		writeValue( "depth", elements[c].depth, true );
+		values += '}'
+
+		if ( c != elements.length - 1 )
+			values += ',';
+	}
 }
 
 function begineReadyFrames( frames )
 {
+	// log( 'frames length', frames.length )
 	for ( var i = 0; i < frames.length; i ++ )
 	{
-		log('frame name', frames[i].name );
-		beginReadyElement( frames[i].elements );
-	}
+		if ( frames[i].startFrame == i )
+		{
+			// log('the current frame', i );
+			// logObject( 'frame', frames[i] )
 
-	if ( frames.length > 0 )
-		log( "end begineReadyFrames \n" );
+			values += 'frames' + i + ':{';
+
+			beginReadyElement( frames[i].elements );
+
+			values += '}'
+
+			if ( frames[i].startFrame + frames[i].duration != frames.length )
+				values += ',';
+		}
+	}
 }
 
 function begineReadyLayers( layers )
 {
 	for ( var i = 0; i < layers.length; i ++ )
 	{
+		values += 'layers' + i + ':{';
+
 		begineReadyFrames( layers[i].frames );
+
+		values += '}'
+
+		if ( i != layers.length - 1 )
+			values += ',';
 	}
 
-	if ( layers.length > 0 )
-		log( "end begineReadyLayers \n" );
 }
 
 begineReadyLayers( layers );
-// beginReadyElement( theElems );
+
+values += '}';
+log( values )
+// var filename = fl.browseForFileURL( "save", "Save file" );
+// FLfile.write( filename, "ssssssssssss" );
