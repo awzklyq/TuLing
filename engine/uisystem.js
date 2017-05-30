@@ -209,7 +209,6 @@ Global.UI = Object.create( Object.prototype, {
 	},
 	set:function( uiname )
 	{
-		log('sssssss', uiname)
 		if ( this._parent != null )
 		{
 			if ( this._parent[uiname] != null )

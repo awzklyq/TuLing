@@ -1,5 +1,5 @@
 // UI Button.
-function Button( name, x, y, w, h, text )
+function Button( x, y, w, h, text, name )
 {
 	this._x = x || 0;
 	this._y = y || 0;
@@ -14,32 +14,11 @@ function Button( name, x, y, w, h, text )
 	
 	if ( text != null && text != "" )
 	{
-		this.text._x = this._x;
-		this.text._y = this._y;
+		this.text._x = this._x + this._w * 0.5;
+		this.text._y = this._y + this._h * 0.5;
 		this.text._w = this._w;
 		this.text.setFont( this._h );
 		this.text.text = text;
-	}
-	
-	this.elements = new ArrayEx( );
-	this.elements.push( this.text );
-	this.addUI = function( ui )
-	{
-		if ( UISystem.isUIView( ui ) == false )
-			return;
-
-		ui._parent = this;
-		this.elements.push( ui );
-		UISystem.removeUI( ui );
-	}
-
-	this.removeUI = function( ui )
-	{
-		if ( UISystem.isUIView( ui ) == false || ui._parent != this )
-			return
-
-		this.elements.remove( ui );
-		delete ui._parent;
 	}
 
 	this.color1 = 0xff888888;
@@ -220,7 +199,7 @@ function Button( name, x, y, w, h, text )
 	UISystem.buttons.push( this );
 }
 
-Button.prototype = Global.UI;
+Button.prototype = new UIView( );
 
 UISystem.isButton = function( obj )
 {

@@ -268,8 +268,11 @@ Polygon.render = function( polygon )
 	Global.bindAffectToContext( context_render );
 
 	context_render.moveTo(points_render[0].x, points_render[0].y);
+
 	for(var i = 1; i < length_render; i ++)
+	{
 		context_render.lineTo(points_render[i].x, points_render[i].y);
+	}
 
 	if ( Global.combineRender == false )
 	{

@@ -197,14 +197,17 @@ Global.loadJSFile = function( url, async, func )
 	var script = document.createElement("script");
 
 	// TODO.
-	script.async = async;
-	//script.defer = false; 
-
+	script.async = async || false;
+	script.defer = async || false; 
 	script.src = url;
-	var parent = document.getElementsById("script")[0].parentNode;
+	script.type = "text/javascript"; 
+	var parent = document.getElementsByTagName("script")[0].parentNode;
 	parent.appendChild( script );
 
 	// TODO.
+	if ( async == false || func == null )
+		return;
+
 	script.onload = function( )
 	{
 		if ( Global.isFunction( func ) )
@@ -446,6 +449,35 @@ Global.copyObject = function( source, deep )
 	// Deep.
 }
 
+Global.copyArray = function( source )
+{
+	var temp = source.typeid == Global.Array_typeid ? new ArrayEx( ) : {};
+
+	// For array.
+	for ( var i = 0; i < source.length; i ++ )
+	{
+		if (  Global.isObject( source[key] ) )
+			temp.push( Global.copyArray( source[key] ) )
+		else
+			temp.push( source[key] )
+	}
+
+	// For hash.
+	for ( var key in source )
+	{
+		if ( source.typeid == Global.Array_typeid )
+		{
+			if ( source.find( source[key] ) != -1 )
+				continue;
+		}
+		
+		temp[key] = Global.isObject( source[key] ) && Global.isObject( source[key] ) != null ? Global.copyArray( source[key] ) : source[key];
+	}
+
+	return temp;
+	
+}
+
 Global.FILLSTYLE = 0x00000000;
 Global.STROKESTYLE = 0x00000001;
 
@@ -461,6 +493,8 @@ Global.PointLight_typeid = 5;
 
 Global.Grid6_typeid = 6;
 Global.Grid4_typeid = 7;
+
+Global.Array_typeid = 8;
 
 Global.bgColor = Math.getRGBA( 0xff000000 );
 

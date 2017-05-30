@@ -152,9 +152,9 @@ function Grids4( x, y, w, h, size, element )
 		var grids = grid.grids;
 		for ( var i = 0; i < grids.length; i ++ )
 		{
-			this.grids[i] = new ArrayEx( );
+			this.grids.push( new ArrayEx( ) );
 			for ( var j = 0; j < grids[i].length; j ++ )
-				this.grids[i][j] = Global.copyObject( grids[i][j] );
+				this.grids[i].push( Global.copyObject( grids[i][j] ) );
 		}
 
 		this.hgNum = grid.hgNum;

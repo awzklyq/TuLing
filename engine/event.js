@@ -136,8 +136,15 @@ document.addEventListener("keydown", function( event ){
 
 window.onKeyUp = new ArrayEx( );
 document.addEventListener("keyup", function( event ){
+	var def = false;
 	for ( var i = 0; i < window.onKeyUp.length; i ++ )
-		window.onKeyUp[i]( event.keyCode );
+	{
+		if ( window.onKeyUp[i]( event.keyCode ) )
+			ref = true;
+	}
+
+	if ( def )
+		event.preventDefault( event );
 
 	System.keyDowns.remove( event.keyCode )
 }, false);

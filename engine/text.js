@@ -94,7 +94,7 @@ function Text( text, x, y, w, h )
 	UISystem.texts.push( this );
 }
 
-Text.prototype = Global.UI;
+Text.prototype = new UIView( );
 
 UISystem.isText = function( obj )
 {
@@ -276,7 +276,7 @@ function TextArea( text, x, y, w, h )
 	UISystem.textareas.push( this );
 }
 
-TextArea.prototype = Global.UI;
+TextArea.prototype = new UIView( );
 
 UISystem.isTextArea = function( obj )
 {

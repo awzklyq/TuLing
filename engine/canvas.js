@@ -4,8 +4,19 @@ function CanvasEx( )
 	this.y = 0;
 	this.w = 0;
 	this.h = 0;
+	this.id = CanvasEx.id ++;
 	this.canvas = document.createElement( 'canvas' );
-	this.canvas.setAttribute( "id", CanvasEx.id ++ ); 
+	this.canvas.setAttribute( "id", this.id ); 
+
+	this.setWidth = function( w )
+	{
+		Global.setElementWidth( this.canvas, w );
+	}
+
+	this.setHeight = function( h )
+	{
+		Global.setElementHeight( this.canvas, h );
+	}
 
 	this.setAttribute = function( key, value )
 	{

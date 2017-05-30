@@ -1,4 +1,4 @@
-function LImage( )
+﻿function LImage( )
 {
 	this.isLoad = false; 
 	this.x = 0;

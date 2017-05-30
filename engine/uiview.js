@@ -1,10 +1,24 @@
-function UIView( x, y, w, h, name )
+function UIView( x, y, w, h, name, backimage )
 {
+
 	this._x = x || 0;
 	this._y = y || 0;
 	this._w = w || 0;
 	this._h = h || 0;
+
+	// For swf.
+	this.depth = 1;
+
 	this._name = name || "";
+	this.image = backimage;
+
+	this.setImage = function( img )
+	{
+		if ( this.image )
+			delete this.image;
+
+		this.image = img;
+	}
 
 	this.elements = new ArrayEx( );
 	this.addUI = function( ui )
@@ -14,6 +28,8 @@ function UIView( x, y, w, h, name )
 			ui._parent = this;
 			this.elements.push( ui );
 			UISystem.removeUI( ui );
+			ui._x += this._x;
+			ui._y += this._y;
 		}
 
 		if ( ui._name != null && ui._name != "" )
@@ -44,6 +60,11 @@ function UIView( x, y, w, h, name )
 
 	this.draw = function( )
 	{
+		if ( this.image != null )
+		{
+			this.image.drawImage( this._x, this._y, this._w, this._h );	
+		}
+
 		var elements = this.elements;
 		for ( var i = 0; i < elements.length; i ++ )
 			elements[i].draw( );

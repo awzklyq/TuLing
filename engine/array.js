@@ -1,5 +1,6 @@
 function ArrayEx( )
 {
+	this.typeid = Global.Array_typeid
 	this.removeAt = function( i )
 	{
 		if ( Global.isNumber( i ) == false )
