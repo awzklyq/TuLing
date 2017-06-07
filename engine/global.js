@@ -29,24 +29,31 @@ Global.popMatrix = function( )
 
 Global.getCurrentMatrix = function( )
 {
+	if ( Global.matrix.length == 0 && Global.wTransform == null )
+		return;
+
+	if ( Global.tempMatrix == null )
+		Global.tempMatrix = new Matrix( );
+
 	if ( Global.matrix.length > 0 )
 	{
-		if ( Global.wTransform != null )
+		for ( var i = Global.matrix.length - 1; i >= 0; i -- )
 		{
-			var mat = new Matrix( Global.matrix[Global.matrix.length - 1] );
-			mat:mulRight( Global.wTransform );
-			return mat;
+			if ( i == Global.matrix.length - 1 )
+			{
+				Global.tempMatrix.set( Global.matrix[i].mat );
+			}
+			else
+			{
+				Global.tempMatrix.mulRight( Global.matrix[i] );
+			}
 		}
-
-		return Global.matrix[Global.matrix.length - 1];
 	}
 
 	if ( Global.wTransform != null )
-	{
-		return Global.wTransform;
-	}
+		Global.tempMatrix.mulRight( Global.wTransform );
 
-	return null;
+	return Global.tempMatrix;
 }
 
 Global.bindMatrixToContext = function( context, matrix )

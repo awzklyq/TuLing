@@ -231,3 +231,10 @@ function Matrix( mat )
 	else
 		this.reset( );
 }
+
+Matrix.isIdentity = function( mat )
+{
+	var mm = mat.mat;
+	return mm[0] == 1 && mm[1] == 0 && mm[3] == 0 &&
+		mm[4] == 1 && mm[6] == 0 && mm[7] == 0;
+}

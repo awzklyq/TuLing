@@ -1,6 +1,7 @@
 function ArrayEx( )
 {
-	this.typeid = Global.Array_typeid
+	this.typeid = Global.Array_typeid;
+	this.type = ArrayEx.Normal;
 	this.removeAt = function( i )
 	{
 		if ( Global.isNumber( i ) == false )
@@ -67,9 +68,12 @@ function ArrayEx( )
 
 	this.insertBinary = function( element, start, end )
 	{
-		if ( this.length == 0 || start >= this.length )
+		if ( start < 0 || end >= this.length || this.length == 0 || start >= this.length || Global.isUndefined( arguments[3] ) )
 		{
-			this.push( element );
+			if ( this.type == ArrayEx.Normal )
+				this.push( element );
+			else
+				this.unshift( element );
 			return;
 		}
 
@@ -88,21 +92,85 @@ function ArrayEx( )
 
 		if ( start == end )
 		{
-			if ( temp1 > temp2 )
-				this.insert( index + 1, element );
+			if ( this.type == ArrayEx.Normal )
+			{
+				if ( temp1 >= temp2 )
+					this.insert( index + 1, element );
+				else
+					this.insert( index, element );
+			}
 			else
-				this.insert( index, element );
+			{
+				if ( temp1 >= temp2 )
+					this.insert( index, element );
+				else
+					this.insert( index + 1, element );
+			}
+
 			return;
 		}
 
 		if ( temp1 == temp2 )
-			this.insert( index, element );
+			this.insert( this.type == ArrayEx.Normal ? index + 1: index, element );
 		else if ( temp1 > temp2 )
-			this.insertBinary( element, Math.clamp( index + 1, 0, end ), end, arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9] );
+			this.insertBinary( element, Math.clamp( this.type == ArrayEx.Normal ? index + 1 : index - 1, 0, end ), end, arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9] );
 		else
-			this.insertBinary( element, start, Math.clamp( index - 1, 0, end ), arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9] ); 
+			this.insertBinary( element, start, Math.clamp( this.type == ArrayEx.Normal ? index - 1 : index + 1, 0, end ), arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9] ); 
+	}
+	
+	this.insertSorting = function( element, start, end )
+	{
+		if ( start < 0 || end >= this.length || this.length == 0 || start >= this.length || Global.isUndefined( arguments[3] ) )
+		{
+			if ( this.type == ArrayEx.Normal )
+				this.push( element );
+			else
+				this.unshift( element );
+			return;
+		}
+
+		var index = Math.floor( ( start + end ) * 0.5 );
+		var temp1 = element;
+		// TODO.. i don't know why.
+		var temp2 = this[index];
+		for ( var i = 3; i < arguments.length; i ++ )
+		{
+			if ( Global.isUndefined( arguments[i] ) )
+				break;
+
+			temp1 = temp1[arguments[i]];
+			temp2 = temp2[arguments[i]]
+		}
+
+		if ( start == end )
+		{
+			if ( this.type == ArrayEx.Normal )
+			{
+				if ( temp1 > temp2 )
+					this.insert( index + 1, element );
+				else
+					this.insert( index, element );
+			}
+			else
+			{
+				if ( temp1 >= temp2 )
+					this.insert( index, element );
+				else
+					this.insert( index + 1, element );
+			}
+			return;
+		}
+
+		if ( temp1 == temp2 )
+			this.insert( this.type == ArrayEx.Normal ? index: index + 1, element );
+		else if ( temp1 > temp2 )
+			this.insertSorting( element, Math.clamp( this.type == ArrayEx.Normal ? index + 1 : index - 1, 0, end ), end, arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9] );
+		else
+			this.insertSorting( element, start, Math.clamp( this.type == ArrayEx.Normal ? index - 1 : index + 1, 0, end ), arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9] ); 
 	}
 
 }
 
 ArrayEx.prototype = new Array( );
+ArrayEx.Normal = 0;
+ArrayEx.ReversSort = 1;

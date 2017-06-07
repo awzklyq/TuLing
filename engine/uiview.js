@@ -1,16 +1,23 @@
 function UIView( x, y, w, h, name, backimage )
 {
-
+	
 	this._x = x || 0;
 	this._y = y || 0;
 	this._w = w || 0;
 	this._h = h || 0;
 
+	this.useMatrix = false;
+
+	this.mat = new Matrix( );
+
 	// For swf.
-	this.depth = 1;
+	this._depth = 0;
+	this._order = 0;
 
 	this._name = name || "";
 	this.image = backimage;
+
+	this.color = '';
 
 	this.setImage = function( img )
 	{
@@ -21,12 +28,17 @@ function UIView( x, y, w, h, name, backimage )
 	}
 
 	this.elements = new ArrayEx( );
-	this.addUI = function( ui )
+	// this.elements.type = ArrayEx.ReversSort;
+	this.addUI = function( ui, order )
 	{
 		if ( UISystem.isUIView( ui ) )
 		{
 			ui._parent = this;
-			this.elements.push( ui );
+			if ( order == null || order == false )
+				this.elements.insertSorting( ui, 0, this.elements.length, "_order" );
+			else
+				this.elements.push( ui );
+
 			UISystem.removeUI( ui );
 			ui._x += this._x;
 			ui._y += this._y;
@@ -58,8 +70,22 @@ function UIView( x, y, w, h, name, backimage )
 		this.elements.clear( );
 	}
 
-	this.draw = function( )
+	this.checkSWFFrame = function( )
 	{
+		if ( this.swf == null || this.swf == false )
+			return true;
+
+		return this.tick >= this.startFrame && this.tick < this.duration;
+			
+	}
+	this.draw = function( e )
+	{
+		if ( this.checkSWFFrame ( ) == false )
+			return;
+
+		if ( this.useMatrix )
+			Global.pushMatrix( this.mat );
+		
 		if ( this.image != null )
 		{
 			this.image.drawImage( this._x, this._y, this._w, this._h );	
@@ -67,7 +93,10 @@ function UIView( x, y, w, h, name, backimage )
 
 		var elements = this.elements;
 		for ( var i = 0; i < elements.length; i ++ )
-			elements[i].draw( );
+			elements[i].draw( e );
+
+		if ( this.useMatrix )
+			Global.popMatrix( );
 	}
 
 	this.triggerMouseDown = function( b, x, y )
@@ -82,19 +111,31 @@ function UIView( x, y, w, h, name, backimage )
 		return false;
 	}
 
-	UISystem.uiviews.push( this );
+	this.sortDepth = function( )
+	{
+		if ( this.elements.length < 2 )
+			return;
+	
+	}
+
+	this.reverse = function( )
+	{
+		this.elements.reverse( );
+		for ( var i = 0; i < this.elements.length; i ++ )
+			this.elements[i].reverse( );
+	}
+
+	this.logInfo = function( )
+	{
+		log( this.type, this._depth, this.typename );
+		for ( var i = 0; i < this.elements.length; i ++ )
+			this.elements[i].logInfo( );
+
+		log( );
+	}
+
+	UISystem.addUI( this );
 	this.type = "UIView";
 }
 
 UIView.prototype = Global.UI;
-
-UISystem.isUIView = function( obj, isview )
-{
-	if ( isview == true )
-	{
-		if ( obj.type == "UIView" )
-			return;
-	}
-
-	return ( obj.type == "UIView" ) || UISystem.isButton( obj ) || UISystem.isText( obj ) || UISystem.isTextArea( obj ) || UISystem.isTextInput( obj );
-}

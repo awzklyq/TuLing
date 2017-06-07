@@ -18,6 +18,8 @@ UISystem.fouseuis = new ArrayEx( );
 
 UISystem.uilists = new ArrayEx( );
 
+UISystem.swfs = new ArrayEx( );
+
 // TODO.
 UISystem.removeUI = function( ui )
 {
@@ -33,34 +35,99 @@ UISystem.removeUI = function( ui )
 		UISystem.uiviews.remove( ui );
 	else if ( UISystem.isUIList( ui ) )
 		UISystem.uilists.remove( ui );
+	else if ( UISystem.isSWF( ui ) )
+		UISystem.swfs.remove( ui );
+}
+
+// TODO.
+UISystem.addUI = function( ui )
+{
+	if ( UISystem.isButton( ui )	)
+		UISystem.buttons.push( ui );
+	else if ( UISystem.isText( ui ) )
+		UISystem.texts.push( ui );
+	else if ( UISystem.isTextArea( ui ) )
+		UISystem.textareas.push( ui );
+	else if ( UISystem.isTextInput( ui ) )
+		UISystem.textinputs.push( ui );
+	else if ( UISystem.isUIView( ui ) )
+		UISystem.uiviews.push( ui );
+	else if ( UISystem.isUIList( ui ) )
+		UISystem.uilists.push( ui );
+	else if ( UISystem.isSWF( ui ) )
+		UISystem.swfs.push( ui );
 } 
 
 UISystem.render = function( e )
 {
 	var buttons = UISystem.buttons;
-
 	for ( var i = 0; i < buttons.length; i ++ )
-		buttons[i].draw( );
+		buttons[i].draw( e );
 
 	var texts = UISystem.texts;
 	for ( var i = 0; i < texts.length; i ++ )
-		texts[i].draw( );
+		texts[i].draw( e );
 
 	var textareas = UISystem.textareas;
 	for ( var i = 0; i < textareas.length; i ++ )
-		textareas[i].draw( );
+		textareas[i].draw( e );
 
 	var textinputs = UISystem.textinputs;
 	for ( var i = 0; i < textinputs.length; i ++ )
-		textinputs[i].draw( );
+		textinputs[i].draw( e );
 
 	var uiviews = UISystem.uiviews;
 	for ( var i = 0; i < uiviews.length; i ++ )
-		uiviews[i].draw( );
+		uiviews[i].draw( e );
 
 	var uilists = UISystem.uilists;
 	for ( var i = 0; i < uilists.length; i ++ )
-		uilists[i].draw( );
+		uilists[i].draw( e );
+
+	var swfs = UISystem.swfs;
+	for ( var i = 0; i < swfs.length; i ++ )
+		swfs[i].draw( e );
+}
+
+UISystem.isButton = function( obj )
+{
+	return obj && obj.type && obj.type == "Button";
+}
+
+UISystem.isText = function( obj )
+{
+	return obj.type == "Text";
+}
+
+UISystem.isTextArea = function( obj )
+{
+	return obj && obj.type && obj.type == "TextArea";
+}
+
+UISystem.isTextInput = function( obj )
+{
+	return obj && obj.type && obj.type == "TextInput";
+}
+
+UISystem.isUIList = function( obj )
+{
+	return obj && obj.type && obj.type == "UIList";
+}
+
+UISystem.isSWF = function( obj )
+{
+	return obj && obj.type && obj.type == "SWF";
+}
+
+UISystem.isUIView = function( obj, isview )
+{
+	if ( isview == true )
+	{
+		if ( obj.type == "UIView" )
+			return;
+	}
+
+	return ( obj.type == "UIView" ) || UISystem.isButton( obj ) || UISystem.isText( obj ) || UISystem.isTextArea( obj ) || UISystem.isTextInput( obj );
 }
 
 function mouseDown( b, x, y )

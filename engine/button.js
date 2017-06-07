@@ -1,6 +1,7 @@
 // UI Button.
 function Button( x, y, w, h, text, name )
 {
+	UISystem.removeUI( this );
 	this._x = x || 0;
 	this._y = y || 0;
 	this._w = w || 0;
@@ -115,7 +116,10 @@ function Button( x, y, w, h, text, name )
 
 	this.tick = 0;
 	this.draw = function( )
-	{		
+	{
+		if ( this.checkSWFFrame ( ) == false )
+			return;
+
 		if ( this.state == 1 )
 		{
 			if ( this.image1 != null )
@@ -196,15 +200,10 @@ function Button( x, y, w, h, text, name )
 
 	this.reset( );
 	this.type = "Button";
-	UISystem.buttons.push( this );
+	UISystem.addUI( this );
 }
 
-Button.prototype = new UIView( );
-
-UISystem.isButton = function( obj )
-{
-	return obj.type == "Button";
-}
+Button.prototype = new UIView( ); //Global.UI;
 
 // RenderType.
 Button.Polygon = 0x00000001;

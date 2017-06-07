@@ -1,31 +1,12 @@
 function Text( text, x, y, w, h )
 {
-	this._x = 0;
-	this._y = 0;
-
-	if ( x != null )
-	{
-		this._x = x;
-	}
-
-	if ( y != null )
-	{
-		this._y = y;
-	}
-
-	if ( w != null )
-	{
-		this._w = w;
-	}
-
-	if ( text != null )
-	{
-		this.text = text;
-	}
-	else
-	{
-		this.text = "";
-	}
+	UISystem.removeUI( this );
+	this.type = "Text";
+	this._x = x || 0;
+	this._y = y || 0;
+	this._w = w || 0;
+	this._h = h || 0;
+	this.text = text || "";
 
 	this.lineWidth = 2;
 	this.font = Global.FONT;
@@ -55,6 +36,9 @@ function Text( text, x, y, w, h )
 
 	this.draw = function( )
 	{
+		if ( this.checkSWFFrame ( ) == false )
+			return;
+
 		var context = window.context;
 		context.save( );
 		Global.bindMatrixToContext( context, Global.getCurrentMatrix( ) );
@@ -90,57 +74,22 @@ function Text( text, x, y, w, h )
 		context.restore( );
 	}
 
-	this.type = "Text"
-	UISystem.texts.push( this );
+	UISystem.addUI( this );
 }
 
 Text.prototype = new UIView( );
 
-UISystem.isText = function( obj )
-{
-	return obj.type == "Text";
-}
-
 function TextArea( text, x, y, w, h )
 {
-	if ( x != null )
-	{
-		this._x = x;
-	}
-	else
-	{
-		this._x = 0;
-	}
-	
-	if ( y != null )
-	{
-		this._y = y;
-	}
-	else
-	{
-		this._y = 0;
-	}
-
-	if ( w != null )
-	{
-		this._w = w;
-	}
-	else
-	{
-		this._w = 0;
-	}
-	
-	if ( h != null )
-	{
-		this._h = h;
-	}
-	else
-	{
-		this._h = 0;
-	}
+	UISystem.removeUI( this );
+	this.type = "TextArea";
+	this._x = x || 0;
+	this._y = y || 0;
+	this._w = w || 0;
+	this._h = h || 0;
+	this.text = text || "";
 
 	this.textList = new Array( );
-	this.text = "";
 	this.setText = function( text )
 	{
 		if ( this.text != null )
@@ -201,10 +150,11 @@ function TextArea( text, x, y, w, h )
 
 	this.draw = function( )
 	{
-		if ( this.textList == null && this.text == null )
-		{
+		if ( this.checkSWFFrame ( ) == false )
 			return;
-		}
+
+		if ( this.textList == null && this.text == null )
+			return;
 
 		var context = window.context;
 		context.save( );
@@ -272,13 +222,7 @@ function TextArea( text, x, y, w, h )
 		context.restore( );
 	}
 
-	this.type = "TextArea";
-	UISystem.textareas.push( this );
+	UISystem.addUI( this );
 }
 
 TextArea.prototype = new UIView( );
-
-UISystem.isTextArea = function( obj )
-{
-	return obj.type == "TextArea";
-}

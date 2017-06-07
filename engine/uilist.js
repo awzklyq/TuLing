@@ -1,5 +1,6 @@
 function UIList( x, y, w, h )
 {
+	UISystem.removeUI( this );
 	this._x = x || 0;
 	this._y = y || 0;
 	this._w = w || 0;
@@ -7,6 +8,9 @@ function UIList( x, y, w, h )
 
 	this.draw = function( )
 	{
+		if ( this.checkSWFFrame ( ) == false )
+			return;
+
 		var elements = this.elements;
 		for ( var i = 0; i < elements.length; i ++ )
 			elements[i].draw( );
@@ -24,14 +28,8 @@ function UIList( x, y, w, h )
 		return false;
 	}
 
-
-	UISystem.uilists.push( this );
 	this.type = "UIList";
+	UISystem.addUI( this );
 }
 
 UIList.prototype = new UIView( );
-
-UISystem.isUIList = function( ui )
-{
-	return ui && ui.type && ui.type == "UIList";
-}

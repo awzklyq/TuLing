@@ -1,5 +1,6 @@
 function TextInput( x, y, w, h, text )
 {
+	UISystem.removeUI( this );
 	this._x = x || 0;
 	this.textx = this._x;
 	this._y = y || 0;
@@ -47,6 +48,9 @@ function TextInput( x, y, w, h, text )
 	this.curindex = this.text.length - 1;
 	this.draw = function( )
 	{
+		if ( this.checkSWFFrame ( ) == false )
+			return;
+
 		var context = window.context;
 		context.save( );
 		context.beginPath( );
@@ -147,6 +151,8 @@ function TextInput( x, y, w, h, text )
 	UISystem.textinputs.push( this );
 
 	this.type = "TextInput";
+
+	UISystem.addUI( this );
 }
 
 TextInput.setCursorPostionEx = function( dis, start, end, text )
@@ -167,11 +173,6 @@ TextInput.setCursorPostionEx = function( dis, start, end, text )
 }
 
 TextInput.prototype = Global.UI;
-
-UISystem.isTextInput = function( obj )
-{
-	return obj.type == "TextInput";
-}
 
 // Windows...
 TextInput.doActionForKeyDown = function( keyCode, textinput)
