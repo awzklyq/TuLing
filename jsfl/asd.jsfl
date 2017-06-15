@@ -48,16 +48,15 @@ function logObject( name, obj, dp )
 var doc = fl.getDocumentDOM( );
 doc.forceSimple = false
 doc.selectAll( );
- 
-function getLayers( )
-{
-	return doc.getTimeline( ).layers;
-}
+var timeline = doc.getTimeline( );
+var layers = timeline.layers
 
 log( 'fla name', doc.name );
-log( 'layers length', layers.length  );
+log( 'layers length', layers.length );
 
-var values = doc.name + '={';
+var flaname = doc.name;
+var filename = flaname.substring( 0, flaname.indexOf( '.fla' ) );
+var values = 'SWFGroup[\'' + filename + '\']={';
 
 function writeValue( key, value, end )
 {
@@ -115,17 +114,18 @@ function beginReadyEdges( edges )
 	}
 }
 
-function beginReadyElement( elements, frame )
+var bmpitems = new Array( );
+function beginReadyElement( elements )
 {
-	for (var c = 0; c < elements.length; c ++ ) 
+	for (var c = elements.length - 1; c >= 0; c -- ) 
 	{
 		values += 'elements' + c + ':{';
 
-		// logObject( 'elements' + c, elements[c], false );
+		// logObject( 'elements' + c, elements[c], true );
 		writeValue( 'name', elements[c].name ); // Instance name.
-
+		writeValue( 'order', c ); // Instance name.
 		writeValue( 'type', elements[c].elementType ); // shape text instance shapeObj shapeObj
-
+		// log('top', elements[c].libraryItem.name, elements[c].top, c)
 		if ( elements[c].libraryItem )
 			writeValue( 'typename', elements[c].libraryItem.name ); // Class name.
 
@@ -136,9 +136,55 @@ function beginReadyElement( elements, frame )
 			values += '},';
 		}
 
+		var item = elements[c].libraryItem;
+		// "shape" 、 "text" 、 "instance" 或 "shapeObj" 。 "shapeObj" 
+		if ( elements[c].elementType == "instance" )
+		{
+			// symbol 、 bitmap 、 embedded video 、 linked video 、 video 和 compiledclip
+			writeValue( 'instanceType', elements[c].instanceType );
+			
+			if ( elements[c].instanceType == "symbol" )
+			{
+				writeValue( "blendMode", elements[c].blendMode );
+				if ( item.timeline.layers.length > 0 )
+				{
+					values += 'layers:{';
+					begineReadyLayers( item.timeline.layers );
+					values += '},';
+				}
+				// trantimeline(item.timeline).layers
+			}
+			else if ( elements[c].instanceType == "bitmap" )
+			{
+				bmpitems.push( item );
+			}
+			else if ( elements[c].instanceType == "embedded video" )
+			{
+				
+			}
+			else if ( elements[c].instanceType == "linked video" )
+			{
+				
+			}
+			else if ( elements[c].instanceType == "compiledclip" )
+			{
+				
+			}
+		}
+		else if ( elements[c].elementType == "text" )
+		{
+			
+		}
+		else if ( elements[c].elementType == "shape" )
+		{
+			
+		}
+
 		writeValue( 'x', elements[c].x ); 
 		writeValue( 'y', elements[c].y );
+		// log('isGroup', elements[c].isGroup );
 		// log( 'elementType', elements[c].elementType ); // 元素的类型. "shape" 、 "text" 、 "instance" 或 "shapeObj" 
+		// log( 'instanceType', elements[c].instanceType );
 		writeValue( 'scaleX', elements[c].scaleX );
 		writeValue( 'scaleY', elements[c].scaleY );
 		writeValue( "matrix", elements[c].matrix );
@@ -146,76 +192,64 @@ function beginReadyElement( elements, frame )
 		writeValue( "height", elements[c].height );
 		writeValue( "transformX", elements[c].transformX );
 		writeValue( "transformy", elements[c].transformY );
-		writeValue( "depth", elements[c].depth, true );
 
-		// doc.selectNone( ); 
-		// doc.selection = elements;
-		// doc.enterEditMode('inPlace');
-		// begineReadyLayers( getLayers( ), true, frame );
-		// doc.exitEditMode();
+		writeValue( "depth", elements[c].depth, true );
 		values += '}'
 
-		if ( c != elements.length - 1 )
+		if ( c != 0 )
 			values += ',';
 	}
 }
 
-function begineReadyFrames( frames, disable, frame )
+function begineReadyFrames( frames )
 {
-	var write = disable == null || disable == false;
-	// log( 'frames length', frames.length )
 	for ( var i = 0; i < frames.length; i ++ )
 	{
 		if ( frames[i].startFrame != i )
 			continue;
 
-		if ( frame != -1 && frame != i )
-			continue;
-
-		// log('the current frame', i );
-		// logObject( 'frame', frames[i] )
-
-		if ( write )
-			values += 'frames' + i + ':{';
-
+		values += 'frames' + i + ':{';
+		writeValue( "labelType", frames[i].labelType );
+		writeValue( "name", frames[i].name );
+		writeValue( "startFrame", frames[i].startFrame );
+		writeValue( "endFrame", frames[i].startFrame + frames[i].duration );
+		writeValue( "duration", frames.length );
 		beginReadyElement( frames[i].elements, i );
 
 		values += '}'
 
-		if ( write )
-		{
-			if ( frames[i].startFrame + frames[i].duration != frames.length )
-				values += ',';
-		}
+
+		if ( frames[i].startFrame + frames[i].duration != frames.length )
+			values += ',';
 	}
 }
 
-function begineReadyLayers( layers, disable, frame )
+function begineReadyLayers( layers )
 {
-	var write = disable == null || disable == false;
+	// layers.reverse( );
 	for ( var i = 0; i < layers.length; i ++ )
 	{
-		if ( write )
-		{
-			values += 'layers' + i + ':{';
-			writeValue( "layercolor", layers[i].color );
-		}
 
-		begineReadyFrames( layers[i].frames, disable, frame );
+		values += 'layers' + i + ':{';
+		writeValue( "layercolor", layers[i].color );
 
-		if ( write )
-		{
-			values += '}'
+		begineReadyFrames( layers[i].frames );
 
-			if ( i != layers.length - 1 )
-				values += ',';
-		}
+		values += '}'
+
+		if ( i != layers.length - 1 )
+			values += ',';
 	}
 
 }
 
-begineReadyLayers( getLayers( ), false, -1 );
+begineReadyLayers( layers );
 values += '}';
-log( values )
-// var filename = fl.browseForFileURL( "save", "Save file" );
-// FLfile.write( filename, "ssssssssssss" );
+// log( values )
+var folder = fl.browseForFolderURL("Select a folder.", "file:///C|/Users/liuyongqi/Desktop/jsfl");
+FLfile.write( folder + '/' + filename + '.js' , values );
+
+for ( var i in bmpitems )
+{
+	bmpitems[i].exportToFile( folder + '/' + bmpitems[i].name )
+}
