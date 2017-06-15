@@ -31,6 +31,7 @@ function SWFManager( name, func )
 	this.loadElements = function( frame, ui )
 	{
 		var startFrame = frame.startFrame;
+		var endFrame = frame.endFrame;
 		var duration = frame.duration;
 		for ( var i in frame )
 		{
@@ -74,9 +75,12 @@ function SWFManager( name, func )
 					mc.mat.mat[7] = e.matrix.ty;
 
 					mc.startFrame = startFrame;
-					mc.duration = startFrame + duration;
+					mc.endFrame = endFrame;
+					mc.duration = duration;
 					mc.tick = 0;
 					mc.swf = true;
+					mc.needUpdate = false;
+					mc.loop = false;
 					if ( Matrix.isIdentity( mc.mat ) ) 
 					{
 						mc.x = e.x;
@@ -87,7 +91,7 @@ function SWFManager( name, func )
 						mc.useMatrix = true;
 					}
 
-					ui.addUI( mc );
+					ui.addUI( mc, true );
 					if ( e.layers != null )
 					{
 						this.loadLayers( e.layers, mc );
@@ -103,7 +107,11 @@ function SWFManager( name, func )
 
 	this.tick = 0;
 	this.startFrame = 0;
+	this.endFrame = 0;
 	this.duration = 0;
+	this.needUpdate = false;
+	this.loop = false;
+	this.swf = true;
 	this.loadLayers( this.swfdata, this );
 	// TODO..
 	this.reverse( );

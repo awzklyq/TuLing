@@ -29,12 +29,12 @@ function UIView( x, y, w, h, name, backimage )
 
 	this.elements = new ArrayEx( );
 	// this.elements.type = ArrayEx.ReversSort;
-	this.addUI = function( ui, order )
+	this.addUI = function( ui, order, frame )
 	{
 		if ( UISystem.isUIView( ui ) )
 		{
 			ui._parent = this;
-			if ( order == null || order == false )
+			if ( order )
 				this.elements.insertSorting( ui, 0, this.elements.length, "_order" );
 			else
 				this.elements.push( ui );
@@ -75,12 +75,35 @@ function UIView( x, y, w, h, name, backimage )
 		if ( this.swf == null || this.swf == false )
 			return true;
 
-		return this.tick >= this.startFrame && this.tick < this.duration;
+		return this.tick >= this.startFrame && this.tick <= this.endFrame;
 			
 	}
+
+	this.update = function( e )
+	{
+		if ( this.swf == null || this.swf == false )
+			return;
+
+		if ( this.needUpdate == false )
+			return;
+
+		if ( this.loop == false )
+		{
+			if ( this.tick < this.duration )
+			{
+				this.tick += this.interval || 1;
+				if ( this.tick > this.duration )
+					this.tick = this.duration;
+			}
+		}
+
+		for ( var i = 0; i < this.elements.length; i ++ )
+			this.elements[i].update( e );
+	}
+
 	this.draw = function( e )
 	{
-		if ( this.checkSWFFrame ( ) == false )
+		if ( this.checkSWFFrame( ) == false )
 			return;
 
 		if ( this.useMatrix )
@@ -125,6 +148,29 @@ function UIView( x, y, w, h, name, backimage )
 			this.elements[i].reverse( );
 	}
 
+	this.gotoAndPlay = function( current )
+	{
+		if ( this.swf == null || this.swf == false )
+			return;
+
+		this.tick = current > this.duration ? this.duration : current;
+		this.needUpdate = true;
+
+		for ( var i = 0; i < this.elements.length; i ++ )
+			this.elements[i].gotoAndPlay( current );
+	}
+	
+	this.gotoAndStop = function( current )
+	{
+		if ( this.swf == null || this.swf == false )
+			return;
+
+		this.tick = current > this.duration ? this.duration : current;
+
+		for ( var i = 0; i < this.elements.length; i ++ )
+			this.elements[i].gotoAndStop( current );
+	}
+	
 	this.logInfo = function( )
 	{
 		log( this.type, this._depth, this.typename );

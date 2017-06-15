@@ -86,7 +86,10 @@ UISystem.render = function( e )
 
 	var swfs = UISystem.swfs;
 	for ( var i = 0; i < swfs.length; i ++ )
+	{
+		swfs[i].update( e );
 		swfs[i].draw( e );
+	}
 }
 
 UISystem.isButton = function( obj )
