@@ -35,13 +35,21 @@ function UIView( x, y, w, h, name, backimage )
 		{
 			ui._parent = this;
 			if ( order )
+			{
 				this.elements.insertSorting( ui, 0, this.elements.length, "_order" );
+			}
 			else
+			{
 				this.elements.push( ui );
+			}
 
 			UISystem.removeUI( ui );
-			ui._x += this._x;
-			ui._y += this._y;
+			
+			if ( this.useMatrix != true )
+			{
+				ui._x += this._x;
+				ui._y += this._y;
+			}
 		}
 
 		if ( ui._name != null && ui._name != "" )
@@ -76,7 +84,6 @@ function UIView( x, y, w, h, name, backimage )
 			return true;
 
 		return this.tick >= this.startFrame && this.tick <= this.endFrame;
-			
 	}
 
 	this.update = function( e )
@@ -87,7 +94,7 @@ function UIView( x, y, w, h, name, backimage )
 		if ( this.needUpdate == false )
 			return;
 
-		if ( this.loop == false )
+		if ( this._loop == false )
 		{
 			if ( this.tick < this.duration )
 			{
@@ -95,6 +102,12 @@ function UIView( x, y, w, h, name, backimage )
 				if ( this.tick > this.duration )
 					this.tick = this.duration;
 			}
+		}
+		else
+		{
+			this.tick += this.interval || 1;
+			if ( this.tick > this.duration )
+				this.tick = 0;
 		}
 
 		for ( var i = 0; i < this.elements.length; i ++ )
@@ -111,7 +124,7 @@ function UIView( x, y, w, h, name, backimage )
 		
 		if ( this.image != null )
 		{
-			this.image.drawImage( this._x, this._y, this._w, this._h );	
+			this.image.drawImage( this.useMatrix ? 0 : this._x, this.useMatrix ? 0 : this._y, this._w, this._h );	
 		}
 
 		var elements = this.elements;

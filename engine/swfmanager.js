@@ -74,13 +74,15 @@ function SWFManager( name, func )
 					mc.mat.mat[6] = e.matrix.tx;
 					mc.mat.mat[7] = e.matrix.ty;
 
+					mc.interval = 1;
+
 					mc.startFrame = startFrame;
 					mc.endFrame = endFrame;
 					mc.duration = duration;
 					mc.tick = 0;
 					mc.swf = true;
 					mc.needUpdate = false;
-					mc.loop = false;
+					mc.loop = true;
 					if ( Matrix.isIdentity( mc.mat ) ) 
 					{
 						mc.x = e.x;
@@ -110,11 +112,14 @@ function SWFManager( name, func )
 	this.endFrame = 0;
 	this.duration = 0;
 	this.needUpdate = false;
-	this.loop = false;
+	this.loop = true;
 	this.swf = true;
 	this.loadLayers( this.swfdata, this );
 	// TODO..
 	this.reverse( );
+
+	this.updateFrames( );
+	
 	UISystem.addUI( this );
 }
 

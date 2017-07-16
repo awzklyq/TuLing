@@ -185,10 +185,14 @@ function keyDown( keyCode )
 }
 window.onKeyDown.push( keyDown );
 
+// TODO if ( this.useMatrix != true ).
 Global.UI = Object.create( Object.prototype, {
 	x:{
 	get:function( )
 	{
+		if ( this.swf && this.useMatrix )
+			return this.mat.mat[6];
+
 		if ( this._parent != null )
 			return this._x - this._parent._x;
 
@@ -198,6 +202,12 @@ Global.UI = Object.create( Object.prototype, {
 	{
 		if ( Global.isNumber( xx ) == false )
 			return;
+
+		if ( this.swf && this.useMatrix )
+		{
+			this.mat.mat[6] = xx;
+			return;
+		}
 
 		var oldx = this._x;
 		if ( this._parent != null )
@@ -222,6 +232,9 @@ Global.UI = Object.create( Object.prototype, {
 	y:{
 	get:function( )
 	{
+		if ( this.swf && this.useMatrix )
+			return this..mat.mat[7];
+
 		if ( this._parent != null )
 			return this._y - this._parent._y;
 
@@ -231,6 +244,12 @@ Global.UI = Object.create( Object.prototype, {
 	{
 		if ( Global.isNumber( yy ) == false )
 			return;
+
+		if ( this.swf && this.useMatrix )
+		{
+			this.mat.mat[7] = yy;
+			return;
+		}
 
 		var oldy = this._y;
 		if ( this._parent != null )
@@ -300,8 +319,58 @@ Global.UI = Object.create( Object.prototype, {
 			this._parent[this._name] = this;
 	}
 	},// End name.
+	pause:{
+		set:function( pause )
+		{
+			if ( this.swf != true )
+				return;
+
+			this.needUpdate = pause;
+			for ( let i = 0; i < this.elements.length; i ++ )
+				this.elements[i].pause = pause;
+		},
+		get:function( )
+		{
+			return this.needUpdate || false;
+			
+		},
+	},// End pause.
+	loop:{
+		set:function( loop )
+		{
+			if ( this.swf != true )
+				return;
+
+			this._loop = loop;
+			for ( let i = 0; i < this.elements.length; i ++ )
+				this.elements[i].loop = loop;
+		},
+		get:function( )
+		{
+			return this._loop || false;
+			
+		},
+	},// End loop.
+	speed:{
+		set:function( speed )
+		{
+			if ( this.swf != true )
+				return;
+
+			this.interval = speed;
+			for ( let i = 0; i < this.elements.length; i ++ )
+				this.elements[i].speed = speed;
+		},
+		get:function( )
+		{
+			return this.interval || false;
+			
+		},
+	},// End loop.
 	_x:{writable:true},
 	_y:{writable:true},
+	needupdate:{writable:true},
+	_loop:{writable:true},
 	_name:{writable:true}
 })
 	

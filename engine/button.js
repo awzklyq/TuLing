@@ -117,7 +117,7 @@ function Button( x, y, w, h, text, name )
 	this.tick = 0;
 	this.draw = function( )
 	{
-		if ( this.checkSWFFrame ( ) == false )
+		if ( this.checkSWFFrame ( e ) == false )
 			return;
 
 		if ( this.state == 1 )
