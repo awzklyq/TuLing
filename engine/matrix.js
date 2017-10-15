@@ -56,8 +56,35 @@ function Matrix( mat )
 	this.setRotation = function(r)
 	{
 		this.reset( );
+
+		r = Math.convertRadian(r);
+
 		this.mat[0] = Math.cos(r);
 		this.mat[1] = Math.sin(r);
+		this.mat[3] = -Math.sin(r);
+		this.mat[4] = Math.cos(r);
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
+	}
+
+	this.setRotationX = function(r)
+	{
+		this.reset( );
+
+		r = Math.convertRadian(r);
+		this.mat[0] = Math.cos(r);
+		this.mat[1] = Math.sin(r);
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
+	}
+
+	this.setRotationY = function(r)
+	{
+		this.reset( );
+
+		r = Math.convertRadian(r);
 		this.mat[3] = -Math.sin(r);
 		this.mat[4] = Math.cos(r);
 
@@ -92,11 +119,46 @@ function Matrix( mat )
 
 	this.mulRotationRight = function(r)
 	{
+		r = Math.convertRadian(r);
+
 		var matrix = new Matrix( );
 		matrix.mat[0] = Math.cos(r);
 		matrix.mat[1] = Math.sin(r);
 		matrix.mat[3] = -Math.sin(r);
 		matrix.mat[4] = Math.cos(r);
+		this.mulRight(matrix);
+	}
+
+	this.mulRotationXRight = function(r)
+	{
+		r = Math.convertRadian(r);
+
+		var matrix = new Matrix( );
+		matrix.mat[0] = Math.cos(r);
+		matrix.mat[1] = Math.sin(r);
+		this.mulRight(matrix);
+	}
+
+	this.mulRotationYRight = function(r)
+	{
+		r = Math.convertRadian(r);
+
+		var matrix = new Matrix( );
+		matrix.mat[3] = -Math.sin(r);
+		matrix.mat[4] = Math.cos(r);
+		this.mulRight(matrix);
+	}
+
+	this.mulRotationXYRight = function(rx, ry)
+	{
+		rx = Math.convertRadian(rx);
+		ry = Math.convertRadian(ry);
+
+		var matrix = new Matrix( );
+		matrix.mat[0] = Math.cos(rx);
+		matrix.mat[1] = Math.sin(rx);
+		matrix.mat[3] = -Math.sin(ry);
+		matrix.mat[4] = Math.cos(ry);
 		this.mulRight(matrix);
 	}
 
@@ -118,11 +180,46 @@ function Matrix( mat )
 
 	this.mulRotationLeft = function(r)
 	{
+		r = Math.convertRadian(r);
+
 		var matrix = new Matrix( );
 		matrix.mat[0] = Math.cos(r);
 		matrix.mat[1] = Math.sin(r);
 		matrix.mat[3] = -Math.sin(r);
 		matrix.mat[4] = Math.cos(r);
+		this.mulLeft(matrix);
+	}
+
+	this.mulRotationXLeft = function(r)
+	{
+		r = Math.convertRadian(r);
+
+		var matrix = new Matrix( );
+		matrix.mat[0] = Math.cos(r);
+		matrix.mat[1] = Math.sin(r);
+		this.mulLeft(matrix);
+	}
+
+	this.mulRotationYLeft = function(r)
+	{
+		r = Math.convertRadian(r);
+
+		var matrix = new Matrix( );
+		matrix.mat[3] = -Math.sin(r);
+		matrix.mat[4] = Math.cos(r);
+		this.mulLeft(matrix);
+	}
+
+	this.mulRotationXYLeft = function(rx, ry)
+	{
+		rx = Math.convertRadian(rx);
+		ry = Math.convertRadian(ry);
+
+		var matrix = new Matrix( );
+		matrix.mat[0] = Math.cos(rx);
+		matrix.mat[1] = Math.sin(rx);
+		matrix.mat[3] = -Math.sin(ry);
+		matrix.mat[4] = Math.cos(ry);
 		this.mulLeft(matrix);
 	}
 
@@ -212,6 +309,11 @@ function Matrix( mat )
 
 		var r = Vector.angle( vv, dir );
 		this.mulRotationLeft( r );
+	}
+
+	this.toString = function( )
+	{
+		return 'm00:' + this.mat[0] + ' m01:' + this.mat[1] + ' m02:' +  this.mat[2] + '\nm10:' + this.mat[3] + ' m11:' + this.mat[4] + ' m12:' +  this.mat[5] +'\nm20:' + this.mat[6] + ' m21:' + this.mat[7] + ' m22:' +  this.mat[8];
 	}
 
 	this.resetTranslation = function( )

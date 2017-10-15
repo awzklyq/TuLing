@@ -55,6 +55,13 @@ function SWFManager( name, func )
 						mc = new UIView( 0, 0, e.width, e.height, e.name );
 					}
 				}
+				else if ( e.instanceType == 'compiled clip' )
+				{
+					if ( e.typename == 'Button' )
+					{
+						mc = new Button( 0, 0, e.width, e.height , e.label || '', e.name );
+					}
+				}
 				else if ( e.instanceType == 'bitmap' )
 				{
 					var res = e.typename;

@@ -29,8 +29,9 @@ window.onMouseUp[0] = function( b, x, y )
 	// log("event mouseup", b, x, y);
 }
 
-window.onKeyDown[window.onKeyDown.length] = function( key )
+var keyDown = function( key )
 {
+	log( System.KeyDown )
 	if ( key == System.KeyDown )
 		test1.move( 0, 1 );
 	else if ( key == System.KeyUp )
@@ -44,6 +45,8 @@ window.onKeyDown[window.onKeyDown.length] = function( key )
 
 	return true;
 }
+
+window.onKeyDown.push( keyDown );
 
 window.onKeyUp[0] = function( key )
 {

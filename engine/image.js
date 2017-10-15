@@ -6,6 +6,7 @@
 	this.w = 0;
 	this.h = 0;
 
+	this.name = arguments[0] || "";
 	this.typeid = Global.LImage_typeid;
 	if ( arguments.length > 0 )
 	{

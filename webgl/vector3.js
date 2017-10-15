@@ -69,6 +69,11 @@ function Vector3( x, y, z )
 		 return Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 	}
 
+	this.equal = function( v )
+	{
+		return this.x == v.x && this.y == v.y && this.z == v.z;
+	}
+
 	// For debug.
 	this.log = function( info )
 	{

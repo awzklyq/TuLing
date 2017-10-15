@@ -31,7 +31,7 @@ emit.pfxSize2 = 15;
 
 emit.color1 = 0xffffff00;
 emit.color2 = 0x0fffff00;
-emit.image = new LImage( "res\\zhadan.png" );
+emit.image = new LImage( "..\\res\\zhadan.png" );
 emit.pfxType = Particle.ImageType;
 emit.sportType = Particle.Target;
 

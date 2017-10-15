@@ -14,12 +14,19 @@ function Shader( )
 			this.state |= Shader.GBLUR;
 
 		if ( this.methods[this.state] != null )
-			return this.methods[this.state];
+		{
+			if ( this.methods[this.state][glRender.renderflag] != null )
+				return this.methods[this.state][glRender.renderflag];
+		}
+		else
+		{
+			this.methods[this.state] = { };
+		}
 
 		var date = Global.getMilliseconds( );
-		this.methods[this.state] = webgl.createProgram( this.createVertexShaderVS (this.state), this.createVertexShaderPS(this.state) );
+		this.methods[this.state][glRender.renderflag] = webgl.createProgram( this.createVertexShaderVS (this.state), this.createVertexShaderPS(this.state) );
 		log("build shader take time:", Global.getMilliseconds( ) - date, this.state);
-		return this.methods[this.state];
+		return this.methods[this.state][glRender.renderflag];
 	}
 
 	this.createVertexShaderVS = function( state )
@@ -31,17 +38,24 @@ function Shader( )
 
 		shr += "uniform mat4 wmat;\n";
 		shr += "uniform mat4 vmat;\n";
+		shr += "varying vec4 vcol;\n";
+		if ( ( glRender.renderflag & RenderWebgl.AmbientLight ) != 0 )
+			shr += "uniform vec4 ambient;\n";
 
 		if ( ( state & Shader.TEXCOORD0 ) != 0 )
 			shr += "varying vec2 vtexcoord;\n";
 
 		shr += "void main(void) {\n";
-
+		shr += "	vcol = vec4(1, 1, 1, 1);\n";
 		if ( ( state & Shader.TEXCOORD0 ) != 0 )
-			shr += "vtexcoord = texcoord;\n";
+			shr += "	vtexcoord = texcoord;\n";
 
-		shr += "gl_Position = vmat * wmat * vec4(vertex, 1.0);\n";
+		if ( ( glRender.renderflag & RenderWebgl.AmbientLight ) != 0 )
+			shr += "	vcol = ambient;\n";
+
+		shr += "	gl_Position = vmat * wmat * vec4(vertex, 1.0);\n";
 		shr += "}";
+		log(shr)
 		return webgl.createVertexShader( shr );
 	}
 
@@ -53,17 +67,16 @@ function Shader( )
 
 		if ( ( state & Shader.TEXTURE0 ) != 0 )
 			shr += "uniform sampler2D layer0;\n";
-
+		shr += "varying vec4 vcol;\n";
 		if ( ( state & Shader.TEXCOORD0 ) != 0 )
 			shr += "varying vec2 vtexcoord;\n";
 
 		shr += "void main(void) {\n";
-		shr += "vec4 vcolor = vec4(1.0, 1.0, 1.0, 1.0);\n"
 		if ( ( state & Shader.TEXTURE0 ) != 0 && ( state & Shader.TEXCOORD0 ) != 0 )
 		{
 			if ( ( state & Shader.GBLUR ) == 0 )
 			{
-				shr += "vcolor *= texture2D(layer0, vtexcoord);\n";
+				shr += "vcol *= texture2D(layer0, vtexcoord);\n";
 			}
 			else
 			{
@@ -75,11 +88,11 @@ function Shader( )
 				shr += "	float gstemp = exp(-pow(abs(float(i)), 2.0) / ( 2.0 * pow(gb, 2.0) )) / ( sqrt(2.0 * 3.14) * gb);\n";
 				shr += "	sum += texture2D(layer0, vtexcoord+float(i)*blurSize) * gstemp;\n";
 				shr += "}\n";
-				shr += "vcolor *= sum;\n";
+				shr += "vcol *= sum;\n";
 			}
 		}
 
-		shr += "gl_FragColor = vcolor;}";
+		shr += "gl_FragColor = vcol;}";
 		return webgl.createFrameShader( shr );
 	}
 }

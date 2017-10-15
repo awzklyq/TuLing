@@ -199,6 +199,30 @@ Global.popClip = function( )
 	Global.clips.pop( );
 } 
 
+Global.canvass = new Array( );
+Global.pushCanvas = function ( canvas )
+{
+	var can = canvas.getCanvasData( );
+	// window.canvas = can;
+	// window.context = can.getContext("2d");
+	// Global.canvass.push(can)
+}
+
+Global.popCanvas = function ( )
+{
+	var canvas = Global.canvass.pop( );
+	if ( canvas == null )
+	{
+		// window.canvas = Global.canvas;
+		// window.context = Global.context;
+	}
+	else
+	{
+		// window.canvas = canvas;
+		// window.context = canvas.context;
+	}
+}
+
 Global.loadJSFile = function( url, async, func )
 {
 	var script = document.createElement("script");
@@ -482,7 +506,19 @@ Global.copyArray = function( source )
 	}
 
 	return temp;
-	
+}
+
+Global.logInfo = function( ret )
+{
+	if ( typeof( ret ) == 'object' )
+	{
+		// log("~~~~~~~~~~~~~~~~~~~~")
+		for ( let i in ret )
+		{
+			log(i, ret[i], typeof( ret[i] ) );
+			// Global.logInfo( ret[i] );
+		}
+	}
 }
 
 Global.FILLSTYLE = 0x00000000;

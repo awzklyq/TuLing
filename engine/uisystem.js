@@ -233,7 +233,7 @@ Global.UI = Object.create( Object.prototype, {
 	get:function( )
 	{
 		if ( this.swf && this.useMatrix )
-			return this..mat.mat[7];
+			return this.mat.mat[7];
 
 		if ( this._parent != null )
 			return this._y - this._parent._y;

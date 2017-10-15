@@ -22,7 +22,6 @@ function Geometry( )
 
 		this.finalData.clear( );
 
-		log("sssssssss", temp)
 		for ( var i = 0; i < temp; i ++ )
 		{
 			var vsize = i * 3;
@@ -82,9 +81,6 @@ function Geometry( )
 
 			if ( index == 0 )
 				self.format |= Geometry.TEXTURE0;
-
-			// TODO.
-			self.methonId = shader.buildShader( self.format );
 		})
 	}
 
@@ -105,9 +101,6 @@ function Geometry( )
 			else
 				self.format |= Geometry.TEXTURE0;
 		}
-
-		// TODO.
-		self.methonId = shader.buildShader( self.format );
 	}
 
 	this.release = function( )
@@ -123,5 +116,7 @@ new Geometry( );
 Geometry.VERTEX = 0x00000001;
 Geometry.TEXCOORD0 = 0x00000002;
 Geometry.TEXTURE0 = 0x00000004;
+Geometry.TEXCOORD1 = 0x00000008;
+Geometry.TEXTURE1 = 0x00000010;
 
 Geometry.dataSize = (new Float32Array( 1 )).byteLength

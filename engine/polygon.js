@@ -221,9 +221,9 @@ var points_render = new ArrayEx( );
 var length_render = 0;
 var x_render = 0;
 var y_render = 0;
-var context_render = window.context;
 Polygon.render = function( polygon )
 {
+	var context_render = window.context;
 	if ( polygon.canvas != null )
 	{
 		range_render = polygon.canvas.range;
@@ -250,38 +250,39 @@ Polygon.render = function( polygon )
 
 	Global.renderPolygonCount ++;
 
-	context_render = window.context;
+	context = window.context;
 	if ( Global.combineRender == false )
 	{
-		context_render.save( );
-		context_render.beginPath( );
+		context.save( );
+		context.beginPath( );
 	}
 
+	Global.bindMatrixToContext( context, Global.getCurrentMatrix( ) );
 	var blend = Global.getCurrentBlender( );
-	context_render.globalAlpha = blend.alpha;
-	context_render.globalCompositeOperation = blend.mode;
-	context_render.lineWidth = polygon.lineWidth
+	context.globalAlpha = blend.alpha;
+	context.globalCompositeOperation = blend.mode;
+	context.lineWidth = polygon.lineWidth
 
 	if ( polygon.colorStyle != null )
-		context_render.fillStyle = polygon.colorStyle;
+		context.fillStyle = polygon.colorStyle;
 
-	Global.bindAffectToContext( context_render );
+	Global.bindAffectToContext( context );
 
-	context_render.moveTo(points_render[0].x, points_render[0].y);
+	context.moveTo(points_render[0].x, points_render[0].y);
 
 	for(var i = 1; i < length_render; i ++)
 	{
-		context_render.lineTo(points_render[i].x, points_render[i].y);
+		context.lineTo(points_render[i].x, points_render[i].y);
 	}
 
 	if ( Global.combineRender == false )
 	{
-		context_render.closePath( );
+		context.closePath( );
 		if ( polygon.colorStyle != null || Global.affects.length > 0 )
-			context_render.fill( );
+			context.fill( );
 
-		context_render.stroke( );
-		context_render.restore( );
+		context.stroke( );
+		context.restore( );
 	}
 }
 

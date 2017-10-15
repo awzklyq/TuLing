@@ -56,6 +56,15 @@ function UIView( x, y, w, h, name, backimage )
 			this[ui._name] = ui;
 	}
 
+	this.updateFrames = function( )
+	{
+		// for ( var i = 0; i < this.elements.length; i ++ )
+			// log(this.elements[i].name);
+
+		// for ( var i = 0; i < this.elements.length; i ++ )
+			// this.elements[i].updateFrames( );
+	}
+
 	this.removeUI = function( ui )
 	{
 		if ( UISystem.isUIView( ui ) == false || ui._parent != this )

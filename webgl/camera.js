@@ -6,16 +6,24 @@ function Camera( )
 	this.near = 1.0;
 	this.far = 5000.0;
 	this.fov = 45;
-	this.w = Global.getElementWidth( window.webglcanvas );
-	this.h = Global.getElementHeight( window.webglcanvas );
+	this.w = Global.getClientWidth( );
+	this.h = Global.getClientHeight( );
 	this.ortho = false;
+
+	this.radiuslimit = new Vector( );
+	this.radiuslimit.x = Math.MinNumber;
+	this.radiuslimit.y = Math.MaxNumber;
 
 	this.cameramat = new Matrix3D( );
 	this.perspectivemat = new Matrix3D( );
 
 	this.movePhi = function( r )
 	{
+		if ( r == 0 )
+			return;
+
 		this.cameramat.setTranslation( this.eye.x, this.eye.y, this.eye.z );
+		this.cameramat.mulTranslationRight( -this.look.x, -this.look.y, -this.look.z );
 		this.cameramat.mulRotationRight( this.up.x, this.up.y, this.up.z, r );
 		this.cameramat.mulTranslationRight( this.look.x, this.look.y, this.look.z );
 		this.cameramat.getTranslation( this.eye );
@@ -23,6 +31,9 @@ function Camera( )
 
 	this.moveTheta = function( r )
 	{
+		if ( r == 0 )
+			return;
+
 		var cross = Vector3.scross( Vector3.ssub( this.look, this.eye ), this.up );
 		cross.normalize( );
 
@@ -40,11 +51,26 @@ function Camera( )
 			this.up.negative( );
 	}
 
-	this.moveRadius = function( d )
+	this.moveRadius = function( radius )
 	{
+		if ( radius == 0 )
+			return;
+
+		if ( this.eye.equal( this.look ) )
+			return;
+
+		if ( this.radiuslimit.x != Math.MinNumber || this.radiuslimit.y != Math.MaxNumber )
+		{
+			var temp = this.getRadius( );
+			if ( temp + radius < this.radiuslimit.x )
+				radius = this.radiuslimit.x - temp;
+			else if ( temp + radius > this.radiuslimit.y )
+				radius = this.radiuslimit.y - temp;
+		}
+
 		var dir = Vector3.ssub( this.eye, this.look );
 		dir.normalize( );
-		dir.mul( d );
+		dir.mul( radius );
 		this.eye.add( dir );
 	}
 

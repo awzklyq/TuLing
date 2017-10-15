@@ -97,6 +97,8 @@ if ( System.OS == "win32" )
 
 window.canvas = canvas;
 window.context = canvas.getContext("2d");
+// Global.canvas = window.canvas;
+// Global.context = window.context;
 console.log(context)
 var context = window.context;
 // context.globalAlpha = 0.5;

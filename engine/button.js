@@ -117,8 +117,11 @@ function Button( x, y, w, h, text, name )
 	this.tick = 0;
 	this.draw = function( )
 	{
-		if ( this.checkSWFFrame ( e ) == false )
+		if ( this.checkSWFFrame ( ) == false )
 			return;
+
+		if ( this.useMatrix )
+			Global.pushMatrix( this.mat );
 
 		if ( this.state == 1 )
 		{
@@ -170,6 +173,9 @@ function Button( x, y, w, h, text, name )
 
 		if ( this.text.text != "" )
 			this.text.draw( );
+
+		if ( this.useMatrix )
+			Global.popMatrix( );
 	}
 
 	// Called from parent.

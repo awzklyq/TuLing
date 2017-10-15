@@ -1,8 +1,10 @@
 function RenderWebgl( )
 {
 	this.wmat = new ArrayEx( );
-	new Matrix3D( );
 	this.vmat = new ArrayEx( );
+	this.lights = new ArrayEx( );
+
+	this.renderflag = 0;
 
 	this.pushWorldMatrix3D = function( mat )
 	{
@@ -24,6 +26,16 @@ function RenderWebgl( )
 		this.vmat.pop( );
 	}
 
+	this.pushLight = function( light )
+	{
+		this.lights.push( light );
+	}
+
+	this.popLight = function( )
+	{
+		this.lights.pop( );
+	}
+
 	this.renderGeometry = function( geo )
 	{
 		this.linkProgram( geo )
@@ -35,42 +47,63 @@ function RenderWebgl( )
 
 	this.linkProgram = function( geo )
 	{
+		// Set light.
+		var ambient = null;
+		if ( this.lights.length > 0 )
+		{
+			for ( var i = 0; i < this.lights.length; i ++ )
+			{
+				if ( this.lights[i].typeid == AmbientLight.typeid && ( this.renderflag & RenderWebgl.AmbientLight ) == 0 )
+				{
+					this.renderflag |= RenderWebgl.AmbientLight;
+					ambient = this.lights[i].convertColor( );
+				}
+			}
+		}
+
 		webgl.bindBufferVBO( geo.vertexBuffer );
 		webgl.bindBufferIBO( geo.indexBuffer );
-		webgl.useProgram( geo.methonId );
-		
+		webgl.useProgram( shader.buildShader( geo.format ) );
+
 		var offset = 0;
 		if ( ( geo.format & Geometry.VERTEX ) != 0 )
 		{
-			geo.methonId.vertex = webgl.getAttribLocation('vertex');
-			webgl.vertexAttribPointer( geo.methonId.vertex, 3, webgl.FLOAT, false, geo.offset, offset );
-			webgl.enableVertexAttribArray( geo.methonId.vertex );
+			var vertex = webgl.getAttribLocation('vertex');
+			webgl.vertexAttribPointer( vertex, 3, webgl.FLOAT, false, geo.offset, offset );
+			webgl.enableVertexAttribArray( vertex );
 			offset += 3 * Geometry.dataSize;
 		}
 
 		if ( ( geo.format & Geometry.TEXCOORD0 ) != 0 && ( geo.format & Geometry.TEXTURE0 ) != 0 && geo.textures[0] != null )
 		{		
-			geo.methonId.texcoord = webgl.getAttribLocation('texcoord');
-			webgl.vertexAttribPointer( geo.methonId.texcoord, 2, webgl.FLOAT, false, geo.offset, offset );
-			webgl.enableVertexAttribArray( geo.methonId.texcoord );
+			var texcoord = webgl.getAttribLocation('texcoord');
+			webgl.vertexAttribPointer( texcoord, 2, webgl.FLOAT, false, geo.offset, offset );
+			webgl.enableVertexAttribArray( texcoord );
 
 			gl.activeTexture( gl.TEXTURE0 );
 			webgl.bindTexture2D( geo.textures[0] );
 
-			geo.methonId.layer0 = webgl.getUniformLocation('layer0');
-			gl.uniform1i( geo.methonId.layer0, 0 );
+			var layer0 = webgl.getUniformLocation('layer0');
+			gl.uniform1i( layer0, 0 );
 		}
 
 		if ( this.wmat.length > 0 )
 		{
-			geo.methonId.wmat = webgl.getUniformLocation('wmat');
-			webgl.uniformMatrix4fv(geo.methonId.wmat, this.wmat[this.wmat.length - 1].mat);
+			var wmat = webgl.getUniformLocation('wmat');
+			webgl.uniformMatrix4fv( wmat, this.wmat[this.wmat.length - 1].mat);
 		}
 
 		if ( this.vmat.length > 0 )
 		{
-			geo.methonId.vmat = webgl.getUniformLocation('vmat');
-			webgl.uniformMatrix4fv(geo.methonId.vmat, this.vmat[this.vmat.length - 1].mat); // TODO.
+			var vmat = webgl.getUniformLocation('vmat');
+			webgl.uniformMatrix4fv( vmat, this.vmat[this.vmat.length - 1].mat); // TODO.
+		}
+
+		if ( ambient != null )
+		{
+			var localtion = webgl.getUniformLocation( 'ambient' );
+			if ( localtion != null )
+				webgl.uniformfv( localtion, ambient, 4 );
 		}
 	}
 
@@ -83,6 +116,8 @@ function RenderWebgl( )
 
 		if ( ( geo.format & Geometry.TEXCOORD0 ) != 0 && ( geo.format & Geometry.TEXTURE0 ) != 0 && geo.textures[0] != null )
 			webgl.bindTexture2D( null );
+
+		this.renderflag = 0;
 	}
 
 	this.setRenderTarget = function( target )
@@ -90,5 +125,7 @@ function RenderWebgl( )
 		webgl.bindFrameBuffer( target == null ? null : target.fbuffer );
 	}
 }
+
+RenderWebgl.AmbientLight = 0x00000001;
 
 window.glRender = new RenderWebgl( );

@@ -2,7 +2,7 @@ window.logEnable = true;
 
 var btn = new Button( 150, 200, 80, 40, "test" );
 btn.setColor( 0xffffff00, 0xff888800 );
-var audio = new AudioEx( "res\\asd.mp3" );
+var audio = new AudioEx( "..\\res\\asd.mp3" );
 
 btn.click = function( )
 {

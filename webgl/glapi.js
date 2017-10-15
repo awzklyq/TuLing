@@ -233,6 +233,40 @@ function WebGl( )
 		gl.uniformMatrix4fv( index, false, value );
 	}
 
+	this.uniformfv = function( index, value, count )
+	{
+		if ( window.gl == null && this.program != null )
+			return;
+
+		console.assert( index != null && value != null && count > 0, "uniformfv param is null");
+
+		if ( count == 1 )
+			gl.uniform1fv( index, value );
+		else if ( count == 2 )
+			gl.uniform2fv( index, value );
+		else if ( count == 3 )
+			gl.uniform3fv( index, value );
+		else if ( count == 4 )
+			gl.uniform4fv( index, value );
+	}
+
+	this.uniformi = function( index, value1, value2, value3, value4 )
+	{
+		if ( window.gl == null && this.program != null )
+			return;
+
+		console.assert( index != null && value1 != null, "uniformi param is unuseful!");
+
+		if ( arguments.length == 2 )
+			gl.uniform1i( index, value1 );
+		else if ( arguments.length == 3 )
+			gl.uniform2i( index, value1, value2 );
+		else if ( arguments.length == 4 )
+			gl.uniform3i( index, value1, value2, value3 );
+		else 
+			gl.uniform4i( index, value1, value2, value3, value4 );
+	}
+
 	this.createTexture = function( level, internalformat, w, h, format, type, image )
 	{
 		if ( window.gl == null )

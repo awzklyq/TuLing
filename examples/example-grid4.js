@@ -31,6 +31,7 @@ function mousedown( b, x, y )
 	{
 		target = pathFinder.selectAt( x, y );
 
+		pathFinder.findPath(source.xx, source.yy, x, y)
 		for ( var i = 0; i < pathFinder.openList.length; i ++ )
 		{
 			var temp = pathFinder.openList[i];
