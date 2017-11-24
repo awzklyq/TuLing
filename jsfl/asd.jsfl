@@ -15,7 +15,7 @@
 function logObject( name, obj, dp )
 {
 	log( 'The object name is', name )
-	var i;
+	var i; 
 	for ( i in obj )
 	{
 		if ( obj[i] == null || obj[i] == 'undefined' )
@@ -31,7 +31,7 @@ function logObject( name, obj, dp )
 		}
 		else
 		{
-			log( i, typeof(obj[i]) );
+			log( i, obj[i], typeof(obj[i]) );
 		}
 	}
 
@@ -76,7 +76,7 @@ function writeValue( key, value, end )
 		values += key + ':{';
 		var i;
 		for ( i in value )
-		{
+		{		
 			writeValue( i, value[i] );
 		}
 		values += '}';
@@ -121,7 +121,7 @@ function beginReadyElement( elements )
 	{
 		values += 'elements' + c + ':{';
 
-		// logObject( 'elements' + c, elements[c], true );
+		logObject( 'elements' + c, elements[c], true );
 		writeValue( 'name', elements[c].name ); // Instance name.
 		writeValue( 'order', c ); // Instance name.
 		writeValue( 'type', elements[c].elementType ); // shape text instance shapeObj shapeObj
@@ -180,6 +180,18 @@ function beginReadyElement( elements )
 			
 		}
 
+		// For parameters.
+		log('aaaaaaaa', elements[c].parameters.length)
+		for ( var i = 0; i < elements[c].parameters.length; i ++ )
+		{
+			var param = elements[c].parameters[i];
+			if ( param.name == 'label' )
+			{
+				log('bbbbbbbbb', param.value)
+				writeValue( 'label', param.value );
+			}
+		}	
+		
 		writeValue( 'x', elements[c].x ); 
 		writeValue( 'y', elements[c].y );
 		// log('isGroup', elements[c].isGroup );
@@ -217,7 +229,6 @@ function begineReadyFrames( frames )
 		beginReadyElement( frames[i].elements, i );
 
 		values += '}'
-
 
 		if ( frames[i].startFrame + frames[i].duration != frames.length )
 			values += ',';
