@@ -20,10 +20,7 @@ function Bone( name, pname, transform )
 
 	if ( transform != null )
 	{
-		// this.transform.mat[6] = transform.x || 0.00;
-		// this.transform.mat[7] = transform.y || 0.00;
 		this.transform.mulRotationXYLeft( transform.skX || 0.00, transform.skY || 0.00 );
-		// this.transform.mulRotationYLeft( transform.skY || 0.00 );
 		this.transform.mulScalingLeft( transform.scX || 1.00, transform.scY || 1.00 );
 		this.transform.mulTranslationRight( transform.x || 0.00, transform.y || 0.00 );
 	}
@@ -35,17 +32,37 @@ function Bone( name, pname, transform )
 
 		this.childs.push( bone );
 	}
+
+	this.getChilds = function( ) 
+	{
+		return this.childs
+	}
 }
 
 function Bones( data )
 {
+	this.relations = { };
+
+	this.relativetransforms = {}
 	this.checkParent = function( bone )
 	{
+		var temp1 = new Matrix( );
+		var temp2 = new Matrix( );
 		for ( let i = 0; i < this.bones.length; i ++ )
 		{
 			if ( bone.parentName == this.bones[i].name )
 			{
+				temp1.set( this.bones[i].transform.mat );
+				temp1.inverse( );
 				bone.parent = this.bones[i];
+
+				temp2.set( bone.transform.mat );
+				this.relations[bone.name] = bone.parentName;
+				temp2.mulRight( temp1 );
+
+				var mat = new Matrix( );
+				mat.set( bone.transform.mat );
+				this.relativetransforms[bone.name] = mat;
 
 				// TODO.
 				bone.transform.mulRight( this.bones[i].transform );
@@ -53,6 +70,16 @@ function Bones( data )
 				break;
 			}
 		}
+	}
+
+	this.getRelativeTransformByName = function(name)
+	{
+		return this.relativetransforms[name];
+	}
+
+	this.getRelationTable = function( )
+	{
+		return this.relations;
 	}
 
 	this.bones = new ArrayEx( );
@@ -78,7 +105,7 @@ function Bones( data )
 		this.bonesHelper[bone.name] = this.bones.length - 1;
 	}
 
-	this.findBone = function( name )
+	this.getBoneByName = function( name )
 	{
 		var index = this.bonesHelper[name];
 		return Global.isNumber(index) ? this.bones[index] : null;
@@ -101,7 +128,7 @@ function Slot( )
 
 	this.color = {
 		aM: 100, // 透明叠加 [0~100] (可选属性 默认: 100)
-        rM: 100, // 红色叠加 [0~100] (可选属性 默认: 100)
+		rM: 100, // 红色叠加 [0~100] (可选属性 默认: 100)
 		gM: 100, // 绿色叠加 [0~100] (可选属性 默认: 100)
 		bM: 100, // 蓝色叠加 [0~100] (可选属性 默认: 100)
 		aO: 0.00, // 透明偏移 [-255~255] (可选属性 默认: 0)
@@ -347,7 +374,7 @@ function Skins( data )
 				for ( let j = 0; j < skinslots.length; j ++ )
 				{
 					let solt = bslots.getSlotByName( skinslots[j].name );
-					let bone = bones.findBone( solt.parentBone );
+					let bone = bones.getBoneByName( solt.parentBone );
 
 					// if ( skinslots[i].slot != null )
 						// delete skinslots[i].slot;
@@ -383,9 +410,358 @@ function Skins( data )
 	this.setSkins( data );
 }
 
-function Animation( )
+function AnimationFrame( data )
 {
-	
+	// 帧长度 (可选属性 默认: 1)
+	this.duration = data.duration;
+
+	// 帧声音 (可选属性 默认: null)
+	this.sound = data.sound;
+
+	// 帧事件列表 (可选属性 默认: null)
+	this.events = new ArrayEx( );
+	for ( let i = 0; i < data.events.length; i ++ )
+	{
+		var temp = data.events[i];
+		var event = {};
+		event.name = temp.name;
+		event.bone = temp.bone;
+
+		// 需要拷貝.
+		// 插槽名称 (可选属性 默认: null)
+		event.slot = temp.slot;
+
+		// 事件参数列表 (可选属性 默认: null)
+		event.floats = temp.floats;
+		event.strings = temp.strings;
+		this.events.push( event );
+	}
+
+	if ( data.actions != null )
+	{
+		this.gotoAndPlay = data.actions.gotoAndPlay;
+		this.gotoAndStop = data.actions.gotoAndStop;
+	}
+}
+
+function AnimationBone( data )
+{
+	// 时间轴名称 (与骨骼名称对应)
+	this.name = data.name;
+
+	// 时间轴缩放 (可选属性 默认: 1.00)
+	this.scale = data.scale;
+
+	// 时间轴偏移 (可选属性 默认: 0.00)
+	this.offset = data.offset;
+
+	// 此时间轴包含的关键帧列表 (可选属性 默认: null)
+	this.frames = new ArrayEx( );
+	if ( data.frame != null )
+	{
+		for ( let i = 0; i < data.frame.length; i ++ )
+		{
+			var temp = { };
+			var frame = data.frame[i];
+			 // 帧长度 (可选属性 默认: 1)
+			temp.duration = frame.duration;
+			temp.time = i == 0 ? 0 : this.frames[this.frames.length - 1].duration + this.frames[this.frames.length - 1].time;
+
+			//frame.time = temp.time;
+			// 缓动类型 [0: 由 tweenEasing 或 curve 描述缓动类型，1~N: 其他扩展缓动类型枚举（具体如何枚举未来再定义）] (可选属性 默认: 0)
+			temp.tweenType = frame.tweenType;
+
+			// 缓动值 [0.00: 线性, null: 无缓动] (可选属性 默认: null
+			temp.tweenEasing = frame.tweenEasing;
+
+			// 贝塞尔曲线缓动参数列表 [x1, y1, x2, y2, ...] (可选属性 默认: null)
+			temp.curve = frame.curve;
+
+			var transform = frame.transform;
+			temp.transform = new Matrix( );
+
+			if ( transform != null )
+			{
+				temp.transform.mulRotationXYLeft( transform.skX || 0.00, transform.skY || 0.00 );
+				temp.transform.mulScalingLeft( transform.scX || 1.00, transform.scY || 1.00 );
+				temp.transform.mulTranslationRight( transform.x || 0.00, transform.y || 0.00 );
+			}
+
+			this.frames.push( temp );
+		}
+	}
+
+	this.getCurrentBoneMatrix = function( tick )
+	{
+		return this.getFrameByTick( tick ).transform;
+	}
+
+	this.getBoneByFrame = function( index )
+	{
+		if ( index >= this.frames.length )
+			return;
+
+		return this.frames[index]
+	}
+
+	this.getFrameByTick = function( tick )
+	{
+		var start = 0;
+		var end = this.frames.length - 1;
+
+		if ( tick >= this.frames[end].time )
+			return this.frames[end];
+
+		if ( tick <= this.frames[start].time )
+			return this.frames[start];
+
+		if ( arguments.length == 3 )
+		{
+			start = arguments[1];
+			end = arguments[2];
+		}
+
+		if ( start >= end )
+			return this.frames[end]
+
+		var index = Math.floor( ( start + end ) * 0.5 );
+
+		if ( tick < this.frames[index].time )
+		{
+			return this.getFrameByTick( tick, start, index)
+		}
+		else
+		{
+			if ( tick >= this.frames[index].time && tick < this.frames[index].time + this.frames[index].duration )
+				return this.frames[index]
+			else
+				return this.getFrameByTick( tick, index + 1, end )
+		}
+	}
+
+	this.getFrameLenth= function( )
+	{
+		return this.frames.length
+	}
+}
+
+function AnimationSlot( data )
+{
+	// 时间轴名称 (与插槽名称对应)
+	this.name = data.name;
+
+	// 此时间轴包含的关键帧列表 (可选属性 默认: null)
+	this.frames = new ArrayEx( );
+	if ( data.frame != null )
+	{
+		for ( let i = 0; i < data.frame.length; i ++ )
+		{
+			var temp = { };
+			var frame = data.frame[i];
+
+			 // 帧长度 (可选属性 默认: 1)
+			temp.duration = frame.duration;
+
+			temp.time = i == 0 ? temp.duration : temp.duration + data.frame[i - 1].time;
+
+			// 缓动类型 [0: 由 tweenEasing 描述缓动类型，N: 其他扩展缓动属性] (可选属性 默认: 0)
+			temp.tweenType = frame.tweenType;
+
+			// 缓动值 [0.00: 线性, null: 无缓动] (可选属性 默认: null
+			temp.tweenEasing = frame.tweenEasing;
+
+			// 贝塞尔曲线缓动参数列表 [x1, y1, x2, y2, ...] (可选属性 默认: null)
+			temp.curve = frame.curve;
+
+			// 此帧的显示对象索引 (皮肤中对应的插槽显示对象列表) (可选属性 默认: 0)
+            temp.displayIndex = frame.displayIndex;
+
+            temp.color = {}
+            temp.color.aM = frame.color.aM || 100;
+			temp.color.rM = frame.color.rM || 100;
+			temp.color.gM = frame.color.gM || 100;
+			temp.color.bM = frame.color.bM || 100;
+			temp.color.aO = frame.color.aO || 0;
+			temp.color.rO = frame.color.rO || 0;
+			temp.color.gO = frame.color.gO || 0;
+			temp.color.bO = frame.color.bO || 0;
+
+			// 播放到当前帧时，执行的动作行为列表 (可选属性 默认: null)
+
+			if ( frame.actions != null )
+			{
+				this.gotoAndPlay = frame.actions.gotoAndPlay;
+				this.gotoAndStop = frame.actions.gotoAndStop;
+			}
+
+			this.frames.push( temp );
+
+		}
+	}
+}
+
+function Animation( data )
+{
+	this.tick = 0;
+	this.pause = false;
+
+	this.name = data.name;
+	this.zOrder = new ArrayEx( );
+	if ( data.zOrder != null && data.zOrder.frame != null )
+	{
+		var frames = data.zOrder.frame;
+		for ( let i = 0; i < frames.length; i ++ )
+		{
+            //duration:帧长度 (可选属性 默认: 1)
+            //zOrder[0, 2, 4, 1, 6, -1]:插槽偏移 [slotIndexA, offsetA, slotIndexB, offsetB, ...] (可选属性 默认: null)
+            this.zOrder.push( {duration:frames[i].duration, zOrder:frames[i].zOrder} );
+		}
+	}
+
+	this.playTimes = data.playTimes;
+	this.duration = data.duration;
+
+	// 此动画包含的关键帧列表 (可选属性 默认: null)
+	this.frames = new ArrayEx( );
+	if ( data.frame != null )
+	{
+		for ( let i = 0; i < data.frame.length; i ++ )
+			this.frames.push( new AnimationFrame( data.frame[i] ) );
+	}
+
+	// 此动画包含的骨骼时间轴列表 (可选属性 默认: null)
+	this.bones = { };
+	if ( data.bone != null )
+	{
+		for ( let i = 0; i < data.bone.length; i ++ )
+			this.bones[data.bone[i].name] = new AnimationBone( data.bone[i] );
+	}
+
+	this.getBones = function( )
+	{
+		return this.bones;
+	}
+
+	 // 此动画包含的插槽时间轴列表
+	this.slots = { };
+	if ( data.slot != null )
+	{
+		for ( let i = 0; i < data.slot.length; i ++ )
+			this.slots[data.slot[i].name] = new AnimationBone( data.slot[i] );
+	}
+
+	this.getCurrentBoneMatrix = function( name )
+	{
+		var bone = this.bones[name];
+		if ( bone != null )
+			return bone.getCurrentBoneMatrix( this.tick );
+
+		return new Matrix( );
+	}
+
+	this.stop = function( )
+	{
+		this.tick = 0;
+		this.pause = true;
+	}
+
+	this.play = function( )
+	{
+		this.tick = 0;
+		this.pause = false;
+	}
+
+	this.resetBoneMatrix = function( pbone, pbones )
+	{
+		var bone = this.bones[pbone.name]
+		if ( bone == null )
+			return;
+
+		if ( pbone.name == 'root' )
+		{
+
+		}
+
+		var childs = pbone.getChilds( );
+		if ( childs == null || childs.length == 0 )
+			return;
+
+		for ( let i = 0; i < childs.length; i ++ )
+		{
+			var cbone = this.bones[childs[i].name];
+			if ( cbone == null )
+				continue;
+
+			var flen = cbone.getFrameLenth( );
+			for ( let j = 0; j < flen; j ++ )
+			{
+				var cframe = cbone.getBoneByFrame( j );
+				var frame = bone.getFrameByTick( cframe.time );
+				if ( frame == null || cframe == null )
+					break;
+
+				var mat = new Matrix( );
+				mat.set( pbones.getRelativeTransformByName( childs[i].name ) )
+				mat.mulLeft( cframe.transform );
+				mat.mulRight( frame.transform );
+				cframe.transform.set( mat );
+			}
+
+			this.resetBoneMatrix( childs[i], pbones );
+		}
+	}
+
+	this.bindBones = function( pbones )
+	{
+		// 必須有root.
+		if ( this.bones['root'] == null )
+			return;
+
+		var rootbone = pbones.getBoneByName( 'root' );
+		if ( rootbone == null )
+			return;
+
+		this.resetBoneMatrix( rootbone, pbones );
+
+
+	}
+
+	this.update = function( e )
+	{
+		if ( this.pause )
+			return;
+
+		this.tick += 0.1;
+		if ( this.tick > this.duration )
+			this.tick = 0;
+
+	}
+}
+
+function Animations( data )
+{
+	this.animatios = { };
+	for ( let i= 0; i < data.length; i ++ )
+	{
+		this.animatios[data[i].name] = new Animation( data[i]);
+	}
+
+	this.getAnimaByName = function( name )
+	{
+		return this.animatios[name];
+	}
+
+	this.getAnimas = function( )
+	{
+		return this.animatios;
+	}
+
+	this.bindBones = function( bones )
+	{
+		for ( let v in this.animatios )
+			this.animatios[v].bindBones( bones );
+	}
+
 }
 
 function Armature( data )
@@ -394,13 +770,13 @@ function Armature( data )
 	this.name = '';
 
 	this.transform = new Matrix( );
-	this.transform.mat[6] = 200;
+	this.transform.mat[6] = 400;
 	this.transform.mat[7] = 400;
 	// 动画帧频 (可选属性 默认: 使用全局帧频).
 	this.frameRate = 24;
 
 	// ["Armature": 骨骼动画, "MovieClip": 基本动画, "Stage": 场景动画]
-     this.frameRate = '';
+   //  this.frameRate = '';
 
 	  // 添加到舞台后的默认行为列表 (可选属性 默认: null)
 	 //this.defaultActions = 
@@ -418,9 +794,14 @@ function Armature( data )
 	//this.ik =
 
 	// 此骨架包含的动画列表.
-	this.animation = new Animation( );
+	this.animations = new Animations( data != null ? data.animation : null );
 
-	var length = this.slots.getDataLength()
+	this.animations.bindBones( this.bones );
+	this.currentAnima = this.animations.getAnimaByName( 'walk' );
+	this.currentAnima.play();
+	// this.currentAnima = null;
+
+	var length = this.slots.getDataLength();
 	this.renderunits = new ArrayEx( );
 	this.renderunitshelper = { }; //优化计算的.
 	for ( let i = 0; i < length; i ++ )
@@ -438,6 +819,14 @@ function Armature( data )
 		this.skins.linkData( this.slots, this.bones, textures );
 	}
 
+	this.update = function( e )
+	{
+		if ( this.currentAnima != null )
+		{
+			this.currentAnima.update( e )
+		}
+	}
+
 	this.render = function( )
 	{
 		var index = 0;
@@ -445,18 +834,23 @@ function Armature( data )
 		Global.pushMatrix( this.transform );
 		for ( let i = 0; i < skins.length; i ++ )
 		{
-			index = 0;
 			let slots = skins[i].slots == null ? null : skins[i].slots.skinSlots;
 
 			if ( slots == null ) continue;
 
 			for ( let j = 0; j < slots.length; j ++ )
 			{
+				index = 0;
 				var displays = slots[j].displays == null ? null : slots[j].displays.displays;
 				if ( displays == null ) continue;
 
 				if ( slots[j].bone )
-					Global.pushMatrix( slots[j].bone.transform );
+				{
+					if ( this.currentAnima != null )
+						Global.pushMatrix( this.currentAnima.getCurrentBoneMatrix( slots[j].bone.name ) );
+					else
+						Global.pushMatrix( slots[j].bone.transform );
+				}
 
 				for ( let k = 0; k < displays.length; k ++ )
 				{
@@ -481,7 +875,9 @@ function Armature( data )
 				}
 
 				if ( slots[j].bone )
+				{
 					Global.popMatrix( );
+				}
 			}
 		}
 
@@ -489,7 +885,7 @@ function Armature( data )
 
 		for ( let i = 0; i < this.renderunits.length; i ++ )
 		{
-			for ( let j = 0; j < this.renderunits[i].datas.length; j ++ )
+			for ( let j = 1; j < this.renderunits[i].datas.length; j ++ )
 			{
 				Global.pushMatrix( this.renderunits[i].datas[j].mat );
 				var image = this.renderunits[i].datas[j].image;
@@ -592,4 +988,4 @@ DragonBoneEx.loadTex = function( json )
 {
 	var texture = new DTexture( json );
 	return texture;
-}
+} 
