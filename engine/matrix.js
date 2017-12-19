@@ -2,8 +2,13 @@ function Matrix( mat )
 {
 	this.mat = new Array( );
 
+	this.typeid = Matrix.typeid;
+
 	this.set = function( mat )
 	{
+		if ( mat.typeid == Matrix.typeid )
+			mat = mat.mat
+
 		this.mat[0] = mat[0];
 		this.mat[1] = mat[1];
 		this.mat[2] = mat[2];
@@ -311,6 +316,42 @@ function Matrix( mat )
 		this.mulRotationLeft( r );
 	}
 
+	this.inverse = function( )
+	{
+		var d = this.determinant( );
+
+		if ( d != 0 )
+		{
+			this.adjoint( );
+
+			d = 1 / d;
+			this.mat[0] *= d; this.mat[1] *= d; this.mat[2] *= d;
+			this.mat[3] *= d; this.mat[4] *= d; this.mat[5] *= d;
+			this.mat[6] *= d; this.mat[7] *= d; this.mat[8] *= d;
+
+		}
+
+		return this;
+	}
+
+	this.adjoint = function( )
+	{
+		var m00 = this.mat[0], m01 = this.mat[1], m02 = this.mat[2]; 
+		var m10 = this.mat[3], m11 = this.mat[4], m12 = this.mat[5];
+		var m20 = this.mat[6], m21 = this.mat[7], m22 = this.mat[8];
+
+		this.mat[0] = m11 * m22 - m12 * m21; this.mat[1] = m02 * m21 - m01 * m22; this.mat[2] = m01 * m12 - m02 * m11;
+		this.mat[3] = m12 * m20 - m10 * m22; this.mat[4] = m00 * m22 - m02 * m20; this.mat[5] = m02 * m10 - m00 * m12;
+		this.mat[6] = m10 * m21 - m11 * m20; this.mat[7] = m01 * m20 - m00 * m21; this.mat[8] = m00 * m11 - m01 * m10;
+
+		return this;
+	}
+
+	this.determinant = function( )
+	{
+		return this.mat[0] * this.mat[4] *this.mat[8] + this.mat[1] * this.mat[5] * this.mat[6] + this.mat[2] * this.mat[3] * this.mat[7] - this.mat[0] * this.mat[5] * this.mat[7] - this.mat[1] * this.mat[3] * this.mat[8] - this.mat[2] *this.mat[4] *this.mat[6];
+	}
+
 	this.toString = function( )
 	{
 		return 'm00:' + this.mat[0] + ' m01:' + this.mat[1] + ' m02:' +  this.mat[2] + '\nm10:' + this.mat[3] + ' m11:' + this.mat[4] + ' m12:' +  this.mat[5] +'\nm20:' + this.mat[6] + ' m21:' + this.mat[7] + ' m22:' +  this.mat[8];
@@ -340,3 +381,7 @@ Matrix.isIdentity = function( mat )
 	return mm[0] == 1 && mm[1] == 0 && mm[3] == 0 &&
 		mm[4] == 1 && mm[6] == 0 && mm[7] == 0;
 }
+
+Matrix.cIdentity = new Matrix( );
+
+Matrix.typeid = Global.OBJECTID ++;
