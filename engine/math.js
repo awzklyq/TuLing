@@ -111,4 +111,5 @@ Math.clamp = function( value, min, max )
 }
 Math.MinNumber = 0.000001;
 Math.MaxNumber = 999999.0;
+Math.cEpsilon = 0.000001;
 Math.ARC = Math.PI * 2;

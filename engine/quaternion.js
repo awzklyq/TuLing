@@ -39,14 +39,14 @@ function Quaternion( x, y, z, w )
 			v4.x = this.x / m;
 			v4.y = this.y / m;
 			v4.z = this.z / m;
-			v4.w = 2.0f * Math.acos( this.w );
+			v4.w = 2.0 * Math.acos( this.w );
 		}
 		else
 		{
-			v4.x = 0.0f;
-			v4.y = 0.0f;
-			v4.z = 1.0f;
-			v4.w = 0.0f;
+			v4.x = 0.0;
+			v4.y = 0.0;
+			v4.z = 1.0;
+			v4.w = 0.0;
 		}
 
 		v4.normalize( );
@@ -63,4 +63,37 @@ function Quaternion( x, y, z, w )
 		w = Math.cos( r * 0.5f );
 		return this;
 	}
+}
+// Quaternion q1 q2
+Quaternion.dot( q1, q2 )
+{
+	return q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w; 
+}
+// Quaternion q1 q2, weight f
+Quaternion.slerp = function( q1, q2, f )
+{
+	f = Math.clamp( f, 0, 1 );
+	var dot = Quaternion.dot( q1, q2 );
+	var flip = dot < 0;
+	if ( dot < 0 )
+		dot = -dot;
+	var d = 0;
+	if ( 1 - dot < Math.cEpsilon )
+	{
+		d = 1 - f;
+	}
+	else
+	{
+		var thet = Math.acos( dot );
+		var recipsqrt = 1 / Math.sin( theta );
+		d = Math.sin( ( 1 - f ) * theta ) * recipsqrt;
+		f = Math.sin( f * theta ) * recipsqrt;
+	}
+	if ( flip )
+		f = -f;
+	return new Quaternion(
+		q1.x * d + q2.x * f,
+		q1.y * d + q2.y * f,
+		q1.z * d + q2.z * f,
+		q1.w * d + q2.w * f );
 }
