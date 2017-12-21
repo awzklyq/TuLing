@@ -23,14 +23,14 @@ function ParticleEmitter( )
 	this.pfxLife1 = 0;
 	this.pfxLife2 = 0;
 
-	this.translation1 = new Vector( );
-	this.translation2 = new Vector( );
+	this.translation1 = new Vector2( );
+	this.translation2 = new Vector2( );
 
 	this.speed1 = 0;
 	this.speed2 = 0;
 
-	this.scale1 = new Vector( );
-	this.scale2 = new Vector( );
+	this.scale1 = new Vector2( );
+	this.scale2 = new Vector2( );
 
 	this.scalepower1 = 0;
 	this.scalepower2 = 0;

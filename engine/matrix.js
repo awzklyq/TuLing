@@ -291,28 +291,28 @@ function Matrix( mat )
 	// Set x aixs to direction.
 	this.setXDirection = function( x, y )
 	{
-		var dir = new Vector( x, y );
+		var dir = new Vector2( x, y );
 		dir.normalsize( );
-		var vv = new Vector( this.mat[0], this.mat[1] );
+		var vv = new Vector2( this.mat[0], this.mat[1] );
 		vv.normalsize( );
 		if ( Math.abs( dir.x - vv.x ) < Math.MinNumber && Math.abs( dir.y - vv.y ) < Math.MinNumber )
 			return;
 
-		var r = Vector.angle( vv, new Vector( 1, 0 ) );
+		var r = Vector2.angle( vv, new Vector2( 1, 0 ) );
 		this.mulRotationLeft( r );
 	}
 
 	// Set y aixs to direction.
 	this.setYDirection = function( x, y )
 	{
-		var dir = new Vector( x, y );
+		var dir = new Vector2( x, y );
 		dir.normalsize( );
-		var vv = new Vector( this.mat[3], this.mat[4] );
+		var vv = new Vector2( this.mat[3], this.mat[4] );
 		vv.normalsize( );
 		if ( Math.abs( dir.x - vv.x ) < Math.MinNumber && Math.abs( dir.y - vv.y ) < Math.MinNumber )
 			return;
 
-		var r = Vector.angle( vv, dir );
+		var r = Vector2.angle( vv, dir );
 		this.mulRotationLeft( r );
 	}
 
@@ -369,6 +369,87 @@ function Matrix( mat )
 	{
 	}
 
+	//Quaternion q 
+	this.rotation = function( q )
+	{
+		var xx = q.x * q.x * 2.0, yy = q.y * q.y * 2.0, zz = q.z * q.z * 2.0;
+		var xy = q.x * q.y * 2.0, zw = q.z * q.w * 2.0, xz = q.x * q.z * 2.0;
+		var yw = q.y * q.w * 2.0, yz = q.y * q.z * 2.0, xw = q.x * q.w * 2.0;
+
+		m[0] = 1.0 - yy - zz; m[1] = xy + zw; m[[2] =  xz - yw;
+		m[3] = xy - zw; m[4] = 1.0 - xx - zz; m[5] = yz + xw;
+		m[6] = xz + yw; m[7] = yz - xw; m[8] = 1.0 - xx - yy;
+
+		return this;
+	}
+
+	//Quaternion q
+	this.decompose = function( q )
+	{
+		// Determine which of w, x, y, or z has the largest absolute value.
+		var fourWSquaredMinus1 = m[0] + m[4] + m[8];
+		var fourXSquaredMinus1 = m[0] - m[4] - m[8];
+		var fourYSquaredMinus1 = m[4] - m[0] - m[8];
+		var fourZSquaredMinus1 = m[8] - m[0] - m[4];
+
+		var biggestIndex = 0;
+		var fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+
+		if ( fourXSquaredMinus1 > fourBiggestSquaredMinus1 )
+		{
+			fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+			biggestIndex = 1;
+		}
+
+		if ( fourYSquaredMinus1 > fourBiggestSquaredMinus1 )
+		{
+			fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+			biggestIndex = 2;
+		}
+
+		if ( fourZSquaredMinus1 > fourBiggestSquaredMinus1 )
+		{
+			fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+			biggestIndex = 3;
+		}
+
+		var biggestVal = Math::Sqrt( fourBiggestSquaredMinus1 + 1.0 ) * 0.5;
+		var mult = 0.25 / biggestVal;
+
+		// Apply table to compute quaternion values.
+		switch ( biggestIndex )
+		{
+			case 0:
+				q.w = biggestVal;
+				q.x = ( m[6] - m[8] ) * mult;
+				q.y = ( m[7] - m[3] ) * mult;
+				q.z = ( m[2] - m[3] ) * mult;
+				break;
+
+			case 1:
+				q.x = biggestVal;
+				q.w = (m[6] - m[8]] ) * mult;
+				q.y = ( m[2] + m[3] ) * mult;
+				q.z = ( m[2][0] + m[3] ) * mult;
+				break;
+
+			case 2:
+				q.y = biggestVal;
+				q.w = ( m[7] - m[3] ) * mult;
+				q.x = ( m[2] + m[3] ) * mult;
+				q.z = ( m[6] + m[8] ) * mult;
+				break;
+
+			case 3:
+				q.z = biggestVal;
+				q.w = ( m[2] - m[3] ) * mult;
+				q.x = ( m[7] + m[3] ) * mult;
+				q.y = ( m[6] + m[8] ) * mult;
+				break;
+		}
+		
+		return q;
+	}
 	if ( mat != null )
 		this.set( mat );
 	else

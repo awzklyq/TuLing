@@ -46,7 +46,7 @@ Math.randomVector = function( v1, v2, v3 )
 		v3.y = y;
 		return v3;
 	}
-	return new Vector( x, y );
+	return new Vector2( x, y );
 }
 
 // Note: a/255.

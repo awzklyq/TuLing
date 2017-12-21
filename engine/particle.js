@@ -5,8 +5,8 @@ var polygon = null;
 function Particle( )
 {
 	this.pfxType = 0;
-	this.direction = new Vector( );
-	this.scale = new Vector( );
+	this.direction = new Vector2( );
+	this.scale = new Vector2( );
 	this.scalepower = 1;
 	this.rotationpower = 0;
 	this.tick = 0;
@@ -19,7 +19,7 @@ function Particle( )
 	this.sportType = 0; // Rotation, scale, move.
 	this.showType = 0; //  Show, hide, show and hide.
 
-	this.gravityDirection = new Vector( );
+	this.gravityDirection = new Vector2( );
 	this.gravityPower = 0;
 
 	this.color = 0xffffffff;
@@ -63,7 +63,7 @@ function Particle( )
 		if ( ( this.sportType & Particle.Scale ) != 0 )
 		{
 			// this.scale.normalsize( );
-			Vector.mul( this.scale, this.scalepower, this.scale );
+			Vector2.mul( this.scale, this.scalepower, this.scale );
 		}
 
 		if ( ( this.sportType & Particle.Target ) != 0 )
@@ -74,7 +74,7 @@ function Particle( )
 		else if ( ( this.sportType & Particle.Translation ) != 0 )
 		{
 			this.direction.normalsize( );
-			Vector.mul( this.direction, this.speed, this.direction );
+			Vector2.mul( this.direction, this.speed, this.direction );
 		}
 
 		// TODO.

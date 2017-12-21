@@ -12,7 +12,7 @@ function Collision( )
 		if ( res.length < 2 )
 			return aixs;
 
-		var temp = new Vector( );
+		var temp = new Vector2( );
 		for( var i = 1; i < res.length; i ++ )
 		{
 			temp.x = res[i].x - res[i - 1].x;

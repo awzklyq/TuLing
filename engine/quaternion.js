@@ -51,4 +51,16 @@ function Quaternion( x, y, z, w )
 
 		v4.normalize( );
 	}
+	//Vector3 a, number r
+	this.rotation = function( a, r )
+	{
+		var n = new Vector3( a.x, a.y, a.z );
+		n.normalize( );
+		var sinvalue = Math.sin( r * 0.5 );
+		x = sinvalue * n.x;
+		y = sinvalue * n.y;
+		z = sinvalue * n.z;
+		w = Math.cos( r * 0.5f );
+		return this;
+	}
 }

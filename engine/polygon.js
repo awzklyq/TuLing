@@ -153,7 +153,7 @@ function Polygon( )
 
 		var xy0 = this.matrix.getTranslation( );
 		var v0 = {x:x, y:y};
-		if ( Vector.distance( v0, xy0 ) > this.range )
+		if ( Vector2.distance( v0, xy0 ) > this.range )
 		{
 			return false;
 		}
@@ -166,7 +166,7 @@ function Polygon( )
 		var tick = 0;
 		for(var i = 0; i < this.points.length; i ++)
 		{
-			if ( Vector.Intersect( v0, v1, points[i], points[ (i + 1) % length] ) )
+			if ( Vector2.Intersect( v0, v1, points[i], points[ (i + 1) % length] ) )
 				tick ++;
 		}
 
@@ -292,7 +292,7 @@ Polygon.CreateRulePolygon = function(pn, d)
 	if ( pn == null || d == null )
 		return new Polygon( );
 
-	var v = new Vector(d, 0);
+	var v = new Vector2(d, 0);
 
 	var r = Math.PI * 2 / pn;
 	var pol = new Polygon( );
@@ -320,7 +320,7 @@ Polygon.CreateRulestar = function(pn, d1, d2)
 	}
 
 	pn *= 2;
-	var v = new Vector(d1, 0);
+	var v = new Vector2(d1, 0);
 
 	var r = Math.PI * 2 / pn;
 	var pol = new Polygon( );

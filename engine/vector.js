@@ -6,7 +6,7 @@ function CommonVector( )
 
 var cv = new CommonVector( );
 
-function Vector(x, y)
+function Vector2(x, y)
 {
 	this.x = 0;
 	this.y = 0;
@@ -43,7 +43,7 @@ function Vector(x, y)
 	}
 }
 
-Vector.add = function(v1, v2, out)
+Vector2.add = function(v1, v2, out)
 {
 	if(out !=  null)
 	{
@@ -51,10 +51,10 @@ Vector.add = function(v1, v2, out)
 		out.y = v1.y + v2.y;
 		return out;
 	}
-	return new Vector(v1.x + v2.x, v1.y + v2.y)
+	return new Vector2(v1.x + v2.x, v1.y + v2.y)
 }
 
-Vector.sub = function(v1, v2, out)
+Vector2.sub = function(v1, v2, out)
 {
 	if(out !=  null)
 	{
@@ -62,10 +62,10 @@ Vector.sub = function(v1, v2, out)
 		out.y = v1.y - v2.y;
 		return out;
 	}
-	return new Vector(v1.x - v2.x, v1.y - v2.y);
+	return new Vector2(v1.x - v2.x, v1.y - v2.y);
 }
 
-Vector.mul = function(v1, s, out)
+Vector2.mul = function(v1, s, out)
 {
 	if(out !=  null)
 	{
@@ -73,37 +73,37 @@ Vector.mul = function(v1, s, out)
 		out.y = v1.y * s;
 		return out;
 	}
-	return new Vector(v1.x * s, v1.y * s);
+	return new Vector2(v1.x * s, v1.y * s);
 }
 
-Vector.distance = function(v1, v2)
+Vector2.distance = function(v1, v2)
 {
 	return Math.sqrt(Math.pow(v1.x - v2.x, 2) + Math.pow(v1.y - v2.y, 2))
 }
 
-Vector.length = function(v1)
+Vector2.length = function(v1)
 {
 	return Math.sqrt(Math.pow(v1.x, 2) + Math.pow(v1.y, 2));
 }
 
-Vector.dot = function(v1, v2)
+Vector2.dot = function(v1, v2)
 {
 	return v1.x * v2.x + v1.y * v2.y;
 }
 
-Vector.angle = function(v1, v2)
+Vector2.angle = function(v1, v2)
 {
-	var v11 = new Vector(v1.x, v1.y);
+	var v11 = new Vector2(v1.x, v1.y);
 	v11.normalsize( );
 
-	var v22 = new Vector(v2.x, v2.y)
+	var v22 = new Vector2(v2.x, v2.y)
 	v2.normalsize( );
-	return Math.acos(Vector.dot(v11, v22))
+	return Math.acos(Vector2.dot(v11, v22))
 }
 
 // Add by 2016.01.19.
 // Static intersect, v1 and v2, v3 and v4.
-Vector.Intersect = function( v1, v2, v3, v4 )
+Vector2.Intersect = function( v1, v2, v3, v4 )
 {
 	var k1 = Math.MaxNumber;
 	if ( v2.x - v1.x != 0 )
