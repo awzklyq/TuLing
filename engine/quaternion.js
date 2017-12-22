@@ -39,17 +39,17 @@ function Quaternion( x, y, z, w )
 			v4.x = this.x / m;
 			v4.y = this.y / m;
 			v4.z = this.z / m;
-			v4.w = 2.0 * Math.acos( this.w );
+			v4.w = 2 * Math.acos( this.w );
 		}
 		else
 		{
-			v4.x = 0.0;
-			v4.y = 0.0;
-			v4.z = 1.0;
-			v4.w = 0.0;
+			v4.x = 0;
+			v4.y = 0;
+			v4.z = 1;
+			v4.w = 0;
 		}
 
-		v4.normalize( );
+		v4.normaliz3( );
 	}
 	//Vector3 a, number r
 	this.rotation = function( a, r )
@@ -60,12 +60,12 @@ function Quaternion( x, y, z, w )
 		x = sinvalue * n.x;
 		y = sinvalue * n.y;
 		z = sinvalue * n.z;
-		w = Math.cos( r * 0.5f );
+		w = Math.cos( r * 0.5 );
 		return this;
 	}
 }
 // Quaternion q1 q2
-Quaternion.dot( q1, q2 )
+Quaternion.dot = function( q1, q2 )
 {
 	return q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w; 
 }

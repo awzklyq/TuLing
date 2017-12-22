@@ -7,6 +7,10 @@ Math.convertRadian = function( r )
 {
 	return r * Math.PI / 180;
 }
+Math.convertAngle = function( r )
+{
+	return r * 180 / Math.PI;
+}
 Math.randomAt = function( d )
 {
 	return Math.random() * d

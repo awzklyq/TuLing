@@ -369,6 +369,14 @@ function Matrix( mat )
 	{
 	}
 
+	this.getRotation = function( )
+	{
+		var q = new Quaternion( )
+		this.decompose( q );
+		var v = new Vector4( );
+		q.decompose( v );
+		return Math.convertAngle(v.w);
+	}
 	//Quaternion q 
 	this.rotation = function( q )
 	{
@@ -376,7 +384,8 @@ function Matrix( mat )
 		var xy = q.x * q.y * 2.0, zw = q.z * q.w * 2.0, xz = q.x * q.z * 2.0;
 		var yw = q.y * q.w * 2.0, yz = q.y * q.z * 2.0, xw = q.x * q.w * 2.0;
 
-		m[0] = 1.0 - yy - zz; m[1] = xy + zw; m[[2] =  xz - yw;
+		var m = this.mat
+		m[0] = 1.0 - yy - zz; m[1] = xy + zw; m[2] =  xz - yw;
 		m[3] = xy - zw; m[4] = 1.0 - xx - zz; m[5] = yz + xw;
 		m[6] = xz + yw; m[7] = yz - xw; m[8] = 1.0 - xx - yy;
 
@@ -386,6 +395,7 @@ function Matrix( mat )
 	//Quaternion q
 	this.decompose = function( q )
 	{
+		var m = this.mat
 		// Determine which of w, x, y, or z has the largest absolute value.
 		var fourWSquaredMinus1 = m[0] + m[4] + m[8];
 		var fourXSquaredMinus1 = m[0] - m[4] - m[8];
@@ -413,7 +423,7 @@ function Matrix( mat )
 			biggestIndex = 3;
 		}
 
-		var biggestVal = Math::Sqrt( fourBiggestSquaredMinus1 + 1.0 ) * 0.5;
+		var biggestVal = Math.sqrt( fourBiggestSquaredMinus1 + 1 ) * 0.5;
 		var mult = 0.25 / biggestVal;
 
 		// Apply table to compute quaternion values.
@@ -421,35 +431,36 @@ function Matrix( mat )
 		{
 			case 0:
 				q.w = biggestVal;
-				q.x = ( m[6] - m[8] ) * mult;
-				q.y = ( m[7] - m[3] ) * mult;
-				q.z = ( m[2] - m[3] ) * mult;
+				q.x = ( m[5] - m[7] ) * mult;
+				q.y = ( m[6] - m[2] ) * mult;
+				q.z = ( m[1] - m[3] ) * mult;
 				break;
 
 			case 1:
 				q.x = biggestVal;
-				q.w = (m[6] - m[8]] ) * mult;
-				q.y = ( m[2] + m[3] ) * mult;
-				q.z = ( m[2][0] + m[3] ) * mult;
+				q.w = (m[5] - m[7] ) * mult;
+				q.y = ( m[1] + m[3] ) * mult;
+				q.z = ( m[6] + m[2] ) * mult;
 				break;
 
 			case 2:
 				q.y = biggestVal;
-				q.w = ( m[7] - m[3] ) * mult;
+				q.w = ( m[6] - m[2] ) * mult;
 				q.x = ( m[2] + m[3] ) * mult;
-				q.z = ( m[6] + m[8] ) * mult;
+				q.z = ( m[5] + m[7] ) * mult;
 				break;
 
 			case 3:
 				q.z = biggestVal;
-				q.w = ( m[2] - m[3] ) * mult;
-				q.x = ( m[7] + m[3] ) * mult;
-				q.y = ( m[6] + m[8] ) * mult;
+				q.w = ( m[1] - m[3] ) * mult;
+				q.x = ( m[6] + m[2] ) * mult;
+				q.y = ( m[5] + m[7] ) * mult;
 				break;
 		}
 		
 		return q;
 	}
+
 	if ( mat != null )
 		this.set( mat );
 	else

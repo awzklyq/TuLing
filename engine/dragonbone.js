@@ -491,11 +491,14 @@ function AnimationBone( data )
 		}
 	}
 
+	//获得当前骨骼得矩阵信息 受动画作用
 	this.getCurrentBoneMatrix = function( tick )
 	{
-		return this.getFrameByTick( tick ).transform;
+		var index = this.getFrameIndexByTick(tick)
+		return this.frames[index].transform;
 	}
 
+	//通过排序用得索引获取骨骼信息
 	this.getBoneByFrame = function( index )
 	{
 		if ( index >= this.frames.length )
@@ -504,6 +507,7 @@ function AnimationBone( data )
 		return this.frames[index]
 	}
 
+	//通过tick获取当前帧得骨骼信息
 	this.getFrameByTick = function( tick )
 	{
 		var start = 0;
@@ -536,6 +540,35 @@ function AnimationBone( data )
 				return this.frames[index]
 			else
 				return this.getFrameByTick( tick, index + 1, end )
+		}
+	}
+	//通过tick获取当前骨骼帧信息得索引
+	this.getFrameIndexByTick = function( tick )
+	{
+		var start = 0;
+		var end = this.frames.length - 1;
+		if ( tick >= this.frames[end].time )
+			return end;
+		if ( tick <= this.frames[start].time )
+			return start;
+		if ( arguments.length == 3 )
+		{
+			start = arguments[1];
+			end = arguments[2];
+		}
+		if ( start >= end )
+			return end
+		var index = Math.floor( ( start + end ) * 0.5 );
+		if ( tick < this.frames[index].time )
+		{
+			return this.getFrameIndexByTick( tick, start, index)
+		}
+		else
+		{
+			if ( tick >= this.frames[index].time && tick < this.frames[index].time + this.frames[index].duration )
+				return index
+			else
+				return this.getFrameIndexByTick( tick, index + 1, end )
 		}
 	}
 
