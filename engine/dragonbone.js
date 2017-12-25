@@ -495,7 +495,10 @@ function AnimationBone( data )
 	this.getCurrentBoneMatrix = function( tick )
 	{
 		var index = this.getFrameIndexByTick(tick)
+		if ( index == this.frames.length - 1 )
 		return this.frames[index].transform;
+		var f = ( tick - this.frames[index].time ) / ( this.frames[index + 1].time - this.frames[index].time );
+		return Matrix.slerp( this.frames[index].transform, this.frames[index + 1].transform, f );
 	}
 
 	//通过排序用得索引获取骨骼信息

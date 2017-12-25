@@ -65,7 +65,7 @@ function Quaternion( x, y, z, w )
 	}
 }
 // Quaternion q1 q2
-Quaternion.dot = function( q1, q2 )
+Quaternion.sdot = function( q1, q2 )
 {
 	return q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w; 
 }
@@ -73,7 +73,7 @@ Quaternion.dot = function( q1, q2 )
 Quaternion.slerp = function( q1, q2, f )
 {
 	f = Math.clamp( f, 0, 1 );
-	var dot = Quaternion.dot( q1, q2 );
+	var dot = Quaternion.sdot( q1, q2 );
 	var flip = dot < 0;
 	if ( dot < 0 )
 		dot = -dot;
@@ -84,7 +84,7 @@ Quaternion.slerp = function( q1, q2, f )
 	}
 	else
 	{
-		var thet = Math.acos( dot );
+		var theta = Math.acos( dot );
 		var recipsqrt = 1 / Math.sin( theta );
 		d = Math.sin( ( 1 - f ) * theta ) * recipsqrt;
 		f = Math.sin( f * theta ) * recipsqrt;

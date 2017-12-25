@@ -21,7 +21,7 @@ function Vector2(x, y)
 		this.y = y;
 	}
 	
-	this.normalsize = function()
+	this.normalize = function()
 	{
 		var w =  Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
 		if ( isNaN( w ) )
@@ -52,6 +52,13 @@ Vector2.add = function(v1, v2, out)
 		return out;
 	}
 	return new Vector2(v1.x + v2.x, v1.y + v2.y)
+}
+Vector2.slerp = function( v1, v2, f )
+{
+	var v = new Vector2( );
+	v.x = v1.x + ( v2.x - v1.x ) * Math.clamp( f, 0, 1 );
+	v.y = v1.y + ( v2.y - v1.y ) * Math.clamp( f, 0, 1 );
+	return v;
 }
 
 Vector2.sub = function(v1, v2, out)
@@ -94,10 +101,10 @@ Vector2.dot = function(v1, v2)
 Vector2.angle = function(v1, v2)
 {
 	var v11 = new Vector2(v1.x, v1.y);
-	v11.normalsize( );
+	v11.normalize( );
 
 	var v22 = new Vector2(v2.x, v2.y)
-	v2.normalsize( );
+	v2.normalize( );
 	return Math.acos(Vector2.dot(v11, v22))
 }
 

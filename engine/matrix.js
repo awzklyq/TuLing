@@ -53,8 +53,14 @@ function Matrix( mat )
 			this.callback( );
 	}
 
-	this.getTranslation = function( )
+	this.getTranslation = function( v )
 	{
+		if ( v != null )
+		{
+			v.x = this.mat[6];
+			v.y = this.mat[7];
+			return v;
+		}
 		return {x:this.mat[6], y:this.mat[7]};
 	}
 
@@ -107,8 +113,14 @@ function Matrix( mat )
 			this.callback( );
 	}
 
-	this.getScaling = function( )
+	this.getScaling = function( s )
 	{
+		if ( s != null )
+		{
+			s.x =  Math.sqrt( this.mat[0] * this.mat[0] + this.mat[1] * this.mat[1] );
+			s.y = Math.sqrt( this.mat[3] * this.mat[3] + this.mat[4] * this.mat[4] );
+			return s
+		}
 		return {
 			x : Math.sqrt( this.mat[0] * this.mat[0] + this.mat[1] * this.mat[1] ),
 			y : Math.sqrt( this.mat[3] * this.mat[3] + this.mat[4] * this.mat[4] ) };
@@ -292,9 +304,9 @@ function Matrix( mat )
 	this.setXDirection = function( x, y )
 	{
 		var dir = new Vector2( x, y );
-		dir.normalsize( );
+		dir.normalize( );
 		var vv = new Vector2( this.mat[0], this.mat[1] );
-		vv.normalsize( );
+		vv.normalize( );
 		if ( Math.abs( dir.x - vv.x ) < Math.MinNumber && Math.abs( dir.y - vv.y ) < Math.MinNumber )
 			return;
 
@@ -306,9 +318,9 @@ function Matrix( mat )
 	this.setYDirection = function( x, y )
 	{
 		var dir = new Vector2( x, y );
-		dir.normalsize( );
+		dir.normalize( );
 		var vv = new Vector2( this.mat[3], this.mat[4] );
-		vv.normalsize( );
+		vv.normalize( );
 		if ( Math.abs( dir.x - vv.x ) < Math.MinNumber && Math.abs( dir.y - vv.y ) < Math.MinNumber )
 			return;
 
@@ -377,8 +389,9 @@ function Matrix( mat )
 		q.decompose( v );
 		return Math.convertAngle(v.w);
 	}
+	//旋转四元数
 	//Quaternion q 
-	this.rotation = function( q )
+	this.rotationQ = function( q )
 	{
 		var xx = q.x * q.x * 2.0, yy = q.y * q.y * 2.0, zz = q.z * q.z * 2.0;
 		var xy = q.x * q.y * 2.0, zw = q.z * q.w * 2.0, xz = q.x * q.z * 2.0;
@@ -461,6 +474,26 @@ function Matrix( mat )
 		return q;
 	}
 
+	//Vector2 v, s Quaternion q
+	this.decompose3 = function( v, s, q )
+	{
+		v.x = this.mat[6];
+		v.y = this.mat[7];
+		var scale = this.getScaling()
+		s.x = scale.x;
+		s.y = scale.y;
+		this.decompose( q );
+	}
+	//需要先做四元数旋转
+	//Vector2 v, s Quaternion q
+	this.compose3 = function( v, s, r )
+	{
+		this.setRotation( r );
+		this.mat[0] *= s.x; this.mat[1] *= s.x; 
+		this.mat[3] *= s.x; this.mat[4] *= s.x;
+		this.mat[6] = v.x;
+		this.mat[7] = v.y;
+	}
 	if ( mat != null )
 		this.set( mat );
 	else
@@ -474,6 +507,21 @@ Matrix.isIdentity = function( mat )
 		mm[4] == 1 && mm[6] == 0 && mm[7] == 0;
 }
 
+Matrix.slerp = function( mat1, mat2, f )
+{
+	var r1 = mat1.getRotation( );
+	var s1 = mat1.getScaling( );
+	var v1 = mat1.getTranslation( );
+	var r2 = mat2.getRotation( );
+	var s2 = mat2.getScaling( );
+	var v2 = mat2.getTranslation( );
+	var v = Vector2.slerp( v1, v2, f );
+	var s = Vector2.slerp( s1, s2, f );
+	var r = r1 + ( r2 - r1 ) * f;
+	var mat = new Matrix( );
+	mat.compose3( v, s, r );
+	return mat;
+}
 Matrix.cIdentity = new Matrix( );
 
 Matrix.typeid = Global.OBJECTID ++;
