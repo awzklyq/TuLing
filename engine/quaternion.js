@@ -35,7 +35,6 @@ function Quaternion( x, y, z, w )
 		if ( m > Math.MinNumber )
 		{
 			m = Math.sqrt( m );
-
 			v4.x = this.x / m;
 			v4.y = this.y / m;
 			v4.z = this.z / m;
@@ -51,12 +50,15 @@ function Quaternion( x, y, z, w )
 
 		v4.normaliz3( );
 	}
+
 	//Vector3 a, number r
 	this.rotation = function( a, r )
 	{
 		var n = new Vector3( a.x, a.y, a.z );
 		n.normalize( );
+
 		var sinvalue = Math.sin( r * 0.5 );
+
 		x = sinvalue * n.x;
 		y = sinvalue * n.y;
 		z = sinvalue * n.z;
@@ -64,20 +66,27 @@ function Quaternion( x, y, z, w )
 		return this;
 	}
 }
+
 // Quaternion q1 q2
 Quaternion.sdot = function( q1, q2 )
 {
 	return q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w; 
 }
+
 // Quaternion q1 q2, weight f
 Quaternion.slerp = function( q1, q2, f )
 {
 	f = Math.clamp( f, 0, 1 );
+
 	var dot = Quaternion.sdot( q1, q2 );
+
 	var flip = dot < 0;
+
 	if ( dot < 0 )
 		dot = -dot;
+
 	var d = 0;
+
 	if ( 1 - dot < Math.cEpsilon )
 	{
 		d = 1 - f;
@@ -86,11 +95,14 @@ Quaternion.slerp = function( q1, q2, f )
 	{
 		var theta = Math.acos( dot );
 		var recipsqrt = 1 / Math.sin( theta );
+
 		d = Math.sin( ( 1 - f ) * theta ) * recipsqrt;
 		f = Math.sin( f * theta ) * recipsqrt;
 	}
+
 	if ( flip )
 		f = -f;
+
 	return new Quaternion(
 		q1.x * d + q2.x * f,
 		q1.y * d + q2.y * f,

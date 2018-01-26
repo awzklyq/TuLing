@@ -62,7 +62,7 @@ function Particle( )
 
 		if ( ( this.sportType & Particle.Scale ) != 0 )
 		{
-			// this.scale.normalsize( );
+			// this.scale.normalize( );
 			Vector2.mul( this.scale, this.scalepower, this.scale );
 		}
 
@@ -73,7 +73,7 @@ function Particle( )
 		}
 		else if ( ( this.sportType & Particle.Translation ) != 0 )
 		{
-			this.direction.normalsize( );
+			this.direction.normalize( );
 			Vector2.mul( this.direction, this.speed, this.direction );
 		}
 

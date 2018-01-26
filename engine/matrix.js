@@ -61,6 +61,7 @@ function Matrix( mat )
 			v.y = this.mat[7];
 			return v;
 		}
+
 		return {x:this.mat[6], y:this.mat[7]};
 	}
 
@@ -74,6 +75,22 @@ function Matrix( mat )
 		this.mat[1] = Math.sin(r);
 		this.mat[3] = -Math.sin(r);
 		this.mat[4] = Math.cos(r);
+
+		if ( this.callback != null && Global.isFunction( this.callback ) )
+			this.callback( );
+	}
+
+	this.setRotationXY = function( rx, ry )
+	{
+		this.reset( );
+
+		rx = Math.convertRadian(rx);
+		ry = Math.convertRadian(ry);
+
+		this.mat[0] = Math.cos(rx);
+		this.mat[1] = Math.sin(rx);
+		this.mat[3] = -Math.sin(ry);
+		this.mat[4] = Math.cos(ry);
 
 		if ( this.callback != null && Global.isFunction( this.callback ) )
 			this.callback( );
@@ -121,6 +138,7 @@ function Matrix( mat )
 			s.y = Math.sqrt( this.mat[3] * this.mat[3] + this.mat[4] * this.mat[4] );
 			return s
 		}
+
 		return {
 			x : Math.sqrt( this.mat[0] * this.mat[0] + this.mat[1] * this.mat[1] ),
 			y : Math.sqrt( this.mat[3] * this.mat[3] + this.mat[4] * this.mat[4] ) };
@@ -361,7 +379,7 @@ function Matrix( mat )
 
 	this.determinant = function( )
 	{
-		return this.mat[0] * this.mat[4] *this.mat[8] + this.mat[1] * this.mat[5] * this.mat[6] + this.mat[2] * this.mat[3] * this.mat[7] - this.mat[0] * this.mat[5] * this.mat[7] - this.mat[1] * this.mat[3] * this.mat[8] - this.mat[2] *this.mat[4] *this.mat[6];
+		return this.mat[0] * this.mat[4] + this.mat[1] * this.mat[5] * this.mat[6] + this.mat[2] * this.mat[3] * this.mat[7] - this.mat[0] * this.mat[5] * this.mat[7] - this.mat[1] * this.mat[3] * this.mat[8] - this.mat[2] *this.mat[4] *this.mat[6];
 	}
 
 	this.toString = function( )
@@ -385,11 +403,17 @@ function Matrix( mat )
 	{
 		var q = new Quaternion( )
 		this.decompose( q );
+		
 		var v = new Vector4( );
 		q.decompose( v );
+		
+		if ( q.z < 0 )
+			v.w *= -1;
+
 		return Math.convertAngle(v.w);
 	}
-	//Ðý×ªËÄÔªÊý
+
+	//æ—‹è½¬å››å…ƒæ•°
 	//Quaternion q 
 	this.rotationQ = function( q )
 	{
@@ -409,6 +433,7 @@ function Matrix( mat )
 	this.decompose = function( q )
 	{
 		var m = this.mat
+
 		// Determine which of w, x, y, or z has the largest absolute value.
 		var fourWSquaredMinus1 = m[0] + m[4] + m[8];
 		var fourXSquaredMinus1 = m[0] - m[4] - m[8];
@@ -479,21 +504,36 @@ function Matrix( mat )
 	{
 		v.x = this.mat[6];
 		v.y = this.mat[7];
+
 		var scale = this.getScaling()
 		s.x = scale.x;
 		s.y = scale.y;
+
 		this.decompose( q );
 	}
-	//ÐèÒªÏÈ×öËÄÔªÊýÐý×ª
+
+	//éœ€è¦å…ˆåšå››å…ƒæ•°æ—‹è½¬
 	//Vector2 v, s Quaternion q
 	this.compose3 = function( v, s, r )
 	{
 		this.setRotation( r );
-		this.mat[0] *= s.x; this.mat[1] *= s.x; 
-		this.mat[3] *= s.x; this.mat[4] *= s.x;
-		this.mat[6] = v.x;
-		this.mat[7] = v.y;
+
+		this.mat[0] *= s.x; this.mat[1] *= s.x;
+		this.mat[3] *= s.y; this.mat[4] *= s.y;
+
+		this.mat[6] = v.x; this.mat[7] = v.y; 
 	}
+
+	this.compose6 = function( vx, vy, sx, sy, rx, ry )
+	{
+		this.setRotationXY( rx, ry );
+
+		this.mat[0] *= sx; this.mat[1] *= sx;
+		this.mat[3] *= sy; this.mat[4] *= sy;
+
+		this.mat[6] = vx; this.mat[7] = vy; 
+	}
+
 	if ( mat != null )
 		this.set( mat );
 	else
