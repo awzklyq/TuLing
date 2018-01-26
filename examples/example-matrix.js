@@ -1,9 +1,10 @@
 window.logEnable = true;
 System.isClip = true;
 window.limitLog = 5000;
-
 var image = new LImage('../res/Dragon_tex.png');
 var mat1 = new Matrix( );
+mat1.mulRotationLeft(1000)
+var r = mat1.getRotation()
 // mat1.mulTranslationRight(-100, -100)
 log(image.getWidth(), image.getHeight())
 mat1.mulTranslationRight(-image.getWidth()*0.5, -image.getHeight()*0.5);
@@ -19,11 +20,14 @@ mat3.mulRight(mat2);
 // var canvas = new CanvasEx( );
 // canvas.setWidth(image.getWidth());
 // canvas.setHeight(image.getHeight());
-var canvas = new CanvasEx( );
-canvas.setAttribute( "width", window.canvas.width );
-canvas.setAttribute( "height", window.canvas.height );
+
+var canvastest = new CanvasEx( );
+// CanvasEx.resetWindowCanvas( );
+canvastest.setAttribute( "width", window.canvas.width );
+canvastest.setAttribute( "height", window.canvas.height );
+
 var context =  window.context;
-window.context = canvas.getContext( );
+window.context = canvastest.getContext( );
 image.drawImage();
 window.context = context;
 window.rendercallbackfunc = function(e)
@@ -35,7 +39,6 @@ window.rendercallbackfunc = function(e)
 	Global.popMatrix();
 	// Global.popCanvas();
 }
-
 
 window.onMouseMove[0] = function( x, y )
 {
