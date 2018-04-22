@@ -21,8 +21,8 @@ function Matrix3D( )
 	{
 		var isvec = arguments.length == 1 && arguments[0].typeid == Global.Vector3_typeid;
 		var xx = isvec ? arguments[0].x : x;
-		var yy = isvec ? arguments[0].y : y; 
-		var zz = isvec ? arguments[0].z : z; 
+		var yy = isvec ? arguments[0].y : y;
+		var zz = isvec ? arguments[0].z : z;
 		this.mat[0] = 1.0, this.mat[1] = 0.0, this.mat[2] = 0.0, this.mat[3] = 0.0;
 		this.mat[4] = 0.0, this.mat[5] = 1.0, this.mat[6] = 0.0, this.mat[7] = 0.0;
 		this.mat[8] = 0.0, this.mat[9] = 0.0, this.mat[10] = 1.0, this.mat[11] = 0.0;
@@ -38,7 +38,7 @@ function Matrix3D( )
 			vec.z = this.mat[14];
 			return;
 		}
-			
+
 		return new Vector3( this.mat[12], this.mat[13], this.mat[14] );
 	}
 
@@ -71,7 +71,7 @@ function Matrix3D( )
 		mat.mat[0] = x;
 		mat.mat[5] = y;
 		mat.mat[10] = z;
-		
+
 		this.mulRight( mat );
 	}
 
@@ -85,6 +85,7 @@ function Matrix3D( )
 
 	this.rotation = function( x, y, z, r )
 	{
+		r = Math.convertRadian(r);
 		var sinvalue = Math.sin( r ), cosvalue = Math.cos( r );
 		var cosreverse = 1.0 - cosvalue;
 
@@ -130,6 +131,7 @@ function Matrix3D( )
 
 	this.rotationX = function( r )
 	{
+		r = Math.convertRadian(r);
 		var sinvalue = Math.sin( r ), cosvalue = Math.cos( r );
 
 		var mat = new Matrix3D( );
@@ -169,6 +171,7 @@ function Matrix3D( )
 
 	this.rotationY = function( r )
 	{
+		r = Math.convertRadian(r);
 		var sinvalue = Math.sin( r ), cosvalue = Math.cos( r );
 
 		var mat = new Matrix3D( );
@@ -208,6 +211,7 @@ function Matrix3D( )
 
 	this.rotationZ = function( r )
 	{
+		r = Math.convertRadian(r);
 		var sinvalue = Math.sin( r ), cosvalue = Math.cos( r );
 
 		var mat = new Matrix3D( );
@@ -267,7 +271,7 @@ function Matrix3D( )
 		this.mat[9] = mm1[8] * mm2[1] + mm1[9] * mm2[5] + mm1[10] * mm2[9] + mm1[11] * mm2[13];
 		this.mat[10] = mm1[8] * mm2[2] + mm1[9] * mm2[6] + mm1[10] * mm2[10] + mm1[11] * mm2[14];
 		this.mat[11] = mm1[8] * mm2[3] + mm1[9] * mm2[7] + mm1[10] * mm2[11] + mm1[11] * mm2[15];
-		
+
 		this.mat[12] = mm1[12] * mm2[0] + mm1[13] * mm2[4] + mm1[14] * mm2[8] + mm1[15] * mm2[12];
 		this.mat[13] = mm1[12] * mm2[1] + mm1[13] * mm2[5] + mm1[14] * mm2[9] + mm1[15] * mm2[13];
 		this.mat[14] = mm1[12] * mm2[2] + mm1[13] * mm2[6] + mm1[14] * mm2[10] + mm1[15] * mm2[14];
@@ -296,7 +300,7 @@ function Matrix3D( )
 		this.mat[9] = mm1[8] * mm2[1] + mm1[9] * mm2[5] + mm1[10] * mm2[9] + mm1[11] * mm2[13];
 		this.mat[10] = mm1[8] * mm2[2] + mm1[9] * mm2[6] + mm1[10] * mm2[10] + mm1[11] * mm2[14];
 		this.mat[11] = mm1[8] * mm2[3] + mm1[9] * mm2[7] + mm1[10] * mm2[11] + mm1[11] * mm2[15];
-		
+
 		this.mat[12] = mm1[12] * mm2[0] + mm1[13] * mm2[4] + mm1[14] * mm2[8] + mm1[15] * mm2[12];
 		this.mat[13] = mm1[12] * mm2[1] + mm1[13] * mm2[5] + mm1[14] * mm2[9] + mm1[15] * mm2[13];
 		this.mat[14] = mm1[12] * mm2[2] + mm1[13] * mm2[6] + mm1[14] * mm2[10] + mm1[15] * mm2[14];
@@ -305,14 +309,23 @@ function Matrix3D( )
 
 	this.setPerspectiveFov = function( fovy, aspect, znear, zfar)
 	{
-		var ys = Math.cot( Math.convertRadian( fovy ) / 2.0 );
-		var xs = ys / aspect;
-		var zf = ( zfar + znear ) / ( znear - zfar );
-		var zn = ( 2 * znear * zfar ) / ( znear - zfar );
-		// TODO.
+		// var ys = Math.cot( Math.convertRadian( fovy ) / 2.0 );
+		// var xs = ys / aspect;
+		// var zf = ( zfar + znear ) / ( znear - zfar );
+		// var zn = ( 2 * znear * zfar ) / ( znear - zfar );
+
+			var ys = 1.0 / Math.tan(Math.convertRadian( fovy ) * 0.5)
+			var xs = ys / aspect
+			var zf = zfar / (zfar - znear)
+			var zn = - znear * zf
+
+		// var zf = zfar / ( znear - zfar );
+		// var zn = -znear * zf;
+//		TODO.
 		this.mat[0] = xs, this.mat[1] = 0.0, this.mat[2] = 0.0, this.mat[3] = 0.0;
 		this.mat[4] = 0.0, this.mat[5] = ys, this.mat[6] = 0.0, this.mat[7] = 0.0;
-		this.mat[8] = 0.0, this.mat[9] = 0.0, this.mat[10] = zf, this.mat[11] = -1.0;
+		// this.mat[8] = 0.0, this.mat[9] = 0.0, this.mat[10] = zf, this.mat[11] = -1.0;
+		this.mat[8] = 0.0, this.mat[9] = 0.0, this.mat[10] = zf, this.mat[11] = 1.0;
 		this.mat[12] = 0.0, this.mat[13] = 0.0, this.mat[14] = zn, this.mat[15] = 0.0;
 	}
 
@@ -329,7 +342,7 @@ function Matrix3D( )
 		this.mat[12] = 0.0, this.mat[13] = 0.0, this.mat[14] = zn, this.mat[15] = 1.0;
 	}
 
-	this.setCameraAt = function( eye, look, up )
+	this.setCameraAtLH = function( eye, look, up )
 	{
 		var n = Vector3.ssub( eye, look );
 		n.normalize( );
@@ -337,8 +350,42 @@ function Matrix3D( )
 		var u = Vector3.scross( up, n );
 		u.normalize( );
 		var v = Vector3.scross( n, u );
-		
-		
+
+
+		this.mat[0] = u.x; this.mat[1] = v.x; this.mat[2] = n.x; this.mat[3] = 0.0;
+		this.mat[4] = u.y; this.mat[5] = v.y; this.mat[6] = n.y; this.mat[7] = 0.0;
+		this.mat[8] = u.z; this.mat[9] = v.z; this.mat[10] = n.z; this.mat[11] = 0.0;
+		this.mat[12] = -eye.dot( u ); this.mat[13] = -eye.dot( v ); this.mat[14] = -eye.dot( n ); this.mat[15] = 1.0;
+	}
+
+// 	Matrix4 Matrix4::CreateLookAtRH( const Vector3& eye, const Vector3& lookat, const Vector3& upaxis )
+// {
+// 	Vector3 zaxis = ( eye - lookat ).Normalize( );
+// 	Vector3 xaxis = Vector3::Cross( upaxis, zaxis ).Normalize( );
+// 	Vector3 yaxis = Vector3::Cross( zaxis, xaxis );
+
+// 	_float xeye = - Vector3::Dot( xaxis, eye );
+// 	_float yeye = - Vector3::Dot( yaxis, eye );
+// 	_float zeye = - Vector3::Dot( zaxis, eye );
+
+// 	return Matrix4(
+// 		xaxis.x, yaxis.x, zaxis.x, 0.0f,
+// 		xaxis.y, yaxis.y, zaxis.y, 0.0f,
+// 		xaxis.z, yaxis.z, zaxis.z, 0.0f,
+// 		   xeye,    yeye,    zeye, 1.0f );
+// }
+
+
+	this.setCameraAtRH = function( eye, look, up)
+	{
+		var n = Vector3.ssub( look, eye );
+		n.normalize( );
+
+		var u = Vector3.scross( up, n );
+		u.normalize( );
+		var v = Vector3.scross( n, u );
+
+
 		this.mat[0] = u.x; this.mat[1] = v.x; this.mat[2] = n.x; this.mat[3] = 0.0;
 		this.mat[4] = u.y; this.mat[5] = v.y; this.mat[6] = n.y; this.mat[7] = 0.0;
 		this.mat[8] = u.z; this.mat[9] = v.z; this.mat[10] = n.z; this.mat[11] = 0.0;

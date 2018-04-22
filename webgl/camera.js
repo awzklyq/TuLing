@@ -95,7 +95,7 @@ function Camera( )
 
 	this.getCameraMatrix = function( )
 	{
-		this.cameramat.setCameraAt( this.eye, this.look, this.up );
+		this.cameramat.setCameraAtRH( this.eye, this.look, this.up );
 		if ( this.ortho )
 			this.perspectivemat.setOrtho( this.w, this.h, this.near, this.far );
 		else
