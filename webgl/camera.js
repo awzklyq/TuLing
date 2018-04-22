@@ -10,7 +10,7 @@ function Camera( )
 	this.h = Global.getClientHeight( );
 	this.ortho = false;
 
-	this.radiuslimit = new Vector( );
+	this.radiuslimit = new Vector2( );
 	this.radiuslimit.x = Math.MinNumber;
 	this.radiuslimit.y = Math.MaxNumber;
 
