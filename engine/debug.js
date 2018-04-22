@@ -2,7 +2,7 @@ function Debug( ) { }
 
 Debug.getFunctionName = function( func )
 {
-¡¡¡¡if (typeof func == 'function' || typeof func == 'object')
+	if (typeof func == 'function' || typeof func == 'object')
 	{
 		var name = ( '' + func ).match( /function\s*([\w\$]*)\s*\(/ );
 		return name && name[1];
