@@ -12,7 +12,7 @@ Debug.getFunctionName = function( func )
 }
 
 if ( window.console == null )
-¡¡¡¡window.console = { };
+	window.console = { };
 
 if ( console.trace == null )
 {
