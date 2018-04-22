@@ -8,6 +8,7 @@ function Geometry( )
 	this.methodId = -1;
 
 	this.offset = 0;
+	// this.renderState = webgl.LINE_STRIP;
 	this.renderState = webgl.TRIANGLES;
 
 	this.format = 0;
@@ -34,22 +35,25 @@ function Geometry( )
 				vsize = i * 2;
 				this.finalData.push( this.texcoords[vsize] );
 				this.finalData.push( this.texcoords[vsize + 1] );
-			}				
+			}
 		}
 	}
 
 	this.createBufferData = function( )
-	{ 
+	{
 		webgl.bindBufferVBO( this.vertexBuffer );
 		webgl.bufferDataVBO( new Float32Array( this.finalData ) );
 		webgl.bindBufferVBO( null );
 
-		webgl.bindBufferIBO( this.indexBuffer );
-		webgl.bufferDataIBO( new Uint16Array( this.indexData ) );
-		webgl.bindBufferIBO( null );
-  
+		if ( this.indexData.length > 0 )
+		{
+			webgl.bindBufferIBO( this.indexBuffer );
+			webgl.bufferDataIBO( new Uint16Array( this.indexData ) );
+			webgl.bindBufferIBO( null );
+		}
+
 		if ( ( this.format & Geometry.VERTEX ) != 0  )
-			this.offset += Geometry.dataSize * 3;	
+			this.offset += Geometry.dataSize * 3;
 
 		if ( ( this.format & Geometry.TEXCOORD0 ) != 0  )
 			this.offset += Geometry.dataSize * 2;
@@ -109,7 +113,7 @@ function Geometry( )
 		webgl.deletebuffer( this.vertexBuffer );
 		webgl.deletebuffer( this.indexBuffer );
 	}
-	
+
 }
 
 new Geometry( );

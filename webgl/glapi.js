@@ -12,7 +12,7 @@ function WebGl( )
 	{
 		this.gBlur = false;
 	}
-	
+
 	this.getGBlur = function( )
 	{
 		return this.gBlur;
@@ -34,7 +34,7 @@ function WebGl( )
 		var cc = Math.DecompressionRGBA( color );
 		gl.clearColor( cc.r / 255, cc.g / 255, cc.b / 255, cc.a );
 	}
-	
+
 	this.viewPort = function( x, y, w, h )
 	{
 		if ( window.gl == null)
@@ -47,7 +47,7 @@ function WebGl( )
 	{
 		if ( window.gl == null)
 			return;
-		
+
 		gl.enable( state );
 	}
 
@@ -55,10 +55,10 @@ function WebGl( )
 	{
 		if ( window.gl == null)
 			return;
-		
+
 		gl.disable( state );
 	}
-	
+
 	this.createBuffer = function( )
 	{
 		if ( window.gl == null)
@@ -124,14 +124,14 @@ function WebGl( )
 
 		gl.bufferData( gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW );
 	}
-	
+
 	this.createVertexShader = function( str )
 	{
 		if ( window.gl == null)
 			return;
 
 		var shader = gl.createShader( gl.VERTEX_SHADER );
-		
+
 		gl.shaderSource(shader, str);
 
         gl.compileShader(shader);
@@ -151,7 +151,7 @@ function WebGl( )
 			return;
 
 		var shader = gl.createShader( gl.FRAGMENT_SHADER );
-		
+
 		gl.shaderSource(shader, str);
 
         gl.compileShader(shader);
@@ -176,7 +176,7 @@ function WebGl( )
 		gl.attachShader( program, fshr );
 		gl.linkProgram( program );
 
-		if ( !gl.getProgramParameter( program, gl.LINK_STATUS ) ) 
+		if ( !gl.getProgramParameter( program, gl.LINK_STATUS ) )
 			console.error('Could not initialise shaders');
 
 		return program;
@@ -207,7 +207,7 @@ function WebGl( )
 
 		gl.vertexAttribPointer( index, size, type, isnormalized, offset, pointer );
 	}
-	
+
 	this.enableVertexAttribArray = function( index )
 	{
 		if ( window.gl == null && this.program != null )
@@ -263,7 +263,7 @@ function WebGl( )
 			gl.uniform2i( index, value1, value2 );
 		else if ( arguments.length == 4 )
 			gl.uniform3i( index, value1, value2, value3 );
-		else 
+		else
 			gl.uniform4i( index, value1, value2, value3, value4 );
 	}
 
@@ -278,7 +278,7 @@ function WebGl( )
 			return texture;
 
 		this.setTexture2D( texture, level, internalformat, w, h, format, type, image, true )
-		
+
 		return texture;
 	}
 
@@ -385,6 +385,14 @@ function WebGl( )
 			return;
 
 		gl.bindFramebuffer( gl.FRAMEBUFFER, fbuffer );
+	}
+
+	this.drawArrays = function( mode, first, count )
+	{
+		if ( window.gl == null )
+			return;
+
+		gl.drawArrays( mode, first, count );
 	}
 
 	this.drawElements = function( mode, count, type, offset )

@@ -40,7 +40,21 @@ function RenderWebgl( )
 	{
 		this.linkProgram( geo )
 
-		webgl.drawElements( geo.renderState, geo.indexData.length, webgl.UNSIGNED_SHORT, 0 );
+		if ( geo.indexData.length > 0 )
+		{
+			if ( webgl.TRIANGLES == geo.renderState )
+				webgl.drawElements( geo.renderState, geo.indexData.length, webgl.UNSIGNED_SHORT, 0 );
+			else if ( webgl.LINE_STRIP == geo.renderState )
+				webgl.drawElements( geo.renderState, geo.indexData.length / 3 + 1, webgl.UNSIGNED_SHORT );
+		}
+		else
+		{
+			// log(geo.vertexData.length, geo.vertexData.length/3)
+			if ( webgl.TRIANGLES == geo.renderState )
+				webgl.drawArrays( geo.renderState, 0, geo.vertexData.length / 3 );
+			else if ( webgl.LINE_STRIP == geo.renderState )
+				webgl.drawArrays( geo.renderState, 0, geo.vertexData.length / 3 );
+		}
 
 		this.finishRender( )
 	}
@@ -62,7 +76,9 @@ function RenderWebgl( )
 		}
 
 		webgl.bindBufferVBO( geo.vertexBuffer );
-		webgl.bindBufferIBO( geo.indexBuffer );
+		if ( geo.indexData.length > 0 )
+			webgl.bindBufferIBO( geo.indexBuffer );
+
 		webgl.useProgram( shader.buildShader( geo.format ) );
 
 		var offset = 0;
@@ -75,7 +91,7 @@ function RenderWebgl( )
 		}
 
 		if ( ( geo.format & Geometry.TEXCOORD0 ) != 0 && ( geo.format & Geometry.TEXTURE0 ) != 0 && geo.textures[0] != null )
-		{		
+		{
 			var texcoord = webgl.getAttribLocation('texcoord');
 			webgl.vertexAttribPointer( texcoord, 2, webgl.FLOAT, false, geo.offset, offset );
 			webgl.enableVertexAttribArray( texcoord );
