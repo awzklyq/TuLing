@@ -6,11 +6,11 @@ emit.limit = 15;
 emit.numbers1 = 3;
 emit.numbers2 = 7;
 emit.interival = 100;
-emit.translation1 = new Vector( 1, -1 );
-emit.translation2 = new Vector( -1, 1 );
+emit.translation1 = new Vector2( 1, -1 );
+emit.translation2 = new Vector2( -1, 1 );
 
-// emit.scale1 = new Vector( 1, 1 );
-// emit.scale2 = new Vector( 1, 1 );
+// emit.scale1 = new Vector2( 1, 1 );
+// emit.scale2 = new Vector2( 1, 1 );
 // emit.scalepower1 = 1.02;
 // emit.scalepower2 = 1.02;
 

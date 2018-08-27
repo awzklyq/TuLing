@@ -13,8 +13,8 @@ baozha.limit = 1;
 baozha.numbers1 = 1;
 baozha.numbers2 = 1;
 baozha.interival = 0;
-baozha.translation1 = new Vector( 0, 0 );
-baozha.translation2 = new Vector( 0, 0 );
+baozha.translation1 = new Vector2( 0, 0 );
+baozha.translation2 = new Vector2( 0, 0 );
 baozha.imageAnimaData = data;
 
 baozha.speed1 = 10;

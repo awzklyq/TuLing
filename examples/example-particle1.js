@@ -5,11 +5,11 @@ emit.duration = 10000;
 emit.limit = 60;
 emit.numbers = 15;
 emit.interival = 100;
-emit.translation1 = new Vector( -1, 1 );
-emit.translation2 = new Vector( 1, -1 );
+emit.translation1 = new Vector2( -1, 1 );
+emit.translation2 = new Vector2( 1, -1 );
 
-emit.scale1 = new Vector( -1, 1 );
-emit.scale2 = new Vector( 2, 3 );
+emit.scale1 = new Vector2( -1, 1 );
+emit.scale2 = new Vector2( 2, 3 );
 emit.scalepower1 = -1;
 emit.scalepower1 = 2;
 
@@ -58,8 +58,8 @@ emit.bindMatrix.mulTranslationRight( 500, 300 );
 // emit1.pfxSize2 = 20;
 
 // emit1.sportType = Particle.Translation;
-// emit1.translation1 = new Vector( 0, -1 );
-// emit1.translation2 = new Vector( 0, -1 );
+// emit1.translation1 = new Vector2( 0, -1 );
+// emit1.translation2 = new Vector2( 0, -1 );
 // emit1.speed1 = 5;
 // emit1.speed2 = 5;
 // emit1.color1 = 0xffff0000;
